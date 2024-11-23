@@ -2,35 +2,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
-  namespace: dad-group-x
+    name: mysql
+    namespace: dad-group-21
 spec:
-  selector:
-    matchLabels:
-      app: mysql
-  template:
-    metadata:
-      labels:
-        app: mysql
-    spec:
-      containers:
-        - name: mysql
-          image: mysql:8.0
-          env:
-            - name: MYSQL_ALLOW_EMPTY_PASSWORD
-              value: "yes"
-            - name: MYSQL_DATABASE
-              value: "project"
-          ports:
-            - containerPort: 3306
+    selector:
+        matchLabels:
+            app: mysql
+    template:
+        metadata:
+            labels:
+                app: mysql
+        spec:
+            containers:
+                - name: mysql
+                  image: mysql:8.0
+                  env:
+                      - name: MYSQL_ALLOW_EMPTY_PASSWORD
+                        value: "yes"
+                      - name: MYSQL_DATABASE
+                        value: "project"
+                  ports:
+                      - containerPort: 3306
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
-  namespace: dad-group-x
+    name: mysql
+    namespace: dad-group-21
 spec:
-  ports:
-    - port: 3306
-  selector:
-    app: mysql
+    ports:
+        - port: 3306
+    selector:
+        app: mysql
