@@ -2,30 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: laravel-app
-    namespace: dad-group-21
+  name: laravel-app
+  namespace: dad-group-21
 spec:
-    replicas: 1
-    selector:
-        matchLabels:
-            app: laravel-app
-    template:
-        metadata:
-            labels:
-                app: laravel-app
-        spec:
-            containers:
-                - name: api
-                  image: registry.172.22.21.107.sslip.io/dad-group-21/api:v1.0.0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: laravel-app
+  template:
+    metadata:
+      labels:
+        app: laravel-app
+    spec:
+      containers:
+        - name: api
+          image: registry.172.22.21.107.sslip.io/dad-group-21/api:v1.0.1
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-    name: laravel-app
-    namespace: dad-group-21
+  name: laravel-app
+  namespace: dad-group-21
 spec:
-    ports:
-        - port: 80
-    selector:
-        app: laravel-app
+  ports:
+    - port: 80
+  selector:
+    app: laravel-app
