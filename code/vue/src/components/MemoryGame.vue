@@ -8,7 +8,7 @@
 
     <!-- Game Over Message with Restart Button -->
     <div v-if="isGameOver" class="game-over">
-        <h2>You Won</h2>
+        <h2>You Won!</h2>
         <button @click="startGame">Restart Game</button>
     </div>
 </template>
@@ -94,22 +94,36 @@ onMounted(() => {
 </script>
 
 <style scoped>
+body {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f4;
+}
+
+/* Game container to fill the screen */
 .game-board {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    /* 4 columns */
+    /* Default 4 columns */
     gap: 1rem;
-    max-width: 80%;
-    margin: 4rem auto;
+    max-width: 100%;
+    max-height: 100%;
+    width: 90vw;
+    height: 90vh;
+    margin: auto;
+    overflow: hidden;
 }
 
+/* Add a flexible layout for cards */
 .card {
     position: relative;
     width: 100%;
+    height: 100%;
     padding-top: 0%;
-    /* Maintain a square aspect ratio */
     background-color: #f3f4f6;
-    /* Ensure that the cards are visible */
     border-radius: 8px;
     cursor: pointer;
     overflow: hidden;
@@ -130,6 +144,19 @@ onMounted(() => {
     background-color: #fff;
     border-radius: 8px;
     margin-top: 20px;
+}
+
+.game-over {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
 button {
