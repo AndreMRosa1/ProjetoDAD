@@ -16,6 +16,17 @@
   
         <button type="submit" class="btn">Login</button>
       </form>
+      
+      <!-- Botão Register -->
+      <div class="register-link">
+        <p>Don't have an account?</p>
+        <RouterLink
+          to="/register"
+          class="btn-register"
+        >
+          Register
+        </RouterLink>
+      </div>
     </div>
   </template>
   
@@ -44,7 +55,7 @@
   };
   </script>
   
-  <style>
+  <style scoped>
   /* Reutilizando o estilo da página de registro */
   .auth-form {
     max-width: 400px;
@@ -54,10 +65,12 @@
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
+  
   label {
     display: block;
     margin: 8px 0 4px;
   }
+  
   input {
     width: 100%;
     padding: 8px;
@@ -65,6 +78,7 @@
     border: 1px solid #ddd;
     border-radius: 4px;
   }
+  
   button {
     width: 100%;
     padding: 10px;
@@ -74,8 +88,30 @@
     border-radius: 4px;
     cursor: pointer;
   }
+  
   button:hover {
     background-color: #0056b3;
+  }
+  
+  .register-link {
+    margin-top: 16px;
+    text-align: center;
+  }
+  
+  .btn-register {
+    display: inline-block;
+    padding: 8px 16px;
+    margin-top: 10px;
+    text-align: center;
+    color: #007bff;
+    text-decoration: none;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+  }
+  
+  .btn-register:hover {
+    background-color: #007bff;
+    color: white;
   }
   </style>
   

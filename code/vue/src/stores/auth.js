@@ -9,8 +9,10 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref(null);
   const token = ref('');
 
+  // Computed properties para obter o nome e e-mail do usuário
   const userName = computed(() => user.value?.name || '');
   const userEmail = computed(() => user.value?.email || '');
+  const userAvatar = computed(() => user.value?.avatar || '');
 
   const clearUser = () => {
     resetIntervalToRefreshToken();
@@ -104,6 +106,7 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     userName,
     userEmail,
+    userAvatar,
     login,
     register,
     logout,
