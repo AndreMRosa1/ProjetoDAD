@@ -15,6 +15,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute(); // Access the route to get the size
+const size = parseInt(route.query.size || 12); // Default to 12 if no size is selected
 
 // Card state management
 const cards = ref([]);
@@ -23,9 +27,9 @@ const matchedCards = ref([]); // To store matched pairs
 const isGameOver = ref(false);
 
 // Dynamically import images using Vite's import.meta.glob
-const images = Object.values(import.meta.glob('@/assets/images/*.png', { eager: true })).map(module => module.default).slice(0, 8);
+const images = Object.values(import.meta.glob('@/assets/images/*.png', { eager: true })).map(module => module.default).slice(0, size);
 
-console.log("Images loaded: ", images); // Check if images are loaded
+console.log(size); // Check if images are loaded
 
 // Function to initialize the game
 const startGame = () => {
@@ -37,8 +41,6 @@ const startGame = () => {
     }));
 
     cards.value = shuffle(pairedCards); // Shuffle the cards to randomize the order
-
-    console.log("Cards initialized: ", cards.value); // Check if cards are initialized
 
     flippedCards.value = [];
     matchedCards.value = [];
@@ -87,7 +89,6 @@ const onCardClick = (card) => {
 
 // Start the game when the component is mounted
 onMounted(() => {
-    console.log("Game started!");
     startGame();
 });
 </script>
@@ -98,8 +99,8 @@ onMounted(() => {
     grid-template-columns: repeat(4, 1fr);
     /* 4 columns */
     gap: 1rem;
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 80%;
+    margin: 4rem auto;
 }
 
 .card {

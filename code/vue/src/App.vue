@@ -24,7 +24,7 @@ import Toaster from './components/ui/toast/Toaster.vue';
             active-class="text-blue-600 font-semibold">
             WebSockets Tester
           </RouterLink>
-          <RouterLink to="/memory-game"
+          <RouterLink to="/new-memory-game"
             class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
             active-class="text-blue-600 font-semibold">
             Start Game
