@@ -1,5 +1,7 @@
 import HomeComponent from '@/components/HomeComponent.vue'
 import LaravelTester from '@/components/LaravelTester.vue'
+import MemoryGame from '@/components/MemoryGame.vue'
+import StartNewMemoryGame from '@/components/StartNewMemoryGame.vue'
 import WebSocketTester from '@/components/WebSocketTester.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -36,6 +38,15 @@ const router = createRouter({
         { path: '/register', name: 'register', component: Register },
         { path: '/', name: 'home', component: HomeComponent }
       ]
+    },
+    {
+      path: '/new-memory-game',
+      component: StartNewMemoryGame
+    },
+    {
+      path: '/memory-game',
+      name: 'game',
+      component: MemoryGame
     }
   ]
 })
