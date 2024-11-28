@@ -3,6 +3,16 @@ import LaravelTester from '@/components/LaravelTester.vue'
 import WebSocketTester from '@/components/WebSocketTester.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
+import Login from '@/components/auth/Login.vue'
+import Register from '@/components/auth/Register.vue'
+
+//const routes = [
+//  { path: '/login', name: 'login', component: Login },
+//  { path: '/register', name: 'register', component: Register },
+//  { path: '/', name: 'home', component: HomeComponent }
+//]
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -21,7 +31,10 @@ const router = createRouter({
         {
           path: 'websocket',
           component: WebSocketTester
-        }
+        },
+        { path: '/login', name: 'login', component: Login },
+        { path: '/register', name: 'register', component: Register },
+        { path: '/', name: 'home', component: HomeComponent }
       ]
     }
   ]
