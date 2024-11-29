@@ -1,19 +1,23 @@
 import HomeComponent from '@/components/HomeComponent.vue'
 import LaravelTester from '@/components/LaravelTester.vue'
 import MemoryGame from '@/components/MemoryGame.vue'
-import StartNewMemoryGame from '@/components/StartNewMemoryGame.vue'
 import WebSocketTester from '@/components/WebSocketTester.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Login from '@/components/auth/Login.vue'
 import Register from '@/components/auth/Register.vue'
+import DashboardPage from '@/components/DashboardPage.vue'
+import StartNewMemoryGame from '@/components/StartNewMemoryGame.vue'
+import MultiplayerGame from '@/components/MultiplayerGame.vue';
+import GameHistory from '@/components/GameHistory.vue';
+import ScoreboardsPage from '@/components/ScoreboardsPage.vue';
+import StatisticsPage from '@/components/StatisticsPage.vue';
 
 //const routes = [
 //  { path: '/login', name: 'login', component: Login },
 //  { path: '/register', name: 'register', component: Register },
 //  { path: '/', name: 'home', component: HomeComponent }
 //]
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,7 +51,18 @@ const router = createRouter({
       path: '/memory-game',
       name: 'game',
       component: MemoryGame
-    }
+    },
+    {
+      path: '/dashboard',
+      component: DashboardPage,
+      children: [
+        { path: 'new-memory-game', component: StartNewMemoryGame },
+        { path: 'multiplayer', component: MultiplayerGame },
+        { path: 'history', component: GameHistory },
+        { path: 'scoreboards', component: ScoreboardsPage },
+        { path: 'statistics', component: StatisticsPage },
+      ],
+    },
   ]
 })
 

@@ -28,12 +28,12 @@
               WebSockets Tester
             </RouterLink>
             <RouterLink
-              to="/new-memory-game"
-              class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              active-class="text-blue-600 font-semibold"
-            >
-              Start Game
-            </RouterLink>
+            to="/dashboard"
+            class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            active-class="text-blue-600 font-semibold"
+          >
+            Dashboard
+          </RouterLink>
           </div>
 
           <!-- Lado Direito: Exibir Imagem de Usuário ou Botão de Login -->

@@ -40,4 +40,22 @@ class User extends Authenticatable
             $user->blocked = $user->blocked ?? false;
         });
     }
+
+
+    //relations
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function createdGames()
+    {
+        return $this->hasMany(Game::class, 'created_user_id');
+    }
+
+    public function wonGames()
+    {
+        return $this->hasMany(Game::class, 'winner_user_id');
+    }
+
 }
