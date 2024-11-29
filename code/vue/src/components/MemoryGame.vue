@@ -1,5 +1,6 @@
 <template>
-    <div class="game-board grid grid-cols-4 gap-4">
+    <div class="game-board grid grid-cols-4 gap-4"
+        :style="{ gridTemplateColumns: size === 18 ? 'repeat(6, 1fr)' : 'repeat(4, 1fr)' }">
         <div v-for="card in cards" :key="card.id" class="card" :class="card.state">
             <img v-if="card.state !== 'hidden'" :src="card.face" alt="Card face">
             <img v-else src="../assets/images/semFace.png" alt="Card back" @click="onCardClick(card)">
@@ -17,6 +18,8 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const size = parseInt(route.query.size || 12);
+
+console.log(size)
 
 const cards = ref([]);
 const flippedCards = ref([]);
