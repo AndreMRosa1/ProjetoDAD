@@ -19,8 +19,6 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 const size = parseInt(route.query.size || 12);
 
-console.log(size)
-
 const cards = ref([]);
 const flippedCards = ref([]);
 const matchedCards = ref([]);
@@ -90,8 +88,6 @@ body {
 
 .game-board {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    /* Default 4 columns */
     gap: 1rem;
     max-width: 100%;
     max-height: 90%;
