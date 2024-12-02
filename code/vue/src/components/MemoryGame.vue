@@ -1,10 +1,20 @@
 <template>
+    <RouterLink to="/dashboard/new-memory-game" class="nav-link"><button>Go Back</button></RouterLink>
     <div class="game-board grid grid-cols-4 gap-4"
         :style="{ gridTemplateColumns: size === 18 ? 'repeat(6, 1fr)' : 'repeat(4, 1fr)' }">
         <div v-for="card in cards" :key="card.id" class="card" :class="card.state">
             <img v-if="card.state !== 'hidden'" :src="card.face" alt="Card face">
             <img v-else src="../assets/images/semFace.png" alt="Card back" @click="onCardClick(card)">
         </div>
+    </div>
+    <div class="start-game">
+        <button @click="startGame">Start Game</button>
+    </div>
+    <div class="turn-counter">
+        Turns: {{ turnCounter }}
+    </div>
+    <div class="timer">
+        Timer: {{ timer }}
     </div>
     <div v-if="isGameOver" class="game-over">
         <h2>You Won!</h2>
@@ -13,8 +23,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useRoute} from 'vue-router';
 
 const route = useRoute();
 const size = parseInt(route.query.size || 12);
@@ -23,6 +33,9 @@ const cards = ref([]);
 const flippedCards = ref([]);
 const matchedCards = ref([]);
 const isGameOver = ref(false);
+const turnCounter = ref(0);
+const timer = ref(0);
+let timerInterval = null;
 
 const images = Object.values(import.meta.glob('@/assets/images/*.png', { eager: true })).map(module => module.default).slice(0, size);
 
@@ -37,7 +50,18 @@ const startGame = () => {
 
     flippedCards.value = [];
     matchedCards.value = [];
+    turnCounter.value = 0;
+    timer.value = 0;
     isGameOver.value = false;
+
+    startTimer();
+};
+
+const startTimer = () => {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        timer.value++;
+    }, 1000);
 };
 
 const shuffle = (array) => {
@@ -52,6 +76,7 @@ const onCardClick = (card) => {
 
     if (flippedCards.value.length === 2) {
         const [firstCard, secondCard] = flippedCards.value;
+        turnCounter.value++;
         if (firstCard.face === secondCard.face) {
             firstCard.state = 'matched';
             secondCard.state = 'matched';
@@ -68,11 +93,16 @@ const onCardClick = (card) => {
 
     if (matchedCards.value.length === cards.value.length) {
         isGameOver.value = true;
+        clearInterval(timerInterval);
     }
 };
 
 onMounted(() => {
     startGame();
+});
+
+onUnmounted(() => {
+    if (timerInterval) clearInterval(timerInterval);
 });
 </script>
 
@@ -140,8 +170,9 @@ body {
 
 button {
     margin-top: 10px;
-    padding: 10px 20px;
+    padding: 10px 20px 10px 20px;
     background-color: #4CAF50;
+    width: 10%;
     color: white;
     border: none;
     border-radius: 5px;
@@ -150,5 +181,15 @@ button {
 
 button:hover {
     background-color: #45a049;
+}
+
+.turn-counter {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.timer {
+    font-size: 18px;
+    margin-bottom: 10px;
 }
 </style>
