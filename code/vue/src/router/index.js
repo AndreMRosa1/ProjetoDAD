@@ -19,38 +19,42 @@ import StatisticsPage from '@/components/StatisticsPage.vue';
 //  { path: '/', name: 'home', component: HomeComponent }
 //]
 
+import TransactionsPage from '@/components/TransactionPage.vue';
+import TransactionList from '@/components/transactions/TransactionList.vue';
+import TransactionForm from '@/components/transactions/TransactionForm.vue';
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
       name: 'home',
-      component: HomeComponent
+      component: HomeComponent,
     },
     {
       path: '/testers',
       children: [
         {
           path: 'laravel',
-          component: LaravelTester
+          component: LaravelTester,
         },
         {
           path: 'websocket',
-          component: WebSocketTester
+          component: WebSocketTester,
         },
         { path: '/login', name: 'login', component: Login },
         { path: '/register', name: 'register', component: Register },
-        { path: '/', name: 'home', component: HomeComponent }
-      ]
+        { path: '/', name: 'home', component: HomeComponent },
+      ],
     },
     {
       path: '/new-memory-game',
-      component: StartNewMemoryGame
+      component: StartNewMemoryGame,
     },
     {
       path: '/memory-game',
       name: 'game',
-      component: MemoryGame
+      component: MemoryGame,
     },
     {
       path: '/dashboard',
@@ -61,9 +65,26 @@ const router = createRouter({
         { path: 'history', component: GameHistory },
         { path: 'scoreboards', component: ScoreboardsPage },
         { path: 'statistics', component: StatisticsPage },
+        {
+          path: 'transactions',
+          name: 'transactions',
+          component: TransactionsPage,
+          children: [
+            {
+              path: '',
+              name: 'transaction-list',
+              component: TransactionList,
+            },
+            {
+              path: 'new',
+              name: 'transaction-form',
+              component: TransactionForm,
+            },
+          ],
+        },        
       ],
     },
-  ]
-})
+  ],
+});
 
-export default router
+export default router;
