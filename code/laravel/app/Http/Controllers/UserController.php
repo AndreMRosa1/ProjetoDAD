@@ -61,4 +61,50 @@ class UserController extends Controller
         $user->delete();
         return response()->json(['message' => 'User deleted successfully']);
     }
+
+    public function reduceCoins(Request $request)
+{
+    $user = auth()->user();
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }
+
+    // Reduzir 1 coin
+    $user->brain_coins_balance -= 1;
+    $user->save();
+
+    return response()->json($user);
 }
+
+public function addCoins(Request $request)
+{
+    $user = auth()->user();
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }
+
+    // Adicionar 2 coins
+    $user->brain_coins_balance += 2;
+    $user->save();
+
+    return response()->json($user);
+}
+
+public function getUserGames()
+{
+    $user = auth()->user();
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }
+
+    // Carregar os jogos criados pelo usuário
+    $games = $user->createdGames()->with('board')->orderBy('created_at', 'desc')->get();
+
+    // Log para verificar o que está retornando
+    \Log::info('Jogos do usuário:', $games->toArray());
+
+    return response()->json($games);
+}
+
+}
+
