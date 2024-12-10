@@ -1,5 +1,21 @@
 <template>
-    <RouterLink to="/dashboard/new-memory-game" class="nav-link"><button>Go Back</button></RouterLink>
+    <div class="gameButtons">
+        <RouterLink to="/dashboard/new-memory-game" class="nav-link"><button>Go Back</button></RouterLink>
+        <div class="start-game">
+            <button @click="startGame">Restart Game</button>
+        </div>
+    </div>
+    <div class="gameButtons" style="margin-top: 1vh;">
+        <div class="turn-counter">
+            Turns: {{ turnCounter }}
+        </div>
+        <div class="timer">
+            Pairs: {{ pairCounter }}
+        </div>
+        <div class="timer">
+            Timer: {{ timer }}
+        </div>
+    </div>
     <div class="game-board grid grid-cols-4 gap-4"
         :style="{ gridTemplateColumns: size === 18 ? 'repeat(6, 1fr)' : 'repeat(4, 1fr)' }">
         <div v-for="card in cards" :key="card.id" class="card" :class="card.state">
@@ -7,15 +23,7 @@
             <img v-else src="../assets/images/semFace.png" alt="Card back" @click="onCardClick(card)">
         </div>
     </div>
-    <div class="start-game">
-        <button @click="startGame">Start Game</button>
-    </div>
-    <div class="turn-counter">
-        Turns: {{ turnCounter }}
-    </div>
-    <div class="timer">
-        Timer: {{ timer }}
-    </div>
+
     <div v-if="isGameOver" class="game-over">
         <h2>You Won!</h2>
         <button @click="startGame">Restart Game</button>
@@ -24,7 +32,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useRoute} from 'vue-router';
+import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const size = parseInt(route.query.size || 12);
@@ -34,6 +42,7 @@ const flippedCards = ref([]);
 const matchedCards = ref([]);
 const isGameOver = ref(false);
 const turnCounter = ref(0);
+const pairCounter = ref(0);
 const timer = ref(0);
 let timerInterval = null;
 
@@ -51,6 +60,7 @@ const startGame = () => {
     flippedCards.value = [];
     matchedCards.value = [];
     turnCounter.value = 0;
+    pairCounter.value = 0;
     timer.value = 0;
     isGameOver.value = false;
 
@@ -82,6 +92,7 @@ const onCardClick = (card) => {
             secondCard.state = 'matched';
             matchedCards.value.push(firstCard, secondCard);
             flippedCards.value = [];
+            pairCounter.value++;
         } else {
             setTimeout(() => {
                 firstCard.state = 'hidden';
@@ -123,7 +134,7 @@ body {
     max-height: 90%;
     width: 90vw;
     height: 80vh;
-    margin: auto;
+    margin: 2vh;
     overflow: hidden;
 }
 
@@ -148,14 +159,6 @@ body {
 }
 
 .game-over {
-    text-align: center;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    margin-top: 20px;
-}
-
-.game-over {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -172,7 +175,7 @@ button {
     margin-top: 10px;
     padding: 10px 20px 10px 20px;
     background-color: #4CAF50;
-    width: 10%;
+    width: auto;
     color: white;
     border: none;
     border-radius: 5px;
@@ -191,5 +194,11 @@ button:hover {
 .timer {
     font-size: 18px;
     margin-bottom: 10px;
+}
+
+.gameButtons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 </style>
