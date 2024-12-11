@@ -13,7 +13,8 @@ const startGame = (size) => {
 <template>
   <div class="flex flex-col items-center text-center space-y-8 py-12">
     <h1>MEMORY GAME</h1>
-    <button @click="startGame(6)" class="bg-green-500 text-white px-4 py-2 rounded">3x4 (12 cards)</button> 
+    <button @click="startGame(6)" class="bg-green-500 text-white px-4 py-2 rounded" >
+    Play as Anonymous</button> 
   </div>
 </template>
 
