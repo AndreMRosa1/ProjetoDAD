@@ -14,6 +14,7 @@ class Game extends Model
         'type',
         'status',
         'total_time',
+        'total_turns_winner',
         'board_id',
     ];
 

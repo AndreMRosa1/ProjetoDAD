@@ -9,6 +9,8 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    public $timestamps = false; // Desativar timestamps automáticos
+
     protected $fillable = [
         'user_id',
         'game_id',
@@ -17,13 +19,14 @@ class Transaction extends Model
         'brain_coins',
         'payment_type',
         'payment_reference',
+        'transaction_datetime',
     ];
 
     protected $casts = [
         'transaction_datetime' => 'datetime',
     ];
 
-    //relations
+    // Relações
     public function user()
     {
         return $this->belongsTo(User::class);
