@@ -27,6 +27,17 @@ const handleLogout = () => {
   authStore.logout();
   router.push('/');
 };
+
+const handleWebsocketsTester = () => {
+  showDropdown.value = false;
+  router.push('/testers/websocket');
+};
+
+const handleLaravelTester = () => {
+  showDropdown.value = false;
+  router.push('/testers/laravel');
+};
+
 </script>
 
 <template>
@@ -44,31 +55,25 @@ const handleLogout = () => {
             >
               Home
             </RouterLink>
-          
-            <RouterLink 
-              to="/testers/laravel"
-              class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              active-class="text-blue-600 font-semibold"
-              v-if="authStore.user && authStore.user.type == 'A'"
-            >
-              Laravel Tester
-            </RouterLink>
-            <RouterLink
-              to="/testers/websocket"
-              class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              active-class="text-blue-600 font-semibold"
-              v-if="authStore.user && authStore.user.type == 'A'"
-            >
-              WebSockets Tester
-            </RouterLink>
             <RouterLink
             to="/dashboard"
             class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
             active-class="text-blue-600 font-semibold"
             v-if="authStore.user"
-          >
+            >
             Dashboard
           </RouterLink>
+          <RouterLink
+            to="/shop"
+            class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            active-class="text-blue-600 font-semibold"
+            v-if="authStore.user"
+            >
+            Shop
+          </RouterLink>
+          </div>
+          <div v-if="authStore.user">
+            Coins: {{ authStore.user.brain_coins_balance }}
           </div>
 
           <!-- Lado Direito: Exibir Imagem de Usuário ou Botão de Login -->
@@ -76,12 +81,11 @@ const handleLogout = () => {
               <template v-if="authStore.user">
                 <button @click="toggleDropdown" class="flex items-center space-x-2">
                   <img
-                    v-if="authStore.userAvatar"
                     :src="authStore.userAvatar"
                     alt="User Avatar"
-                    class="h-8 w-8 rounded-full"
+                    class="h-10 w-10 rounded-full"
                   />
-                  <span v-if="!authStore.userAvatar" class="text-gray-900 font-semibold">
+                  <span class="text-gray-900 font-semibold">
                     {{ authStore.userName }}
                   </span>
                 </button>
@@ -89,9 +93,14 @@ const handleLogout = () => {
                   <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                     <a @click="handleEditProfile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Edit Profile</a>
                     <a @click="handleChangePassword" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Change Password</a>
-                    <a @click="handleLogout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Logout</a>
+                    <a @click="handleWebsocketsTester" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" 
+                    v-if="authStore.user && authStore.user.type == 'A'">Websockets Tester</a>
+                    <a @click="handleLaravelTester" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem"
+                    v-if="authStore.user && authStore.user.type == 'A'">Laravel Tester</a>
+                    <a @click="handleLogout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Logout</a>      
                   </div>
                 </div>
+                
               </template>
               <template v-else>
                 <RouterLink

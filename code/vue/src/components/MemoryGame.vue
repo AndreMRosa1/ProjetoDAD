@@ -1,9 +1,8 @@
 <template>
     <div class="gameButtons">
         <RouterLink to="/dashboard/new-memory-game" class="nav-link"><button>Go Back</button></RouterLink>
-        <div class="start-game">
-            <button @click="startGame">Restart Game</button>
-        </div>
+        <button @click="startGame" v-if="isGameStarted = true ">Start Game</button>
+        <button class="hint-button" @click="useHint" v-if="authStore.user">Use Hint</button>
     </div>
     <div class="gameButtons" style="margin-top: 1vh;">
         <div class="turn-counter">
@@ -34,6 +33,9 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
 
 const endGame = async () => {
     clearInterval(timerInterval);
@@ -62,6 +64,7 @@ const cards = ref([]);
 const flippedCards = ref([]);
 const matchedCards = ref([]);
 const isGameOver = ref(false);
+const isGameStarted = ref(false);
 const turnCounter = ref(0);
 const pairCounter = ref(0);
 const timer = ref(0);
@@ -84,15 +87,55 @@ const startGame = () => {
     pairCounter.value = 0;
     timer.value = 0;
     isGameOver.value = false;
-
+   
     startTimer();
+    isGameStarted.value = true;
+};
+
+const useHint = () => {
+    const hiddenCards = cards.value.filter(card => card.state === 'hidden');
+    const cardGroups = hiddenCards.reduce((groups, card) => {
+        if (!groups[card.face]) {
+            groups[card.face] = [];
+        }
+        groups[card.face].push(card);
+        return groups;
+    }, {});
+
+    const pair = Object.values(cardGroups).find(group => group.length >= 2);
+
+    if (pair) {
+        pair[0].state = 'revealed';
+        pair[1].state = 'revealed';
+
+        // Ensure the cards remain face up
+        cards.value = cards.value.map(card => {
+            if (card.id === pair[0].id || card.id === pair[1].id) {
+                return { ...card, state: 'revealed' };
+            }
+            return card;
+        });
+
+        // Add the revealed pair to matchedCards
+        matchedCards.value.push(pair[0], pair[1]);
+
+        // Increment the pair counter
+        pairCounter.value++;
+
+        // Check if the game is won
+        if (matchedCards.value.length === cards.value.length) {
+            isGameOver.value = true;
+        }
+    }
 };
 
 const startTimer = () => {
-    if (timerInterval) clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
+    if (isGameStarted.value === true) {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
         timer.value++;
-    }, 1000);
+        }, 1000);
+    }
 };
 
 const shuffle = (array) => {
@@ -129,6 +172,8 @@ const onCardClick = (card) => {
     }
 };
 
+
+
 onMounted(() => {
     startGame();
 });
@@ -150,7 +195,7 @@ body {
 
 .game-board {
     display: grid;
-    gap: 1rem;
+    gap: 0rem;
     max-width: 100%;
     max-height: 90%;
     width: 90vw;
@@ -164,7 +209,6 @@ body {
     width: 100%;
     height: 100%;
     padding-top: 0%;
-    background-color: #f3f4f6;
     border-radius: 8px;
     overflow: hidden;
     transition: transform 0.3s;
@@ -201,6 +245,18 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.hint-button {
+    background-color: #ffee8c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.hint-button:hover {
+    background-color: #FFFF00;
 }
 
 button:hover {
