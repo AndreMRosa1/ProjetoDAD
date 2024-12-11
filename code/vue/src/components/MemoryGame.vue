@@ -13,7 +13,7 @@
             Pairs: {{ pairCounter }}
         </div>
         <div class="timer">
-            Timer: {{ timer }}
+            Timer: {{ timer }}s
         </div>
     </div>
     <div class="game-board grid grid-cols-4 gap-4"
@@ -33,6 +33,27 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
+import axios from 'axios';
+
+const endGame = async () => {
+    clearInterval(timerInterval);
+    isGameOver.value = true;
+
+    try {
+        const response = await axios.post('/api/games/single-player', {
+            created_user_id: 1, // Replace with the logged-in user's IDS
+            type: 'S',
+            status: 'completed',
+            board_id: 1, 
+            total_time: timer.value,
+            total_turns_winner: turnCounter.value,
+        });
+
+        console.log('Game saved successfully:', response.data);
+    } catch (error) {
+        console.error('Error saving the game:', error.response?.data || error.message);
+    }
+};
 
 const route = useRoute();
 const size = parseInt(route.query.size || 12);
