@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\PaymentGatewayService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
@@ -46,6 +47,7 @@ class TransactionController extends Controller
         );
 
         if (!$success) {
+            Log::error('Falha no pagamento: Serviço de pagamento retornou falso.');
             return response()->json(['message' => 'Payment failed'], 422);
         }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class GameController extends Controller
 {
@@ -127,22 +128,35 @@ public function globalScoreboard()
 
 public function storeGame(Request $request)
 {
+    // Obter o ID do usuário autenticado
+    $userId = auth()->id();
+
+    if (!$userId) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // Validar os outros campos
     $validated = $request->validate([
-        'created_user_id' => 'required|exists:users,id',
         'type' => 'required|in:S,M',
         'status' => 'required|string|max:255',
         'board_id' => 'required|exists:boards,id',
     ]);
 
-    $game = Game::create($validated);
+    // Criar o jogo usando o usuário autenticado
+    $game = Game::create([
+        'created_user_id' => $userId,
+        'type' => $validated['type'],
+        'status' => $validated['status'],
+        'board_id' => $validated['board_id'],
+    ]);
 
     return response()->json(['message' => 'Game created successfully', 'game' => $game], 201);
 }
 
-public function updateGame(Request $request, $id)
+
+public function updateGameStatus(Request $request, $id)
 {
     $game = Game::find($id);
-
     if (!$game) {
         return response()->json(['message' => 'Game not found'], 404);
     }
@@ -155,7 +169,87 @@ public function updateGame(Request $request, $id)
 
     $game->update($validated);
 
-    return response()->json(['message' => 'Game updated successfully', 'game' => $game]);
+    // Verificar se o jogo está no top 3
+    $isGlobalRecord = $this->checkIfTop3Global($game);
+
+    return response()->json([
+        'message' => 'Game status updated successfully',
+        'game' => $game,
+        'is_global_record' => $isGlobalRecord
+    ]);
+}
+
+private function checkIfTop3Global(Game $game)
+{
+    // Obter as melhores 3 performances do tabuleiro
+    $topPerformances = Game::where('board_id', $game->board_id)
+        ->where('total_time', '>', 0)
+        ->where('total_turns_winner', '>', 0)
+        ->orderBy('total_time')
+        ->orderBy('total_turns_winner')
+        ->limit(3)
+        ->get();
+
+    // Verificar se o jogo atual está no top 3
+    foreach ($topPerformances as $performance) {
+        if ($performance->id === $game->id) {
+            return true; // É um recorde global
+        }
+    }
+
+    return false; // Não é um recorde global
+}
+
+public function checkIfTop3(Request $request, $id)
+{
+    try {
+        $game = Game::find($id);
+        if (!$game) {
+            return response()->json(['message' => 'Game not found'], 404);
+        }
+
+        // Verificar se o jogo está no top 3
+        $isTop3 = $this->checkIfTop3Global($game);
+
+        return response()->json(['is_top_3' => $isTop3]);
+    } catch (\Exception $e) {
+        // Trate a exceção e retorne uma resposta JSON com o erro
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
+
+public function checkIfPersonalRecord(Request $request, $id)
+{
+    $game = Game::find($id);
+    if (!$game) {
+        return response()->json(['message' => 'Game not found'], 404);
+    }
+
+    // Verificar se o jogo atual é um recorde pessoal
+    $isPersonalRecord = $this->checkIfPersonalRecordGlobal($game);
+
+    return response()->json(['is_personal_record' => $isPersonalRecord]);
+}
+
+private function checkIfPersonalRecordGlobal(Game $game)
+{
+    // Obter os jogos anteriores do usuário com o mesmo tabuleiro
+    $userGames = Game::where('created_user_id', $game->created_user_id)
+        ->where('board_id', $game->board_id)
+        ->where('total_time', '>', 0)
+        ->orderBy('total_time', 'asc') // Ordenar pelo tempo total em ordem crescente
+        ->limit(3) // Obter os 3 jogos mais rápidos
+        ->get();
+
+    // Verificar se o jogo atual está entre os 3 jogos mais rápidos
+    foreach ($userGames as $userGame) {
+        if ($game->total_time < $userGame->total_time) { // Verifica se é mais rápido que os anteriores
+            return true; // É um recorde pessoal
+        }
+    }
+
+    return false; // Não é um recorde pessoal
 }
 
 }

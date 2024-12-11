@@ -70,6 +70,10 @@ class UserController extends Controller
     }
 
     // Reduzir 1 coin
+    if ($user->brain_coins_balance < 1) {
+        return response()->json(['message' => 'You have 0 coins!'], 400);
+    }
+
     $user->brain_coins_balance -= 1;
     $user->save();
 
