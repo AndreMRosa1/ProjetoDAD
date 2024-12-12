@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { ref, computed, inject } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { useErrorStore } from '@/stores/error';
@@ -8,6 +8,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const user = ref(null);
   const token = ref('');
+  const socket = inject('socket')
 
   // Computed properties para obter o nome e e-mail do usuário
   const userName = computed(() => user.value?.name || '');
@@ -16,6 +17,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   const clearUser = () => {
     resetIntervalToRefreshToken();
+    if (user.value) {
+      socket.emit('logout', user.value)
+    }
     user.value = null;
     axios.defaults.headers.common.Authorization = '';
   };
@@ -25,9 +29,11 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const responseLogin = await axios.post('auth/login', credentials);
       token.value = responseLogin.data.token;
+      localStorage.setItem('token', token.value)
       axios.defaults.headers.common.Authorization = `Bearer ${token.value}`;
       const responseUser = await axios.get('users/me');
       user.value = responseUser.data;
+      socket.emit('login', user.value)
       repeatRefreshToken();
       return user.value;
     } catch (e) {
@@ -76,6 +82,25 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
+  const restoreToken = async function () {
+    let storedToken = localStorage.getItem('token')
+    if (storedToken) {
+    try {
+    token.value = storedToken
+    axios.defaults.headers.common.Authorization = 'Bearer ' + token.value
+    const responseUser = await axios.get('users/me')
+    user.value = responseUser.data
+    socket.emit('login', user.value)
+    repeatRefreshToken()
+    return true
+    } catch {
+    clearUser()
+    return false
+    }
+    }
+    return false
+    }
+
   let intervalToRefreshToken = null;
 
   const resetIntervalToRefreshToken = () => {
@@ -110,5 +135,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     register,
     logout,
+    restoreToken,
   };
 });

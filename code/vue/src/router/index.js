@@ -12,6 +12,8 @@ import MultiplayerGame from '@/components/multiplayer/MultiplayerGame.vue';
 import GameHistory from '@/components/GameHistory.vue';
 import ScoreboardsPage from '@/components/ScoreboardsPage.vue';
 import StatisticsPage from '@/components/StatisticsPage.vue';
+import Chat from '@/components/chat/Chat.vue'
+import { useAuthStore } from '@/stores/auth'
 
 //const routes = [
 //  { path: '/login', name: 'login', component: Login },
@@ -34,14 +36,6 @@ const router = createRouter({
     {
       path: '/testers',
       children: [
-        {
-          path: 'laravel',
-          component: LaravelTester,
-        },
-        {
-          path: 'websocket',
-          component: WebSocketTester,
-        },
         { path: '/login', name: 'login', component: Login },
         { path: '/register', name: 'register', component: Register },
         { path: '/', name: 'home', component: HomeComponent },
@@ -65,6 +59,7 @@ const router = createRouter({
         { path: 'history', component: GameHistory },
         { path: 'scoreboards', component: ScoreboardsPage },
         { path: 'statistics', component: StatisticsPage },
+        { path: 'chat', component: Chat },
         {
           path: 'transactions',
           name: 'transactions',
@@ -86,5 +81,16 @@ const router = createRouter({
     },
   ],
 });
+
+let handlingFirstRoute = true
+
+router.beforeEach(async (to, from, next) => {
+ const storeAuth = useAuthStore()
+ if (handlingFirstRoute) {
+  handlingFirstRoute = false
+  await storeAuth.restoreToken()
+ }
+ next();
+})
 
 export default router;

@@ -7,6 +7,7 @@
         <RouterLink to="/dashboard/history" class="nav-link">Game History</RouterLink>
         <RouterLink to="/dashboard/scoreboards" class="nav-link">Scoreboards</RouterLink>
         <RouterLink to="/dashboard/statistics" class="nav-link">Statistics</RouterLink>
+        <RouterLink to="/dashboard/chat" class="nav-link">Chat</RouterLink>
       </nav>
     </aside>
     <main class="dashboard-content">

@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import axios from 'axios'
-import { io } from 'socket.io-client'
+import { io } from 'socket.io-client'   
 
 import '@/assets/base.css'
 

@@ -30,4 +30,3 @@ const games = computed(() => storeGame.games)
     <Games v-if="storeAuth.user" class="flex-1 min-w-96"></Games>
   </div>
 </template>
-  
