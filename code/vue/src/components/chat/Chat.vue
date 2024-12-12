@@ -30,6 +30,7 @@ const sendMessageToChat = () => {
 }
 
 let userDestination = null
+
 const sendPrivateMessageToUser = (user) => {
     userDestination = null
     if (canSendMessageToUser(user)) {
@@ -46,7 +47,7 @@ const sendPrivateMessageToUser = (user) => {
 }
 
 const handleMessageFromInputDialog = (message) => {
-    console.log('SEND PRIVATE MESSAGE TO WEBSOCKET SERVER' + message)
+    storeChat.sendPrivateMessageToUser(userDestination, message)
 }
 </script>
 

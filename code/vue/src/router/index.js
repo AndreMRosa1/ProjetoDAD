@@ -8,7 +8,7 @@ import Login from '@/components/auth/Login.vue'
 import Register from '@/components/auth/Register.vue'
 import DashboardPage from '@/components/DashboardPage.vue'
 import StartNewMemoryGame from '@/components/StartNewMemoryGame.vue'
-import MultiplayerGame from '@/components/multiplayer/MultiplayerGame.vue';
+import MultiPlayerGame from '@/components/multiplayer/MultiplayerGame.vue';
 import GameHistory from '@/components/GameHistory.vue';
 import ScoreboardsPage from '@/components/ScoreboardsPage.vue';
 import StatisticsPage from '@/components/StatisticsPage.vue';
@@ -55,7 +55,7 @@ const router = createRouter({
       component: DashboardPage,
       children: [
         { path: 'new-memory-game', component: StartNewMemoryGame },
-        { path: 'multiplayer', component: MultiplayerGame },
+        { path: 'multiplayer', component: MultiPlayerGame },
         { path: 'history', component: GameHistory },
         { path: 'scoreboards', component: ScoreboardsPage },
         { path: 'statistics', component: StatisticsPage },

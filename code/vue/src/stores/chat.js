@@ -51,13 +51,23 @@ export const useChatStore = defineStore('chat', () => {
 
     const sendPrivateMessageToUser = (destinationUser, message) => {
         storeError.resetMessages()
-        // Send the message to the Websocket server
-        // Payload object format:
-        // {
-        //     destinationUser: destinationUser,
-        //     message: 'text message to send'
-        // }
+        socket.emit(
+            'privateMessage',
+            {
+                destinationUser: destinationUser,
+                message: message
+            },
+            (response) => webSocketServerResponseHasError(response)
+        )
     }
+
+    const webSocketServerResponseHasError = (response) => {
+        if (response.errorCode) {
+        storeError.setErrorMessages(response.errorMessage, [], response.errorCode)
+        return true
+        }
+        return false
+        }
 
     return {
         messages, totalMessages, sendMessageToChat, sendPrivateMessageToUser
