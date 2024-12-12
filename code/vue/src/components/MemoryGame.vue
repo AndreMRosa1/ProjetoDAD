@@ -30,8 +30,13 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
+import dayjs from 'dayjs';
+
 
 const authStore = useAuthStore();
+
+const gameStartTime = ref(null);
+const gameEndTime = ref(null);
 
 const boardId = size => {
     switch (size) {
@@ -64,6 +69,9 @@ let timerInterval = null;
 const images = Object.values(import.meta.glob('@/assets/images/*.png', { eager: true })).map(module => module.default).slice(0, size);
 
 const startGame = () => {
+    const startedAt = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    gameStartTime.value = startedAt;
+
     const pairedCards = [...images, ...images].map((image, index) => ({
         id: index,
         face: image,
@@ -86,6 +94,9 @@ const startGame = () => {
 const endGame = async () => {
     clearInterval(timerInterval);
     isGameOver.value = true;
+    const endedAt = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    gameEndTime.value = endedAt;
+    console.log("endedAT:" + endedAt + "       gameEndTime" + gameEndTime)
     gameStatus = 'E';
     try {
         const response = await axios.post('/games/single-player',
@@ -96,6 +107,8 @@ const endGame = async () => {
                 board_id: boardId(size),
                 total_time: timer.value,
                 total_turns_winner: turnCounter.value,
+                began_at: gameStartTime.value,
+                ended_at: gameEndTime.value,
             });
         console.log('Game saved successfully:', response.data);
     }

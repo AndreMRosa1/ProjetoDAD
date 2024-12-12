@@ -31,7 +31,7 @@ class GameController extends Controller
             'total_turns_winner' => 'required|integer|min:0',
             'winner_user_id' => 'required|integer|min:0',
             'began_at' => 'required|date',
-            'ended_at' => 'required|date,'
+            'ended_at' => 'required|date|after_or_equal:began_at',
         ]);
 
         $game = Game::create($validated);
