@@ -63,7 +63,7 @@ class UserController extends Controller
     }
 
     public function reduceCoins(Request $request)
-{
+    {
     $user = auth()->user();
     if (!$user) {
         return response()->json(['message' => 'User not found'], 404);
@@ -103,9 +103,6 @@ public function getUserGames()
 
     // Carregar os jogos criados pelo usuário
     $games = $user->createdGames()->with('board')->orderBy('created_at', 'desc')->get();
-
-    // Log para verificar o que está retornando
-    \Log::info('Jogos do usuário:', $games->toArray());
 
     return response()->json($games);
 }

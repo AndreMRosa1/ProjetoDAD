@@ -153,6 +153,8 @@ public function storeGame(Request $request)
     return response()->json(['message' => 'Game created successfully', 'game' => $game], 201);
 }
 
+/*
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!O QUE ESTA EM COMENTARIO É PARA TAES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 public function updateGameStatus(Request $request, $id)
 {
@@ -237,19 +239,63 @@ private function checkIfPersonalRecordGlobal(Game $game)
     // Obter os jogos anteriores do usuário com o mesmo tabuleiro
     $userGames = Game::where('created_user_id', $game->created_user_id)
         ->where('board_id', $game->board_id)
-        ->where('total_time', '>', 0)
-        ->orderBy('total_time', 'asc') // Ordenar pelo tempo total em ordem crescente
-        ->limit(3) // Obter os 3 jogos mais rápidos
+        ->where('total_time', '>', 0) // Excluindo valores nulos ou 0
+        ->where('total_turns_winner', '>', 0) // Excluindo valores nulos ou 0
         ->get();
 
-    // Verificar se o jogo atual está entre os 3 jogos mais rápidos
+    // Inicializar variáveis para encontrar os recordes pessoais
+    $lowestTime = null;
+    $lowestTurns = null;
+
     foreach ($userGames as $userGame) {
-        if ($game->total_time < $userGame->total_time) { // Verifica se é mais rápido que os anteriores
-            return true; // É um recorde pessoal
+        if ($lowestTime === null || $userGame->total_time < $lowestTime) {
+            $lowestTime = $userGame->total_time;
+        }
+
+        if ($lowestTurns === null || $userGame->total_turns_winner < $lowestTurns) {
+            $lowestTurns = $userGame->total_turns_winner;
         }
     }
 
-    return false; // Não é um recorde pessoal
+    // Verificar se o jogo atual bate os recordes
+    if (($game->total_time === $lowestTime && $lowestTime !== null) ||
+        ($game->total_turns_winner === $lowestTurns && $lowestTurns !== null)) {
+        return true;
+    }
+
+    return false;
 }
+
+
+public function listPersonalRecords()
+{
+    $user = auth()->user();
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }
+
+    // Obter todos os jogos válidos do usuário
+    $userGames = Game::where('created_user_id', $user->id)
+        ->where('total_time', '>', 0)
+        ->where('total_turns_winner', '>', 0)
+        ->get()
+        ->groupBy('board_id');
+
+    $records = [];
+
+    foreach ($userGames as $boardId => $games) {
+        $lowestTime = $games->min('total_time');
+        $lowestTurns = $games->min('total_turns_winner');
+
+        $recordGames = $games->filter(function ($game) use ($lowestTime, $lowestTurns) {
+            return $game->total_time === $lowestTime || $game->total_turns_winner === $lowestTurns;
+        });
+
+        $records = array_merge($records, $recordGames->toArray());
+    }
+
+    return response()->json($records);
+}
+*/
 
 }
