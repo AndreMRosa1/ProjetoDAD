@@ -9,15 +9,13 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\MultiplayerGamePlayedController;
 use App\Http\Controllers\BoardController;
 
-
+/*
 //ROTA PARA TAES!!!!
 Route::get('/scoreboards/globals', [GameController::class, 'globalScoreboard']);
-
-
+*/
 // Autenticação
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
-
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -27,27 +25,26 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
+    /*
     //ROTAS APENAS PARA TAES!!!!!!!!!!!!!!
     Route::patch('/users/me/reduce-coins', [UserController::class, 'reduceCoins']);
     Route::patch('/users/me/add-coins', [UserController::class, 'addCoins']);
     // Scoreboards TAES
     Route::get('/scoreboards/personal', [UserController::class, 'personalScoreboard']);
-    
+    // Rota para verificar recordes pessoais
+    Route::get('/games/{gameId}/check-personal-record', [GameController::class, 'checkIfPersonalRecord']);
+    // Rota para listar todos os recordes pessoais
+    Route::get('/games/personal-records', [GameController::class, 'listPersonalRecords']);
+    */
+
+
     // Rotas de Jogo
     Route::post('/games', [GameController::class, 'storeGame']); // Criar um novo jogo
     Route::patch('/games/{id}', [GameController::class, 'updateGame']); // Atualizar jogo existente
-    
+
     Route::patch('/games/{id}/status', [GameController::class, 'updateGameStatus']);
     Route::get('/games/{gameId}/check-top3', [GameController::class, 'checkIfTop3']);
-    //Personal
-    Route::get('/games/{gameId}/check-personal-record', [GameController::class, 'checkIfPersonalRecord']);
-    Route::post('/transactions/purchase', [TransactionController::class, 'purchase']);
-    
 
-    
-        
-    
-    
 
     // Transações
     Route::get('/transactions', [TransactionController::class, 'index']);
