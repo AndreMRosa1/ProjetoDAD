@@ -1,19 +1,15 @@
 <template>
     <div class="gameButtons">
-        <RouterLink to="/dashboard/new-memory-game" class="nav-link"><button>Go Back</button></RouterLink>
-        <button @click="startGame" v-if="isGameStarted = true ">Start Game</button>
+        <RouterLink to="/dashboard/new-memory-game" class="nav-link">
+            <button>Go Back</button>
+        </RouterLink>
+        <button @click="startGame" v-if="isGameStarted = true">Start Game</button>
         <button class="hint-button" @click="useHint" v-if="authStore.user">Use Hint</button>
     </div>
     <div class="gameButtons" style="margin-top: 1vh;">
-        <div class="turn-counter">
-            Turns: {{ turnCounter }}
-        </div>
-        <div class="timer">
-            Pairs: {{ pairCounter }}
-        </div>
-        <div class="timer">
-            Timer: {{ timer }}s
-        </div>
+        <div class="turn-counter">Turns: {{ turnCounter }}</div>
+        <div class="timer">Pairs: {{ pairCounter }}</div>
+        <div class="timer">Timer: {{ timer }}s</div>
     </div>
     <div class="game-board grid grid-cols-4 gap-4"
         :style="{ gridTemplateColumns: size === 18 ? 'repeat(6, 1fr)' : 'repeat(4, 1fr)' }">
@@ -37,25 +33,20 @@ import { useAuthStore } from '@/stores/auth';
 
 const authStore = useAuthStore();
 
-const endGame = async () => {
-    clearInterval(timerInterval);
-    isGameOver.value = true;
-
-    try {
-        const response = await axios.post('/api/games/single-player', {
-            created_user_id: 1, // Replace with the logged-in user's IDS
-            type: 'S',
-            status: 'completed',
-            board_id: 1, 
-            total_time: timer.value,
-            total_turns_winner: turnCounter.value,
-        });
-
-        console.log('Game saved successfully:', response.data);
-    } catch (error) {
-        console.error('Error saving the game:', error.response?.data || error.message);
+const boardId = size => {
+    switch (size) {
+        case 6:
+            return 1;
+        case 8:
+            return 2;
+        case 18:
+            return 3;
+        default:
+            throw new Error(`Invalid board size: ${size}`);
     }
 };
+
+var gameStatus = null;
 
 const route = useRoute();
 const size = parseInt(route.query.size || 12);
@@ -87,9 +78,30 @@ const startGame = () => {
     pairCounter.value = 0;
     timer.value = 0;
     isGameOver.value = false;
-   
+
     startTimer();
     isGameStarted.value = true;
+};
+
+const endGame = async () => {
+    clearInterval(timerInterval);
+    isGameOver.value = true;
+    gameStatus = 'E';
+    try {
+        const response = await axios.post('/games/single-player',
+            {
+                created_user_id: authStore.user.id,
+                winner_user_id: authStore.user.id, type: 'S',
+                status: gameStatus,
+                board_id: boardId(size),
+                total_time: timer.value,
+                total_turns_winner: turnCounter.value,
+            });
+        console.log('Game saved successfully:', response.data);
+    }
+    catch (error) {
+        console.error('Error saving the game:', error.response?.data || error.message);
+    };
 };
 
 const useHint = () => {
@@ -125,6 +137,7 @@ const useHint = () => {
         // Check if the game is won
         if (matchedCards.value.length === cards.value.length) {
             isGameOver.value = true;
+            endGame();
         }
     }
 };
@@ -133,7 +146,7 @@ const startTimer = () => {
     if (isGameStarted.value === true) {
         if (timerInterval) clearInterval(timerInterval);
         timerInterval = setInterval(() => {
-        timer.value++;
+            timer.value++;
         }, 1000);
     }
 };
@@ -169,6 +182,7 @@ const onCardClick = (card) => {
     if (matchedCards.value.length === cards.value.length) {
         isGameOver.value = true;
         clearInterval(timerInterval);
+        endGame();
     }
 };
 
