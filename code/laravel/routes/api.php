@@ -20,13 +20,13 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/auth/refreshtoken', [AuthController::class, 'refreshToken']);
-    Route::get('/users/me/games', [UserController::class, 'getUserGames']);
     Route::get('/users/me', function (Request $request) {
         return $request->user();
     });
 
     /*
     //ROTAS APENAS PARA TAES!!!!!!!!!!!!!!
+    Route::get('/users/me/games', [UserController::class, 'getUserGames']);
     Route::patch('/users/me/reduce-coins', [UserController::class, 'reduceCoins']);
     Route::patch('/users/me/add-coins', [UserController::class, 'addCoins']);
     // Scoreboards TAES
@@ -35,20 +35,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/games/{gameId}/check-personal-record', [GameController::class, 'checkIfPersonalRecord']);
     // Rota para listar todos os recordes pessoais
     Route::get('/games/personal-records', [GameController::class, 'listPersonalRecords']);
-    */
-
-
     // Rotas de Jogo
     Route::post('/games', [GameController::class, 'storeGame']); // Criar um novo jogo
     Route::patch('/games/{id}', [GameController::class, 'updateGame']); // Atualizar jogo existente
 
     Route::patch('/games/{id}/status', [GameController::class, 'updateGameStatus']);
     Route::get('/games/{gameId}/check-top3', [GameController::class, 'checkIfTop3']);
-
+    */
 
     // Transações
     Route::get('/transactions', [TransactionController::class, 'index']);
-    Route::post('/transactions/purchase', [TransactionController::class, 'purchase']);
+    Route::post('/transactions/purchase', [TransactionController::class, 'purchase']); //ROTA TAES PODE SER UTIL PARA O PROJETO
     Route::get('/transactions/{id}', [TransactionController::class, 'show']);
 
     // Jogos
