@@ -33,8 +33,10 @@
   <script setup>
   import { ref } from 'vue';
   import { useAuthStore } from '@/stores/auth';
+  import { useRouter } from 'vue-router';
   
   const authStore = useAuthStore();
+  const router = useRouter();
   
   // Campos para captura dos dados do formulário
   const email = ref('');
@@ -48,6 +50,7 @@
     });
   
     if (success) {
+      router.push('/dashboard');
       alert('Login successful!');
     } else {
       alert('Login failed. Please check your credentials and try again.');

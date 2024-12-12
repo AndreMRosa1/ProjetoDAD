@@ -1,6 +1,6 @@
 <template>
     <div class="start-new-game">
-        <h2>Select Board Size</h2>
+        
         <div class="button-container">
             <button @click="startGame(6)">3x4 (12 cards)</button>
             <button @click="startGame(8)">4x4 (16 cards)</button>

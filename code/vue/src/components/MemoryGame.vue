@@ -1,5 +1,20 @@
 <template>
-    <RouterLink to="/dashboard/new-memory-game" class="nav-link"><button>Go Back</button></RouterLink>
+    <div class="gameButtons">
+        <RouterLink to="/dashboard/new-memory-game" class="nav-link"><button>Go Back</button></RouterLink>
+        <button @click="startGame" v-if="isGameStarted = true ">Start Game</button>
+        <button class="hint-button" @click="useHint" v-if="authStore.user">Use Hint</button>
+    </div>
+    <div class="gameButtons" style="margin-top: 1vh;">
+        <div class="turn-counter">
+            Turns: {{ turnCounter }}
+        </div>
+        <div class="timer">
+            Pairs: {{ pairCounter }}
+        </div>
+        <div class="timer">
+            Timer: {{ timer }}s
+        </div>
+    </div>
     <div class="game-board grid grid-cols-4 gap-4"
         :style="{ gridTemplateColumns: size === 18 ? 'repeat(6, 1fr)' : 'repeat(4, 1fr)' }">
         <div v-for="card in cards" :key="card.id" class="card" :class="card.state">
@@ -7,15 +22,7 @@
             <img v-else src="../assets/images/semFace.png" alt="Card back" @click="onCardClick(card)">
         </div>
     </div>
-    <div class="start-game">
-        <button @click="startGame">Start Game</button>
-    </div>
-    <div class="turn-counter">
-        Turns: {{ turnCounter }}
-    </div>
-    <div class="timer">
-        Timer: {{ timer }}
-    </div>
+
     <div v-if="isGameOver" class="game-over">
         <h2>You Won!</h2>
         <button @click="startGame">Restart Game</button>
@@ -24,7 +31,31 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useRoute} from 'vue-router';
+import { useRoute } from 'vue-router';
+import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
+
+const endGame = async () => {
+    clearInterval(timerInterval);
+    isGameOver.value = true;
+
+    try {
+        const response = await axios.post('/api/games/single-player', {
+            created_user_id: 1, // Replace with the logged-in user's IDS
+            type: 'S',
+            status: 'completed',
+            board_id: 1, 
+            total_time: timer.value,
+            total_turns_winner: turnCounter.value,
+        });
+
+        console.log('Game saved successfully:', response.data);
+    } catch (error) {
+        console.error('Error saving the game:', error.response?.data || error.message);
+    }
+};
 
 const route = useRoute();
 const size = parseInt(route.query.size || 12);
@@ -33,7 +64,9 @@ const cards = ref([]);
 const flippedCards = ref([]);
 const matchedCards = ref([]);
 const isGameOver = ref(false);
+const isGameStarted = ref(false);
 const turnCounter = ref(0);
+const pairCounter = ref(0);
 const timer = ref(0);
 let timerInterval = null;
 
@@ -51,17 +84,58 @@ const startGame = () => {
     flippedCards.value = [];
     matchedCards.value = [];
     turnCounter.value = 0;
+    pairCounter.value = 0;
     timer.value = 0;
     isGameOver.value = false;
-
+   
     startTimer();
+    isGameStarted.value = true;
+};
+
+const useHint = () => {
+    const hiddenCards = cards.value.filter(card => card.state === 'hidden');
+    const cardGroups = hiddenCards.reduce((groups, card) => {
+        if (!groups[card.face]) {
+            groups[card.face] = [];
+        }
+        groups[card.face].push(card);
+        return groups;
+    }, {});
+
+    const pair = Object.values(cardGroups).find(group => group.length >= 2);
+
+    if (pair) {
+        pair[0].state = 'revealed';
+        pair[1].state = 'revealed';
+
+        // Ensure the cards remain face up
+        cards.value = cards.value.map(card => {
+            if (card.id === pair[0].id || card.id === pair[1].id) {
+                return { ...card, state: 'revealed' };
+            }
+            return card;
+        });
+
+        // Add the revealed pair to matchedCards
+        matchedCards.value.push(pair[0], pair[1]);
+
+        // Increment the pair counter
+        pairCounter.value++;
+
+        // Check if the game is won
+        if (matchedCards.value.length === cards.value.length) {
+            isGameOver.value = true;
+        }
+    }
 };
 
 const startTimer = () => {
-    if (timerInterval) clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
+    if (isGameStarted.value === true) {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
         timer.value++;
-    }, 1000);
+        }, 1000);
+    }
 };
 
 const shuffle = (array) => {
@@ -82,6 +156,7 @@ const onCardClick = (card) => {
             secondCard.state = 'matched';
             matchedCards.value.push(firstCard, secondCard);
             flippedCards.value = [];
+            pairCounter.value++;
         } else {
             setTimeout(() => {
                 firstCard.state = 'hidden';
@@ -96,6 +171,8 @@ const onCardClick = (card) => {
         clearInterval(timerInterval);
     }
 };
+
+
 
 onMounted(() => {
     startGame();
@@ -118,12 +195,12 @@ body {
 
 .game-board {
     display: grid;
-    gap: 1rem;
+    gap: 0rem;
     max-width: 100%;
     max-height: 90%;
     width: 90vw;
     height: 80vh;
-    margin: auto;
+    margin: 2vh;
     overflow: hidden;
 }
 
@@ -132,7 +209,6 @@ body {
     width: 100%;
     height: 100%;
     padding-top: 0%;
-    background-color: #f3f4f6;
     border-radius: 8px;
     overflow: hidden;
     transition: transform 0.3s;
@@ -145,14 +221,6 @@ body {
     max-width: 100%;
     max-height: 100%;
     cursor: pointer;
-}
-
-.game-over {
-    text-align: center;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    margin-top: 20px;
 }
 
 .game-over {
@@ -172,11 +240,23 @@ button {
     margin-top: 10px;
     padding: 10px 20px 10px 20px;
     background-color: #4CAF50;
-    width: 10%;
+    width: auto;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.hint-button {
+    background-color: #ffee8c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.hint-button:hover {
+    background-color: #FFFF00;
 }
 
 button:hover {
@@ -191,5 +271,11 @@ button:hover {
 .timer {
     font-size: 18px;
     margin-bottom: 10px;
+}
+
+.gameButtons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 </style>
