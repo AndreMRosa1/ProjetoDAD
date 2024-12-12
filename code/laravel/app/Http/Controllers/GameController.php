@@ -15,11 +15,23 @@ class GameController extends Controller
 
     public function store(Request $request)
     {
+
+        $userId = auth()->id();
+
+        if (!$userId) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
         $validated = $request->validate([
             'created_user_id' => 'required|exists:users,id',
             'type' => 'required|in:S,M',
             'status' => 'required|string|max:255',
             'board_id' => 'required|exists:boards,id',
+            'total_time' => 'required|numeric|min:0',
+            'total_turns_winner' => 'required|integer|min:0',
+            'winner_user_id' => 'required|integer|min:0',
+            'began_at' => 'required|date',
+            'ended_at' => 'required|date,'
         ]);
 
         $game = Game::create($validated);
