@@ -127,11 +127,31 @@ export const useAuthStore = defineStore('auth', () => {
     }, 1000 * 60 * 110);
   };
 
+  const updateUser = async () => {
+    try {
+      const responseUser = await axios.get('users/me');
+      user.value = responseUser.data;
+    } catch (e) {
+      clearUser();
+      storeError.setErrorMessages(
+        e.response.data.message,
+        e.response.data.errors,
+        e.response.status,
+        'User Update Error!'
+      );
+    }
+  };
+  
+  socket.on('updateCoins', () => {
+    updateUser();
+  });
+
   return {
     user,
     userName,
     userEmail,
     userAvatar,
+    updateUser,
     login,
     register,
     logout,

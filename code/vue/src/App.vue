@@ -68,7 +68,7 @@ const handleMessageFromInputDialog = (message) => {
 }
 
 const logoutConfirmed = () => {
-  storeAuth.logout()
+  authStore.logout()
 }
 
 const logout = () => {
@@ -97,14 +97,14 @@ const logout = () => {
               active-class="text-blue-600 font-semibold" v-if="authStore.user">
               Dashboard
             </RouterLink>
-            <RouterLink to="/shop"
+            <RouterLink to="/dashboard/shop"
               class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
               active-class="text-blue-600 font-semibold" v-if="authStore.user">
               Shop
             </RouterLink>
           </div>
           <div v-if="authStore.user">
-            Coins: {{ authStore.user.brain_coins_balance }}
+              Coins: {{ authStore.user.brain_coins_balance }}
           </div>
 
           <!-- Lado Direito: Exibir Imagem de Usuário ou Botão de Login -->

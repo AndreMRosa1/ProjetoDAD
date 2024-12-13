@@ -138,8 +138,8 @@ public function globalScoreboard()
     return response()->json($topPlayers);
 }
 
-/*
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!O QUE ESTA EM COMENTARIO É PARA TAES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!O QUE ESTA EM COMENTARIO É PARA TAES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 public function storeGame(Request $request)
 {
     // Obter o ID do usuário autenticado
@@ -167,7 +167,7 @@ public function storeGame(Request $request)
     return response()->json(['message' => 'Game created successfully', 'game' => $game], 201);
 }
 
-
+/*
 
 public function updateGameStatus(Request $request, $id)
 {
@@ -309,6 +309,6 @@ public function listPersonalRecords()
 
     return response()->json($records);
 }
-*/
 
+*/
 }

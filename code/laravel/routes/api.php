@@ -13,6 +13,7 @@ use App\Http\Controllers\BoardController;
 //ROTA PARA TAES!!!!
 Route::get('/scoreboards/globals', [GameController::class, 'globalScoreboard']);
 */
+
 // Autenticação
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
@@ -20,6 +21,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/auth/refreshtoken', [AuthController::class, 'refreshToken']);
+    
     Route::get('/users/me', function (Request $request) {
         return $request->user();
     });
@@ -66,6 +68,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Estatísticas
     Route::get('/statistics/general', [GameController::class, 'generalStatistics']);
 });
+
+//Route::get('/users/{id}', [UserController::class, 'show']); //rota de taes
 
 // Rotas de Administrador
 Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {

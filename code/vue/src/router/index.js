@@ -21,6 +21,8 @@ import { useAuthStore } from '@/stores/auth'
 //  { path: '/', name: 'home', component: HomeComponent }
 //]
 
+import PurchaseBrainCoins from '@/components/coins/PurchaseBrainCoins.vue'
+
 import TransactionsPage from '@/components/TransactionPage.vue';
 import TransactionList from '@/components/transactions/TransactionList.vue';
 import TransactionForm from '@/components/transactions/TransactionForm.vue';
@@ -59,6 +61,7 @@ const router = createRouter({
         { path: 'history', component: GameHistory },
         { path: 'scoreboards', component: ScoreboardsPage },
         { path: 'statistics', component: StatisticsPage },
+        { path: 'shop', component: PurchaseBrainCoins },
         { path: 'chat', component: Chat },
         {
           path: 'transactions',
