@@ -54,6 +54,9 @@ const router = createRouter({
       name: 'game',
       component: MemoryGame,
     },
+    { 
+      path: '/game-history', component: GameHistory 
+    },
     {
       path: '/scoreboards/global',
       name: 'scoreboardglobal',

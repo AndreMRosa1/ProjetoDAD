@@ -52,4 +52,10 @@ class Game extends Model
     {
         return $this->hasMany(MultiplayerGamePlayed::class);
     }
+
+    public function players()
+    {
+    return $this->belongsToMany(User::class, 'multiplayer_games_played')
+                ->withPivot('player_won', 'pairs_discovered');
+    }
 }

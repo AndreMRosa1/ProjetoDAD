@@ -77,6 +77,7 @@ Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
     Route::resource('users', UserController::class)->except(['create', 'edit']);
     Route::get('/admin/games', [GameController::class, 'index']);
     Route::get('/admin/statistics', [GameController::class, 'detailedStatistics']);
+    Route::get('/game-history', [GameHistoryController::class, 'index']);
 });
 
 // Recursos básicos
