@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -69,6 +71,98 @@ class GameController extends Controller
         return response()->json(['message' => 'Game deleted successfully']);
     }
 
+    public function globalScoreboard(Request $request)
+{
+    $sortBy = $request->input('sort_by', 'time'); // 'time' ou 'turns'
+    $type = $request->input('type'); // 'S', 'M' ou null
+    $boardSize = $request->input('board_size'); // Ex: '3x4'
+
+    $query = Game::query()
+        ->where('total_time', '>', 0)
+        ->where('total_turns_winner', '>', 0);
+
+    if ($type) {
+        $query->where('type', $type);
+    }
+
+    if ($boardSize) {
+        [$cols, $rows] = explode('x', $boardSize);
+        $query->whereHas('board', function ($q) use ($cols, $rows) {
+            $q->where('board_cols', $cols)->where('board_rows', $rows);
+        });
+    }
+
+    $query->selectRaw('created_user_id, board_id, MIN(total_time) as best_time, MIN(total_turns_winner) as best_turns')
+        ->groupBy('created_user_id', 'board_id')
+        ->with(['creator', 'board']);
+
+    // Ordenar
+    if ($sortBy === 'time') {
+        $query->orderBy('best_time');
+    } else {
+        $query->orderBy('best_turns');
+    }
+
+    $topPlayers = $query->limit(10)->get();
+
+    return response()->json($topPlayers);
+}
+
+public function personalScoreboard(Request $request)
+{
+    $userId = auth()->id();
+
+    if (!$userId) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $type = $request->input('type'); // 'S', 'M' ou null
+    $boardSize = $request->input('board_size'); // Ex: '3x4'
+    $sortBy = $request->input('sort_by', 'total_time'); // Ordenar por: 'total_time' ou 'total_turns_winner'
+    $sortOrder = $request->input('sort_order', 'asc'); // Ordem: 'asc' ou 'desc'
+
+    $query = Game::query()
+        ->where('created_user_id', $userId);
+
+    // Filtrar por tipo de jogo
+    if ($type) {
+        $query->where('type', $type);
+    }
+
+    // Filtrar por tamanho do tabuleiro
+    if ($boardSize) {
+        [$cols, $rows] = explode('x', $boardSize);
+        $query->whereHas('board', function ($q) use ($cols, $rows) {
+            $q->where('board_cols', $cols)->where('board_rows', $rows);
+        });
+    }
+
+    $query->selectRaw(
+        'board_id, type, total_time, total_turns_winner, began_at, ended_at'
+    )
+        ->where('total_time', '>', 0)
+        ->where('total_turns_winner', '>', 0)
+        ->groupBy('board_id', 'type', 'total_time', 'total_turns_winner', 'began_at', 'ended_at')
+        ->with(['board'])
+        ->orderBy($sortBy, $sortOrder) // Ordenação dinâmica
+        ->limit(10);
+
+    $personalScores = $query->get();
+
+    return response()->json($personalScores);
+}
+
+
+
+
+
+
+
+
+
+
+
+/* //TAES!!!
     public function personalScoreboard()
 {
     $user = auth()->user();
@@ -137,8 +231,8 @@ public function globalScoreboard()
 
     return response()->json($topPlayers);
 }
-
-
+*/
+/*
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!O QUE ESTA EM COMENTARIO É PARA TAES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 public function storeGame(Request $request)
 {
@@ -166,8 +260,6 @@ public function storeGame(Request $request)
 
     return response()->json(['message' => 'Game created successfully', 'game' => $game], 201);
 }
-
-/*
 
 public function updateGameStatus(Request $request, $id)
 {

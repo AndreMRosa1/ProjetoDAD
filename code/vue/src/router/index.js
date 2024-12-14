@@ -1,7 +1,7 @@
 import HomeComponent from '@/components/HomeComponent.vue'
-import LaravelTester from '@/components/LaravelTester.vue'
+//import LaravelTester from '@/components/LaravelTester.vue'
 import MemoryGame from '@/components/MemoryGame.vue'
-import WebSocketTester from '@/components/WebSocketTester.vue'
+//import WebSocketTester from '@/components/WebSocketTester.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Login from '@/components/auth/Login.vue'
@@ -21,11 +21,13 @@ import { useAuthStore } from '@/stores/auth'
 //  { path: '/', name: 'home', component: HomeComponent }
 //]
 
-import PurchaseBrainCoins from '@/components/coins/PurchaseBrainCoins.vue'
+import PurchaseBrainCoins from '@/components/coins/PurchaseBrainCoins.vue';
 
 import TransactionsPage from '@/components/TransactionPage.vue';
 import TransactionList from '@/components/transactions/TransactionList.vue';
 import TransactionForm from '@/components/transactions/TransactionForm.vue';
+import GlobalScoreboard from '@/components/scoreboards/GlobalScoreboard.vue';
+import PersonalScoreboard from '@/components/scoreboards/PersonalScoreboard.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +53,16 @@ const router = createRouter({
       path: '/memory-game',
       name: 'game',
       component: MemoryGame,
+    },
+    {
+      path: '/scoreboards/global',
+      name: 'scoreboardglobal',
+      component: GlobalScoreboard,
+    },
+    {
+      path: '/scoreboards/personal',
+      name: 'scoreboardpersonal',
+      component: PersonalScoreboard,
     },
     {
       path: '/dashboard',
