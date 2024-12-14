@@ -2,13 +2,13 @@
   <div class="dashboard">
     <aside class="dashboard-sidebar">
       <nav>
-        <RouterLink to="/dashboard/new-memory-game" class="nav-link">Single Player Game</RouterLink>
-        <RouterLink to="/dashboard/multiplayer" class="nav-link">Multiplayer Game</RouterLink>
-        <RouterLink to="/dashboard/history" class="nav-link">Game History</RouterLink>
-        <RouterLink to="/dashboard/scoreboards" class="nav-link">Scoreboards</RouterLink>
-        <RouterLink to="/dashboard/statistics" class="nav-link">Statistics</RouterLink>
-        <RouterLink to="/dashboard/shop" class="nav-link">Shop</RouterLink>
-        <RouterLink to="/dashboard/chat" class="nav-link">Chat</RouterLink>
+        <RouterLink to="/new-memory-game" class="nav-link">Single Player Game</RouterLink>
+        <RouterLink to="/multiplayer" class="nav-link">Multiplayer Game</RouterLink>
+        <RouterLink to="/history" class="nav-link">Game History</RouterLink>
+        <RouterLink to="/scoreboards" class="nav-link">Scoreboards</RouterLink>
+        <RouterLink to="/statistics" class="nav-link">Statistics</RouterLink>
+        <RouterLink to="/shop" class="nav-link">Shop</RouterLink>
+        <RouterLink to="/chat" class="nav-link">Chat</RouterLink>
       </nav>
     </aside>
     <main class="dashboard-content">
