@@ -7,7 +7,7 @@
           <button class="btn-primary w-full whitespace-nowrap px-8">Go Back</button>
         </RouterLink>
         <button class="hint-button bg-orange-400 hover:bg-orange-600 w-full whitespace-nowrap px-8"
-          @click="useMemoryGame.useHint" v-if="authStore.user">
+          @click="memorygame.useHint" v-if="authStore.user">
           Use Hint
         </button>
       </div>
@@ -20,20 +20,22 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import Board from './Board.vue';
-import { useMemoryGame } from './memorygame';
+import { useMemorygameStore } from '../../stores/memorygame';
 
 const authStore = useAuthStore();
-const route = useRoute();
 const gameStarted = ref(false);
 const boardComponent = ref(null);
 
-const size = ref(Number(new URLSearchParams(window.location.search).get('size')));  // This will dynamically pick the size
+
+const size = ref(Number(new URLSearchParams(window.location.search).get('size')));
+
+const memorygame = useMemorygameStore();
 
 onMounted(() => {
   document.body.classList.add('overflow-hidden');
+  memorygame.start(size.value);
 });
 
 onUnmounted(() => {

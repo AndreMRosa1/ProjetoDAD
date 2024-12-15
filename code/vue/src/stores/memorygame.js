@@ -1,9 +1,10 @@
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onUnmounted } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import dayjs from 'dayjs';
+import { defineStore } from 'pinia';
 
-export function useMemoryGame(size) {
+export const useMemorygameStore = defineStore('memorygame', () => {
   const authStore = useAuthStore();
   const status = ref(null);
   const board = ref([]);
@@ -17,11 +18,12 @@ export function useMemoryGame(size) {
   const gameStartTime = ref(null);
   const gameEndTime = ref(null);
   const gameId = ref(null);
+  const gameSize = ref(0);
 
   const initializeBoard = () => {
     const images = Object.values(import.meta.glob('@/assets/images/*.png', { eager: true }))
       .map(module => module.default)
-      .slice(0, size / 2);
+      .slice(0, gameSize.value / 2);
     const pairedCards = [...images, ...images].map((image, index) => ({
       id: index, 
       face: image, 
@@ -36,10 +38,11 @@ export function useMemoryGame(size) {
     status.value = null;
   };
 
-  const start = async () => {
+  const start = async (size) => {
+    gameStatus.value = 'I';
+    gameSize.value = size
     initializeBoard();
     startTimer();
-    gameStatus.value = 'I';
     const startedAt = dayjs().format('YYYY-MM-DD HH:mm:ss');
     gameStartTime.value = startedAt;
 
@@ -48,7 +51,7 @@ export function useMemoryGame(size) {
         created_user_id: authStore.user.id,
         type: 'S',
         status: gameStatus.value,
-        board_id: getBoardId(size),
+        board_id: getBoardId(gameSize.value),
         began_at: gameStartTime.value,
       });
 
@@ -112,10 +115,12 @@ export function useMemoryGame(size) {
 
   const getBoardId = (size) => {
     const boardIds = { 12: 1, 16: 2, 36: 3 };
-    return boardIds[size] || 0;
+    return boardIds[size] || 1;
   };
 
   const useHint = () => {
+    console.log(board.value)
+    if (!board.value || board.value.length == 0) return 
 
     if (status.value || flippedCards.value.length > 0) {
       console.log('Hint not available: game is over or a turn is in progress.');
@@ -157,8 +162,8 @@ export function useMemoryGame(size) {
     }
   };
 
-  onMounted(() => start());
+  
   onUnmounted(() => timerInterval && clearInterval(timerInterval));
 
   return { status, board, start, play, turnCounter, pairCounter, timer, useHint };
-}
+})

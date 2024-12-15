@@ -54,6 +54,7 @@ class GameController extends Controller
         $validated = $request->validate([
             'status' => 'nullable|string|max:255',
             'total_time' => 'nullable|numeric|min:0',
+            'winner_user_id' => 'integer|min:0',
             'total_turns_winner' => 'nullable|integer|min:0',
             'ended_at' => 'nullable|date',
         ]);

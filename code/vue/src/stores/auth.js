@@ -10,10 +10,17 @@ export const useAuthStore = defineStore('auth', () => {
   const token = ref('');
   const socket = inject('socket')
 
+  const serverUrl = inject('serverBaseUrl')
+
   // Computed properties para obter o nome e e-mail do usuário
   const userName = computed(() => user.value?.name || '');
   const userEmail = computed(() => user.value?.email || '');
-  const userAvatar = computed(() => user.value?.avatar || 'src/assets/avatar-none.png');
+  const userAvatar = computed(() => {
+    if(!user.value?.photo_filename)
+      return 'src/assets/avatar-none.png'
+    else
+    return "http://" + serverUrl + "/storage/photos/" + user.value.photo_filename
+  })
 
   const clearUser = () => {
     resetIntervalToRefreshToken();
