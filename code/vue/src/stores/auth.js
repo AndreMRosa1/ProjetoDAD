@@ -13,7 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
   // Computed properties para obter o nome e e-mail do usuário
   const userName = computed(() => user.value?.name || '');
   const userEmail = computed(() => user.value?.email || '');
-  const userAvatar = computed(() => user.value?.avatar || '');
+  const userAvatar = computed(() => user.value?.avatar || 'src/assets/avatar-none.png');
 
   const clearUser = () => {
     resetIntervalToRefreshToken();
