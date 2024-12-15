@@ -96,7 +96,7 @@ const endGame = async () => {
     isGameOver.value = true;
     const endedAt = dayjs().format('YYYY-MM-DD HH:mm:ss');
     gameEndTime.value = endedAt;
-    console.log("endedAT:" + endedAt + "       gameEndTime" + gameEndTime)
+    console.log("endedAT:" + endedAt + "       gameEndTime" + gameEndTime.value);
     gameStatus = 'E';
     try {
         const response = await axios.post('/games/single-player',

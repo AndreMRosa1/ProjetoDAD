@@ -2,21 +2,29 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
-const games = ref([]);
+export default {
+  setup() {
+    const games = ref([]);
 
-const fetchGameHistory = async () => {
-  try {
-    const response = await axios.get('/api/game-history');
-    console.log(response);
-    games.value = response.data;
-  } catch (error) {
-    console.error('Error fetching game history:', error);
-  }
+    const fetchGameHistory = async () => {
+      try {
+        const response = await axios.get('/history');
+        console.log(response.data); // Verifica se os dados chegam aqui
+        games.value = response.data; // Popula a variável `games`
+      } catch (error) {
+        console.error('Error fetching game history:', error);
+      }
+    };
+
+    onMounted(() => {
+      fetchGameHistory();
+    });
+
+    return {
+      games, // Retorna a variável para que seja acessível no template
+    };
+  },
 };
-
-onMounted(() => {
-  fetchGameHistory();
-});
 </script>
 
 <template>
@@ -47,7 +55,7 @@ onMounted(() => {
                'Interrupted' }}
           </td>
           <td>{{ game.total_time }} seconds</td>
-          <td>{{ game.winner?.nickname || 'N/A' }}</td>
+          <td>{{ game.winner_user_id || 'N/A' }}</td>
           <td>{{ game.began_at }}</td>
           <td>{{ game.ended_at || 'In Progress' }}</td>
         </tr>

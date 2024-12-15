@@ -19,7 +19,9 @@ class GameHistoryController extends Controller
                          ->where('created_user_id', $user->id)
                          ->orWhereHas('players', function ($query) use ($user) {
                              $query->where('user_id', $user->id);
-                         })->get();
+                         })
+                         //->limit(20)
+                         ->get();
         }
 
         return response()->json($games);

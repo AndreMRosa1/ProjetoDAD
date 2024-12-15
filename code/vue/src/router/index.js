@@ -9,7 +9,6 @@ import Register from '@/components/auth/Register.vue'
 import DashboardPage from '@/components/DashboardPage.vue'
 import StartNewMemoryGame from '@/components/StartNewMemoryGame.vue'
 import MultiPlayerGame from '@/components/multiplayer/MultiplayerGame.vue';
-import GameHistory from '@/components/GameHistory.vue';
 import ScoreboardsPage from '@/components/ScoreboardsPage.vue';
 import StatisticsPage from '@/components/StatisticsPage.vue';
 import Chat from '@/components/chat/Chat.vue'
@@ -28,6 +27,7 @@ import TransactionList from '@/components/transactions/TransactionList.vue';
 import TransactionForm from '@/components/transactions/TransactionForm.vue';
 import GlobalScoreboard from '@/components/scoreboards/GlobalScoreboard.vue';
 import PersonalScoreboard from '@/components/scoreboards/PersonalScoreboard.vue';
+import GameHistory from '@/components/GameHistory.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,17 +45,15 @@ const router = createRouter({
         { path: '/', name: 'home', component: HomeComponent },
       ],
     },
-    {
-      path: '/new-memory-game',
-      component: StartNewMemoryGame,
+    { 
+      path: '/history',
+      name: 'history',
+      component: GameHistory 
     },
     {
       path: '/memory-game',
       name: 'game',
       component: MemoryGame,
-    },
-    { 
-      path: '/game-history', component: GameHistory 
     },
     {
       path: '/scoreboards/global',
@@ -73,9 +71,6 @@ const router = createRouter({
     { path: '/multiplayer', 
       name: 'multiplayer',
       component: MultiPlayerGame },
-    { path: '/history', 
-      name: 'history',
-      component: GameHistory },
     { path: '/scoreboards',
       name: 'scoreboards',
       component: ScoreboardsPage },

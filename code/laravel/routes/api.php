@@ -8,6 +8,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\MultiplayerGamePlayedController;
 use App\Http\Controllers\BoardController;
+use App\Http\Controllers\GameHistoryController;
 
 /*
 //ROTA PARA TAES!!!!
@@ -45,6 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/games/{gameId}/check-top3', [GameController::class, 'checkIfTop3']);
     */
 
+    Route::get('/history', [GameHistoryController::class, 'index']);
+
     // Transações
     Route::get('/transactions', [TransactionController::class, 'index']);
     Route::post('/transactions/purchase', [TransactionController::class, 'purchase']); //ROTA TAES PODE SER UTIL PARA O PROJETO
@@ -77,7 +80,6 @@ Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
     Route::resource('users', UserController::class)->except(['create', 'edit']);
     Route::get('/admin/games', [GameController::class, 'index']);
     Route::get('/admin/statistics', [GameController::class, 'detailedStatistics']);
-    Route::get('/game-history', [GameHistoryController::class, 'index']);
 });
 
 // Recursos básicos
