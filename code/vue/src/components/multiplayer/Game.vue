@@ -110,12 +110,12 @@ const clickCardButton = () => {
 }
 
 const close = () => {
-    console.log('Close the game')
+    storeGames.close(props.game)
     // send a message to the websocket server to remove the games room
 }
 
 const quit = () => {
-    console.log('Quit the game')
+    storeGames.quit(props.game)
     // send a message to the websocket server to quit the game   
 }
 
@@ -135,7 +135,8 @@ const quit = () => {
             </Button>
             <CardTitle>#{{ game.id }}</CardTitle>
             <CardDescription>
-                <div class="text-base"><span class="font-bold">Opponent:</span> {{ opponentName }}</div>
+                <div class="text-base"><span class="font-bold">Opponent:</span> {{ opponentName }}
+                    {{ game.status == 'interrupted' ? ' / Interrupted' : '' }}</div>
             </CardDescription>
         </CardHeader>
         <CardContent class="py-4 px-8">

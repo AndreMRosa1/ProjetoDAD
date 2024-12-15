@@ -13,7 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
   // Computed properties para obter o nome e e-mail do usuário
   const userName = computed(() => user.value?.name || '');
   const userEmail = computed(() => user.value?.email || '');
-  const userAvatar = computed(() => user.value?.avatar || '');
+  const userAvatar = computed(() => user.value?.avatar || 'src/assets/avatar-none.png');
 
   const clearUser = () => {
     resetIntervalToRefreshToken();
@@ -23,6 +23,13 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null;
     axios.defaults.headers.common.Authorization = '';
   };
+
+  const getFirstLastName = (fullName) => {
+    const names = fullName.trim().split(' ')
+    const firstName = names[0] ?? ''
+    const lastName = names.length > 1 ? names[names.length -1 ] : ''
+    return (firstName + ' ' + lastName).trim()
+  }
 
   const login = async (credentials) => {
     storeError.resetMessages();
@@ -156,5 +163,6 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     logout,
     restoreToken,
+    getFirstLastName,
   };
 });

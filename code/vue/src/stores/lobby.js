@@ -6,57 +6,59 @@ import { useAuthStore } from '@/stores/auth'
 
 
 export const useLobbyStore = defineStore('lobby', () => {
+
     const storeAuth = useAuthStore()
     const storeError = useErrorStore()
 
-    const games = ref([
-            {
-                id: 7,
-                created_at: 1732802912368,
-                player1: {
-                    id: 3,
-                    name: "John Doe",
-                    email: "john@mail.pt"
-                },
-             },
-            {
-                id: 8,
-                created_at: 1732802912438,
-                player1: {
-                    id: 4,
-                    name: "Jane Doe",
-                    email: "jane@mail.pt"
-                },
-            },
-            {
-                id: 9,
-                created_at: 1732802912444,
-                player1: {
-                    id: 13,
-                    name: "Paulo Gonçalves",
-                    email: "paulo@mail.pt"
-                },
-            }                        
-    ])
+    const socket = inject('socket')
+    
+    const games = ref([])
 
     const totalGames = computed(() => games.value.length)
+
+    
+
+    const webSocketServerResponseHasError = (response) => {
+        if (response.errorCode) {
+            storeError.setErrorMessages(response.errorMessage, [], response.errorCode)
+            return true
+        }
+        return false
+    }
+
+    socket.on('lobbyChanged', (lobbyGames) => {
+        games.value = lobbyGames
+    })
 
     // fetch lobby games from the Websocket server
     const fetchGames = () => {
         storeError.resetMessages()
-        // send a "fetchGames" message to the Websocket server
+        socket.emit('fetchGames', (response) => {
+            if (webSocketServerResponseHasError(response)) {
+                return
+            }
+            games.value = response
+        })
     }
 
     // add a game to the lobby
     const addGame = () => {
         storeError.resetMessages()
-        // send a "addGame" message to the Websocket server
+        socket.emit('addGame', (response) => {
+            if (webSocketServerResponseHasError(response)) {
+                return
+            }
+        })
     }
 
     // remove a game from the lobby
     const removeGame = (id) => {
         storeError.resetMessages()
-        // send a "removeGame" message to the Websocket server
+        socket.emit('removeGame', id, (response) => {
+            if (webSocketServerResponseHasError(response)) {
+                return
+            }
+        })
     }
 
     // Whether the current user can remove a specific game from the lobby
@@ -67,7 +69,23 @@ export const useLobbyStore = defineStore('lobby', () => {
     // join a game of the lobby
     const joinGame = (id) => {
         storeError.resetMessages()
-        // send a "joinGame" message to the Websocket server
+        socket.emit('joinGame', id, async (response) => {
+            // callback executed after the join is complete
+            if (webSocketServerResponseHasError(response)) {
+                return
+            }
+            const APIresponse = await axios.post('games', {
+                player1_id: response.player1.id,
+                player2_id: response.player2.id,
+            })
+            const newGameOnDB = APIresponse.data.data
+            newGameOnDB.player1SocketId = response.player1SocketId
+            newGameOnDB.player2SocketId = response.player2SocketId
+            // After adding game to the DB emit a message to the server to start the game
+            socket.emit('startGame', newGameOnDB, (startedGame) => {
+                console.log('Game has started', startedGame)
+            })
+        })
     }
 
     // Whether the current user can join a specific game from the lobby
