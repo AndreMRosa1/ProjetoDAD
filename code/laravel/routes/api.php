@@ -55,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Jogos
     Route::get('/games/single-player', [GameController::class, 'indexSinglePlayer']);
+    Route::post('/games/single-player/update/{game_id}', [GameController::class, 'update']);
     Route::post('/games/single-player', [GameController::class, 'store']);
     Route::get('/games/multiplayer', [GameController::class, 'indexMultiplayer']);
     Route::post('/games/multiplayer', [GameController::class, 'storeMultiplayer']);

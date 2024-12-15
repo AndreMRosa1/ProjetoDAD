@@ -5,7 +5,7 @@
             <Cell v-for="(card, idx) in board" :key="card.id" :card="card" :index="idx" @play="playCard" />
         </div>
 
-        <div class="gameButtons flex flex-col justify-start gap-4 ml-5 mt-5">
+        <div class="gameButtons flex flex-col justify-start gap-4 ml-5 mt-5 whitespace-nowrap">
             <div class="turn-counter text-lg mb-2">Turns: {{ turnCounter }}</div>
             <div class="timer text-lg mb-2">Pairs: {{ pairCounter }}</div>
             <div class="timer text-lg">Timer: {{ timer }}s</div>
@@ -25,7 +25,6 @@ import { ref, watch, computed } from 'vue';
 import Cell from './Cell.vue';
 import { useMemoryGame } from './memorygame.js';
 
-// Define the prop using defineProps()
 const props = defineProps({
     size: {
         type: Number,

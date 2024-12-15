@@ -29,11 +29,11 @@ class GameController extends Controller
             'type' => 'required|in:S,M',
             'status' => 'required|string|max:255',
             'board_id' => 'required|exists:boards,id',
-            'total_time' => 'required|numeric|min:0',
-            'total_turns_winner' => 'required|integer|min:0',
-            'winner_user_id' => 'required|integer|min:0',
+            'total_time' => 'numeric|min:0',
+            'total_turns_winner' => 'integer|min:0',
+            'winner_user_id' => 'integer|min:0',
             'began_at' => 'required|date',
-            'ended_at' => 'required|date|after_or_equal:began_at',
+            'ended_at' => 'date|after_or_equal:began_at',
         ]);
 
         $game = Game::create($validated);
@@ -49,15 +49,19 @@ class GameController extends Controller
         return response()->json($game);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $game_id)
     {
-        $game = Game::find($id);
-        if (!$game) {
-            return response()->json(['message' => 'Game not found'], 404);
-        }
+        $validated = $request->validate([
+            'status' => 'nullable|string|max:255',
+            'total_time' => 'nullable|numeric|min:0',
+            'total_turns_winner' => 'nullable|integer|min:0',
+            'ended_at' => 'nullable|date',
+        ]);
 
-        $game->update($request->all());
-        return response()->json($game);
+        $game = Game::findOrFail($game_id);
+        $game->update($validated);
+
+        return response()->json($game);  // Return the updated game
     }
 
     public function destroy($id)
