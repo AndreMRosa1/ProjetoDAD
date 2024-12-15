@@ -1,6 +1,5 @@
 import HomeComponent from '@/components/HomeComponent.vue'
 //import LaravelTester from '@/components/LaravelTester.vue'
-import MemoryGame from '@/components/singleplayer/MemoryGame.vue'
 //import WebSocketTester from '@/components/WebSocketTester.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -20,7 +19,6 @@ import { useAuthStore } from '@/stores/auth'
 //]
 
 import PurchaseBrainCoins from '@/components/coins/PurchaseBrainCoins.vue';
-
 import TransactionsPage from '@/components/TransactionPage.vue';
 import TransactionList from '@/components/transactions/TransactionList.vue';
 import TransactionForm from '@/components/transactions/TransactionForm.vue';

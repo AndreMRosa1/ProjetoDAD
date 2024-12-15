@@ -1,19 +1,21 @@
 <template>
-    <div class="memory-game-container">
-        <div class="gameButtons">
-            <div class="turn-counter">Turns: {{ turnCounter }}</div>
-            <div class="timer">Pairs: {{ pairCounter }}</div>
-            <div class="timer">Timer: {{ timer }}s</div>
-        </div>
-
-        <div class="game-board"
+    <div class="memory-game-container flex justify-between p-5 max-w-full mx-auto">
+        <div class="game-board grid gap-4 max-w-full max-h-[80vh] w-[70vw] h-[70vh] m-2 overflow-hidden"
             :style="{ gridTemplateColumns: gridTemplateColumns, gridTemplateRows: gridTemplateRows }">
             <Cell v-for="(card, idx) in board" :key="card.id" :card="card" :index="idx" @play="playCard" />
         </div>
 
-        <div v-if="status" class="game-over">
-            <h2>You Won!</h2>
-            <button @click="restart">Restart Game</button>
+        <div class="gameButtons flex flex-col justify-start gap-4 ml-5 mt-5">
+            <div class="turn-counter text-lg mb-2">Turns: {{ turnCounter }}</div>
+            <div class="timer text-lg mb-2">Pairs: {{ pairCounter }}</div>
+            <div class="timer text-lg">Timer: {{ timer }}s</div>
+        </div>
+
+        <div v-if="status"
+            class="game-over fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center p-5 bg-white rounded-lg shadow-lg z-50">
+            <h2 class="text-2xl">You Won!</h2>
+            <button @click="restart" class="mt-4 p-3 bg-green-500 text-white rounded-md hover:bg-green-600">Restart
+                Game</button>
         </div>
     </div>
 </template>
@@ -76,103 +78,3 @@ defineExpose({
     useHint
 });
 </script>
-
-<style scoped>
-.memory-game-container {
-    padding: 20px;
-    max-width: 100%;
-    margin: 0 auto;
-}
-
-.gameButtons {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.game-board {
-    display: grid;
-    gap: 15px;
-    max-width: 100%;
-    max-height: 80%;
-    width: 90vw;
-    height: 70vh;
-    margin: 2vh;
-    overflow: hidden;
-}
-
-.card {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    padding-top: 0%;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.card img {
-    max-width: 100%;
-    max-height: 100%;
-    cursor: pointer;
-}
-
-.game-over {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
-
-button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    width: auto;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.hint-button {
-    background-color: #ffee8c;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.hint-button:hover {
-    background-color: #FFFF00;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-.turn-counter {
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-
-.timer {
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-
-.gameButtons {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-</style>
