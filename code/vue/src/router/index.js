@@ -1,6 +1,6 @@
 import HomeComponent from '@/components/HomeComponent.vue'
 //import LaravelTester from '@/components/LaravelTester.vue'
-import MemoryGame from '@/components/MemoryGame.vue'
+import MemoryGame from '@/components/singleplayer/MemoryGame.vue'
 //import WebSocketTester from '@/components/WebSocketTester.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -8,7 +8,6 @@ import Login from '@/components/auth/Login.vue'
 import Register from '@/components/auth/Register.vue'
 import DashboardPage from '@/components/DashboardPage.vue'
 import StartNewMemoryGame from '@/components/StartNewMemoryGame.vue'
-import MultiPlayerGame from '@/components/multiplayer/MultiplayerGame.vue';
 import ScoreboardsPage from '@/components/ScoreboardsPage.vue';
 import StatisticsPage from '@/components/StatisticsPage.vue';
 import Chat from '@/components/chat/Chat.vue'
@@ -28,6 +27,8 @@ import TransactionForm from '@/components/transactions/TransactionForm.vue';
 import GlobalScoreboard from '@/components/scoreboards/GlobalScoreboard.vue';
 import PersonalScoreboard from '@/components/scoreboards/PersonalScoreboard.vue';
 import GameHistory from '@/components/GameHistory.vue';
+import MultiPlayerGames from '@/components/multiplayer/MultiPlayerGames.vue'
+import SinglePlayerGame from '@/components/singleplayer/SinglePlayerGame.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,7 +54,7 @@ const router = createRouter({
     {
       path: '/memory-game',
       name: 'game',
-      component: MemoryGame,
+      component: SinglePlayerGame,
     },
     {
       path: '/scoreboards/global',
@@ -65,12 +66,12 @@ const router = createRouter({
       name: 'scoreboardpersonal',
       component: PersonalScoreboard,
     },
-    { path: '/new-memory-game', 
+    { path: '/new-memory-game',
       name: 'newmemorygame',
       component: StartNewMemoryGame },
     { path: '/multiplayer', 
       name: 'multiplayer',
-      component: MultiPlayerGame },
+      component: MultiPlayerGames },
     { path: '/scoreboards',
       name: 'scoreboards',
       component: ScoreboardsPage },
@@ -80,9 +81,6 @@ const router = createRouter({
     { path: '/shop',
       name: 'shop',
       component: PurchaseBrainCoins },
-    { path: '/chat',
-      name: 'chat',
-      component: Chat },
     {
       path: '/dashboard',
       component: DashboardPage,

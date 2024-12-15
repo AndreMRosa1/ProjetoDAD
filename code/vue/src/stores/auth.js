@@ -24,6 +24,13 @@ export const useAuthStore = defineStore('auth', () => {
     axios.defaults.headers.common.Authorization = '';
   };
 
+  const getFirstLastName = (fullName) => {
+    const names = fullName.trim().split(' ')
+    const firstName = names[0] ?? ''
+    const lastName = names.length > 1 ? names[names.length -1 ] : ''
+    return (firstName + ' ' + lastName).trim()
+  }
+
   const login = async (credentials) => {
     storeError.resetMessages();
     try {
@@ -156,5 +163,6 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     logout,
     restoreToken,
+    getFirstLastName,
   };
 });

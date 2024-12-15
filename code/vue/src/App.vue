@@ -104,11 +104,11 @@ const logout = () => {
             </RouterLink>
           </div>
           <div v-if="authStore.user">
-              Coins: {{ authStore.user.brain_coins_balance }}
+            Coins: {{ authStore.user.brain_coins_balance }}
           </div>
 
           <!-- Lado Direito: Exibir Imagem de Usuário ou Botão de Login -->
-          <div>
+          <div class="userDashboard">
             <template v-if="authStore.user">
               <button @click="toggleDropdown" class="flex items-center space-x-2">
                 <img :src="authStore.userAvatar" alt="User Avatar" class="h-10 w-10 rounded-full" />
@@ -167,5 +167,9 @@ button {
 
 button:hover {
   opacity: 0.8;
+}
+
+.userDashboard {
+  z-index: 1000;
 }
 </style>

@@ -8,7 +8,6 @@
         <RouterLink to="/scoreboards" class="nav-link">Scoreboards</RouterLink>
         <RouterLink to="/statistics" class="nav-link">Statistics</RouterLink>
         <RouterLink to="/shop" class="nav-link">Shop</RouterLink>
-        <RouterLink to="/chat" class="nav-link">Chat</RouterLink>
       </nav>
     </aside>
     <main class="dashboard-content">

@@ -1,10 +1,10 @@
 <template>
     <div class="start-new-game">
-        
+
         <div class="button-container">
-            <button @click="startGame(6)">3x4 (12 cards)</button>
-            <button @click="startGame(8)">4x4 (16 cards)</button>
-            <button @click="startGame(18)">6x6 (36 cards)</button>
+            <button @click="startGame(12)">3x4 (12 cards)</button>
+            <button @click="startGame(16)">4x4 (16 cards)</button>
+            <button @click="startGame(36)">6x6 (36 cards)</button>
         </div>
     </div>
 </template>
