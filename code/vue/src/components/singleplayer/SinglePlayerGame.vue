@@ -1,31 +1,33 @@
 <template>
-  <div class="flex gap-8">
-    <div class="flex flex-col gap-3 ">
+  <div class="flex justify-center items-center h-[calc(100vh-5rem)] max-h-[calc(100vh-5rem)]">
+    <div class="flex gap-8">
+      <!-- Sidebar -->
+      <div class="flex flex-col gap-3 flex-shrink-0">
+        <div>
+          <div class="text-lg">Turns: {{ memorygame.turnCounter }}</div>
+          <div class="text-lg">Pairs: {{ memorygame.pairCounter }}</div>
+          <div class="text-lg">Timer: {{ memorygame.timer }}s</div>
+        </div>
 
-      <div>
-        <div class="text-lg">Turns: {{ memorygame.turnCounter }}</div>
-        <div class="text-lg">Pairs: {{ memorygame.pairCounter }}</div>
-        <div class="text-lg">Timer: {{ memorygame.timer }}s</div>
+        <RouterLink to="/new-memory-game" class="nav-link">
+          <button class="whitespace-nowrap px-8">Go Back</button>
+        </RouterLink>
+        <button class="bg-orange-400 hover:bg-orange-600 whitespace-nowrap px-8" @click="memorygame.useHint"
+          v-if="authStore.user">
+          Use Hint
+        </button>
       </div>
 
-      <RouterLink to="/new-memory-game" class="nav-link">
-        <button class="whitespace-nowrap px-8">Go Back</button>
-      </RouterLink>
-      <button class="bg-orange-400 hover:bg-orange-600 whitespace-nowrap px-8" @click="memorygame.useHint"
-        v-if="authStore.user">
-        Use Hint
-      </button>
-
-
-
+      <!-- Board Container -->
+      <div class="flex-grow">
+        <Board ref="boardComponent" :size="size" @game-started="gameStarted = true" @game-ended="gameStarted = false" />
+      </div>
     </div>
-
-    <Board ref="boardComponent" :size="size" @game-started="gameStarted = true" @game-ended="gameStarted = false" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import Board from './Board.vue';
 import { useMemorygameStore } from '../../stores/memorygame';
@@ -40,6 +42,7 @@ const size = ref(Number(new URLSearchParams(window.location.search).get('size'))
 const memorygame = useMemorygameStore();
 
 onMounted(() => {
+  document.body.style.overflow = 'hidden';
   memorygame.start(size.value);
 });
 </script>

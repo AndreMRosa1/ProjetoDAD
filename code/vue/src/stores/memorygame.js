@@ -1,4 +1,4 @@
-import { ref, onUnmounted } from 'vue';
+import { ref, onUnmounted, computed } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import dayjs from 'dayjs';
@@ -19,6 +19,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   const gameEndTime = ref(null);
   const gameId = ref(null);
   const gameSize = ref(0);
+  const cardSize = ref(0);
 
   const initializeBoard = () => {
     const images = Object.values(import.meta.glob('@/assets/images/*.png', { eager: true }))
@@ -162,8 +163,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     }
   };
 
-  
   onUnmounted(() => timerInterval && clearInterval(timerInterval));
 
-  return { status, board, start, play, turnCounter, pairCounter, timer, useHint };
+  return { status, board, start, play, turnCounter, pairCounter, timer, useHint, gameSize };
 })
