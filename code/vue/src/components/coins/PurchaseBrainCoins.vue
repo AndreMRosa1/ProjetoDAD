@@ -30,7 +30,7 @@
   </template>
   
   <script setup>
-  import { usePurchaseStore } from '@/stores/purchaseStore';
+  import { usePurchaseStore } from '@/components/coins/purchaseStore';
   import { storeToRefs } from 'pinia';
   
   const purchaseStore = usePurchaseStore();
