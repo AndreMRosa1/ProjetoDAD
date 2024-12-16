@@ -25,7 +25,7 @@
 <script setup>
 import { computed } from 'vue';
 import Cell from './Cell.vue';
-import { useMemorygameStore } from '../singleplayer/memorygame.js';
+import { useMemorygameStore } from '../../stores/memorygame.js';
 
 const props = defineProps({
     size: {

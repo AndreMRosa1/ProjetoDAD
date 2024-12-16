@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-8 max-w-5xl">
+  <div class="flex gap-8">
     <div class="flex flex-col gap-3 ">
 
       <div>
@@ -28,7 +28,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import Board from './Board.vue';
-import { useMemorygameStore } from './memorygame';
+import { useMemorygameStore } from '../../stores/memorygame';
 
 const authStore = useAuthStore();
 const gameStarted = ref(false);
