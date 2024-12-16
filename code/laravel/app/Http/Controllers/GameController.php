@@ -159,6 +159,31 @@ public function personalScoreboard(Request $request)
 
 
 
+public function history(Request $request)
+{
+    $userId = auth()->id();
+
+    if (!$userId) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $games = Game::where('created_user_id', $userId)
+        ->orWhere(function ($query) use ($userId) {
+            $query->whereExists(function ($subQuery) use ($userId) {
+                $subQuery->select(DB::raw(1))
+                    ->from('users')
+                    ->join('multiplayer_games_played', 'users.id', '=', 'multiplayer_games_played.user_id')
+                    ->whereColumn('games.id', 'multiplayer_games_played.game_id')
+                    ->where('users.id', $userId); // Explicitly qualify the ambiguous `id`
+            });
+        })
+        ->with(['board', 'creator', 'winner'])
+        ->limit(15)
+        ->get();
+
+    return response()->json($games);
+}
+
 
 
 

@@ -6,9 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GameController;
-use App\Http\Controllers\MultiplayerGamePlayedController;
 use App\Http\Controllers\BoardController;
-use App\Http\Controllers\GameHistoryController;
 
 /*
 //ROTA PARA TAES!!!!
@@ -26,6 +24,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/me', function (Request $request) {
         return $request->user();
     });
+
+    Route::get('/history', [GameController::class, 'history']);
+
+
+    // Jogos
+    Route::get('/games', [GameController::class, 'indexSinglePlayer']);
+    Route::patch('/games/{game_id}', [GameController::class, 'update']);
+    Route::post('/games', [GameController::class, 'store']);
+    //Route::get('/games/multiplayer', [GameController::class, 'indexMultiplayer']);
+    //Route::post('/games/multiplayer', [GameController::class, 'storeMultiplayer']);
 
     /*
     //ROTAS APENAS PARA TAES!!!!!!!!!!!!!!
@@ -46,19 +54,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/games/{gameId}/check-top3', [GameController::class, 'checkIfTop3']);
     */
 
-    Route::get('/history', [GameHistoryController::class, 'index']);
+    //MULTIPLAYER!
+    Route::delete('/games/{gameId}', [GameController::class, 'destroy']);
+    Route::post('/multiplayergames', [GameController::class, 'createMultiplayerGame']);
+    Route::post('/multiplayergames/{gameId}/join', [GameController::class, 'joinMultiplayerGame']);
+    Route::post('/multiplayergames/{gameId}/start', [GameController::class, 'startMultiplayerGame']);
+    Route::get('/multiplayergames', [GameController::class, 'indexMultiplayerGames']);
 
     // Transações
     Route::get('/transactions', [TransactionController::class, 'index']);
     Route::post('/transactions/purchase', [TransactionController::class, 'purchase']); //ROTA TAES PODE SER UTIL PARA O PROJETO
     Route::get('/transactions/{id}', [TransactionController::class, 'show']);
 
-    // Jogos
-    Route::get('/games/single-player', [GameController::class, 'indexSinglePlayer']);
-    Route::post('/games/single-player/update/{game_id}', [GameController::class, 'update']);
-    Route::post('/games/single-player', [GameController::class, 'store']);
-    Route::get('/games/multiplayer', [GameController::class, 'indexMultiplayer']);
-    Route::post('/games/multiplayer', [GameController::class, 'storeMultiplayer']);
+    
 
     // Lobbies Multiplayer
     Route::get('/games/multiplayer/lobbies', [GameController::class, 'listLobbies']);

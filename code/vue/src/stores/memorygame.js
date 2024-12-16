@@ -47,7 +47,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     gameStartTime.value = startedAt;
 
     try {
-      const response = await axios.post('/games/', {
+      const response = await axios.post('/games', {
         created_user_id: authStore.user.id,
         type: 'S',
         status: gameStatus.value,
@@ -100,7 +100,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     gameEndTime.value = endedAt;
     
     try {
-      await axios.post(`/games/update/${gameId.value}`, {
+      await axios.patch(`/games/${gameId.value}`, {
         winner_user_id: authStore.user.id,
         status: gameStatus.value,
         total_time: timer.value,
