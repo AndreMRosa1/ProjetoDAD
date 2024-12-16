@@ -1,15 +1,9 @@
 <template>
-    <div class="memory-game-container flex">
-        <div class="game-board grid gap-1 overflow-hidden mt-1"
+    <div>
+        <div class="grid"
             :style="{ gridTemplateColumns: boardGridTemplateColumns, gridTemplateRows: boardGridTemplateRows }">
             <Cell v-for="(card, idx) in memoryGameStore.board" :key="card.id" :card="card" :index="idx"
                 @play="playCard" />
-        </div>
-
-        <div class="gameButtons flex flex-col justify-start ml-5 mt-5 whitespace-nowrap w-32">
-            <div class="turn-counter text-lg mb-2">Turns: {{ memoryGameStore.turnCounter }}</div>
-            <div class="timer text-lg mb-2">Pairs: {{ memoryGameStore.pairCounter }}</div>
-            <div class="timer text-lg">Timer: {{ memoryGameStore.timer }}s</div>
         </div>
 
         <div v-if="memoryGameStore.status"
