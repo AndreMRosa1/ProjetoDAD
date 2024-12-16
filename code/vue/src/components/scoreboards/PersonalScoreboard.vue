@@ -77,7 +77,7 @@
   </template>
   
   <script>
-  import { usePersonalScoreboardStore } from "@/stores/personalScoreboardStore";
+  import { usePersonalScoreboardStore } from "./personalScoreboardStore";
   import { storeToRefs } from "pinia";
   import { reactive, onMounted } from "vue";
   

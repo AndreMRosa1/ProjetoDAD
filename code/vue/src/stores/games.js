@@ -109,8 +109,8 @@ export const useGamesStore = defineStore('games', () => {
         // Player that created the game is responsible for updating on the database
         if (playerNumberOfCurrentUser(game) === 1) {
             const APIresponse = await axios.patch('games/' + game.id, {
-                status: 'ended',
-                winner_id: game.gameStatus === 1 ? game.player1_id :
+                status: 'E',
+                winner_user_id: game.gameStatus === 1 ? game.player1_id :
                     (game.gameStatus === 2 ? game.player2_id : null),
             })
             const updatedGameOnDB = APIresponse.data.data
@@ -142,8 +142,8 @@ export const useGamesStore = defineStore('games', () => {
             variant: 'destructive'
         })
         const APIresponse = await axios.patch('games/' + game.id, {
-            status: 'interrupted',
-            winner_id: game.gameStatus === 1 ? game.player1_id :
+            status: 'I',
+            winner_user_id: game.gameStatus === 1 ? game.player1_id :
                 (game.gameStatus === 2 ? game.player2_id : null),
         })
         const updatedGameOnDB = APIresponse.data.data
