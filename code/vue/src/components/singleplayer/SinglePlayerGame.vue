@@ -1,7 +1,6 @@
 <template>
   <div class="p-8 mx-auto max-w-3xl min-w-96">
     <div class="game-container flex gap-8 justify-center h-screen">
-      <!-- Buttons container on the left -->
       <div class="gameButtons flex flex-col gap-4 w-38 mt-10">
         <RouterLink to="/new-memory-game" class="nav-link">
           <button class="btn-primary w-full whitespace-nowrap px-8">Go Back</button>
@@ -12,7 +11,6 @@
         </button>
       </div>
 
-      <!-- Board component on the right, takes the remaining space -->
       <Board ref="boardComponent" :size="size" @game-started="gameStarted = true" @game-ended="gameStarted = false" />
     </div>
   </div>
