@@ -20,7 +20,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import Board from './Board.vue';
-import { useMemorygameStore } from '../../stores/memorygame';
+import { useMemorygameStore } from './memorygame';
 
 const authStore = useAuthStore();
 const gameStarted = ref(false);

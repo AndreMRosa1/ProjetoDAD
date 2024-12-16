@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { useScoreboardStore } from "@/stores/globalScoreboardStore";
+import { useScoreboardStore } from "./globalScoreboardStore";
 import { storeToRefs } from "pinia";
 import { reactive, onMounted } from "vue";
 
