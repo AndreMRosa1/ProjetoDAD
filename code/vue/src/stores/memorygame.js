@@ -122,45 +122,46 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   const useHint = () => {
     console.log(board.value)
     if (!board.value || board.value.length == 0) return 
-
+  
     if (status.value || flippedCards.value.length > 0) {
       console.log('Hint not available: game is over or a turn is in progress.');
       return; // Avoid using hint during an ongoing turn
     }
-
+  
     const unmatchedPairs = board.value.filter(card => card.state === 'hidden');
     console.log('Unmatched pairs:', unmatchedPairs);
-   
-
+  
     if (unmatchedPairs.length < 2) {
       console.log('Not enough unmatched cards for a hint.');
       return; // Not enough cards to hint
     }
-
+  
     const seenFaces = new Map();
     let hintPair = [];
-
+  
     for (const card of unmatchedPairs) {
       if (seenFaces.has(card.face)) {
         hintPair = [seenFaces.get(card.face), card];
         break;
+      } else {
+        seenFaces.set(card.face, card);
       }
-      seenFaces.set(card.face, card);
     }
-
-    console.log('Hint pair found:', hintPair);
-
+  
     if (hintPair.length === 2) {
-      hintPair.forEach(card => card.state = 'flipped');
-      console.log('Hint cards flipped:', hintPair);
+      hintPair[0].state = 'revealed';
+      hintPair[1].state = 'revealed';
+      console.log('Hint pair revealed:', hintPair);
 
-      setTimeout(() => {
-        hintPair.forEach(card => card.state = 'hidden');
-        console.log('Hint cards flipped back:', hintPair);
-      }, 1500);
-    } else {
-      console.log('No matching pair found for hint.');
+      // Check if this was the last pair
+      const remainingHiddenCards = board.value.filter(card => card.state === 'hidden');
+      if (remainingHiddenCards.length === 0) {
+        console.log('Game over: all pairs matched.');
+        status.value = 'gameover';
+      }
     }
+
+    pairCounter.value++;
   };
 
   onUnmounted(() => timerInterval && clearInterval(timerInterval));
