@@ -19,6 +19,8 @@ const startGame = (size) => {
 
     <button @click="startGame(12)" class="bg-green-500 text-white px-4 py-2 rounded" v-if="!authStore.user">
       Play as Anonymous</button>
+
+    <img src="/dog.png">
   </div>
 </template>
 

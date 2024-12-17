@@ -29,11 +29,11 @@
             </div>
 
             <!-- Card for BACK -->
-            <div @click="startGame(36)"
+            <div @click="goHome"
                 class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
-                <img src="/6x6.png" alt="6x6 (36 cards)" class="h-48 object-cover flex-grow mx-auto rounded-t-lg">
+                <img src="/home.png" alt="Home" class="h-48 object-cover flex-grow mx-auto rounded-t-lg">
                 <div class="p-4 text-center bg-gray-900 text-white text-lg font-bold rounded-b-lg">
-                    Back
+                    Home
                 </div>
             </div>
         </div>
@@ -45,6 +45,12 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
+// Navigate to the home page
+const goHome = () => {
+    router.push('/');
+};
+
+// Start the game based on the selected size
 const startGame = (size) => {
     router.push({ name: 'game', query: { size } });
 };
