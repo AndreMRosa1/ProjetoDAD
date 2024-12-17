@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
 
 class UserController extends Controller
 {
@@ -16,10 +18,7 @@ class UserController extends Controller
     // Show a specific user
     public function show($id)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
+        $user = $this->findUserOrFail($id);
         return response()->json($user);
     }
 
@@ -29,7 +28,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:3',
         ]);
 
         $validated['password'] = bcrypt($validated['password']);
@@ -41,24 +40,48 @@ class UserController extends Controller
     // Update a user
     public function update(Request $request, $id)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+        $user = $this->findUserOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|string|email|max:255|unique:users,email,' . $id,
+            'password' => 'sometimes|string|min:8',
+        ]);
+
+        if (isset($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
         }
 
-        $user->update($request->all());
+        $user->update($validated);
         return response()->json($user);
     }
 
-    // Delete a user
+    public function changePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:3|confirmed',
+        ]);
+
+        $user = auth()->user();
+
+        if (!Hash::check($validated['current_password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'current_password' => ['The provided password does not match your current password.'],
+            ]);
+        }
+        
+        $user->password = Hash::make($validated['password']);
+        $user->save();
+
+        return response()->json(['message' => 'Your password has been updated successfully.'], 200);
+    }
+
     public function destroy($id)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
+        $user = $this->findUserOrFail($id);
         $user->delete();
+
         return response()->json(['message' => 'User deleted successfully']);
     }
 
@@ -105,6 +128,11 @@ public function getUserGames()
     $games = $user->createdGames()->with('board')->orderBy('created_at', 'desc')->get();
 
     return response()->json($games);
+}
+
+private function findUserOrFail($id)
+{
+    return User::findOrFail($id);
 }
 
 }

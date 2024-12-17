@@ -9,13 +9,18 @@
           <div class="text-lg">Timer: {{ memorygame.timer }}s</div>
         </div>
 
-        <RouterLink to="/new-memory-game" class="nav-link">
-          <button class="whitespace-nowrap px-8">Go Back</button>
-        </RouterLink>
-        <button class="bg-orange-400 hover:bg-orange-600 whitespace-nowrap px-8" @click="memorygame.useHint"
-          v-if="authStore.user">
+        <button
+          class="whitespace-nowrap px-8 py-3 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none"
+          @click="memorygame.useHint" v-if="authStore.user">
           Use Hint
         </button>
+
+        <RouterLink to="/new-memory-game" class="nav-link">
+          <button
+            class="whitespace-nowrap px-8 py-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none">
+            Go Back
+          </button>
+        </RouterLink>
       </div>
 
       <!-- Board Container -->
@@ -35,7 +40,6 @@ import { useMemorygameStore } from '../../stores/memorygame';
 const authStore = useAuthStore();
 const gameStarted = ref(false);
 const boardComponent = ref(null);
-
 
 const size = ref(Number(new URLSearchParams(window.location.search).get('size')));
 

@@ -102,7 +102,7 @@ const handleMessageFromInputDialog = (message) => {
             </RouterLink>
           </div>
           <div v-if="authStore.user" class="flex items-center justify-between text-sm">
-            <img class="h-12 mr-3" src="../src/assets/coin.png">
+            <img class="h-12 mr-3" src="../src/assets/icon.png">
             Coins: {{ authStore.user.brain_coins_balance }}
           </div>
 

@@ -20,6 +20,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/auth/refreshtoken', [AuthController::class, 'refreshToken']);
+    Route::post('/user/change-password', [UserController::class, 'changePassword'])->middleware('auth:sanctum');
     
     Route::get('/users/me', function (Request $request) {
         return $request->user();

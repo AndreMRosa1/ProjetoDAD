@@ -96,6 +96,22 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
+  const changePassword = async (passwords) => {
+    storeError.resetMessages();
+    try {
+      await axios.post('user/change-password', passwords);
+      return true;
+    } catch (e) {
+      storeError.setErrorMessages(
+        e.response.data.message,
+        e.response.data.errors,
+        e.response.status,
+        'Password Change Error!'
+      );
+      return false;
+    }
+  };
+
   const restoreToken = async function () {
     let storedToken = localStorage.getItem('token')
     if (storedToken) {
@@ -171,5 +187,6 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     restoreToken,
     getFirstLastName,
+    changePassword,
   };
 });

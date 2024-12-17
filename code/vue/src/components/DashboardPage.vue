@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen">
+  <div class="flex h-screen" style="max-height: 100;">
     <aside class="w-64 bg-gray-100 p-4 shadow-md">
       <nav>
         <RouterLink to="/new-memory-game" class="block mb-4 text-blue-500 hover:underline">

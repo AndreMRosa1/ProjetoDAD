@@ -1,10 +1,41 @@
 <template>
-    <div class="start-new-game">
+    <div class="start-new-game flex justify-center items-center h-[calc(100vh-5rem-50px)]">
+        <div class="button-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 w-full h-full">
+            <!-- Card for 3x4 -->
+            <div @click="startGame(12)"
+                class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
+                <img src="/3x4.png" alt="3x4 (12 cards)" class="h-48 object-cover flex-grow mx-auto rounded-t-lg">
+                <div class="p-4 text-center bg-gray-900 text-white text-lg font-bold rounded-b-lg">
+                    3x4 (12 cards)
+                </div>
+            </div>
 
-        <div class="button-container">
-            <button @click="startGame(12)">3x4 (12 cards)</button>
-            <button @click="startGame(16)">4x4 (16 cards)</button>
-            <button @click="startGame(36)">6x6 (36 cards)</button>
+            <!-- Card for 4x4 -->
+            <div @click="startGame(16)"
+                class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
+                <img src="/4x4.png" alt="4x4 (16 cards)" class="h-48 object-cover flex-grow mx-auto rounded-t-lg">
+                <div class="p-4 text-center bg-gray-900 text-white text-lg font-bold rounded-b-lg">
+                    4x4 (16 cards)
+                </div>
+            </div>
+
+            <!-- Card for 6x6 -->
+            <div @click="startGame(36)"
+                class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
+                <img src="/6x6.png" alt="6x6 (36 cards)" class="h-48 object-cover flex-grow mx-auto rounded-t-lg">
+                <div class="p-4 text-center bg-gray-900 text-white text-lg font-bold rounded-b-lg">
+                    6x6 (36 cards)
+                </div>
+            </div>
+
+            <!-- Card for BACK -->
+            <div @click="startGame(36)"
+                class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
+                <img src="/6x6.png" alt="6x6 (36 cards)" class="h-48 object-cover flex-grow mx-auto rounded-t-lg">
+                <div class="p-4 text-center bg-gray-900 text-white text-lg font-bold rounded-b-lg">
+                    Back
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -14,30 +45,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-// Function to navigate to the MemoryGame component with the selected size
 const startGame = (size) => {
-    // Navigate to the 'start' route of 'memory-game', passing size as a query parameter
     router.push({ name: 'game', query: { size } });
 };
 </script>
-
-<style scoped>
-.button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-button {
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-</style>

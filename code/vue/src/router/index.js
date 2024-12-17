@@ -9,7 +9,6 @@ import DashboardPage from '@/components/DashboardPage.vue'
 import StartNewMemoryGame from '@/components/StartNewMemoryGame.vue'
 import ScoreboardsPage from '@/components/ScoreboardsPage.vue';
 import StatisticsPage from '@/components/StatisticsPage.vue';
-import Chat from '@/components/chat/Chat.vue'
 import { useAuthStore } from '@/stores/auth'
 
 //const routes = [
@@ -27,6 +26,7 @@ import PersonalScoreboard from '@/components/scoreboards/PersonalScoreboard.vue'
 import GameHistory from '@/components/GameHistory.vue';
 import MultiPlayerGames from '@/components/multiplayer/MultiPlayerGames.vue'
 import SinglePlayerGame from '@/components/singleplayer/SinglePlayerGame.vue'
+import ChangePassword from '@/components/auth/ChangePassword.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,6 +42,7 @@ const router = createRouter({
         { path: '/login', name: 'login', component: Login },
         { path: '/register', name: 'register', component: Register },
         { path: '/', name: 'home', component: HomeComponent },
+        { path: '/change-password', name: 'changepassword', component: ChangePassword}
       ],
     },
     { 

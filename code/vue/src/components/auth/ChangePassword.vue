@@ -1,69 +1,74 @@
-<script setup>
-import { useToast } from "vue-toastification"
-import { useRouter } from 'vue-router'
-import { useUserStore } from '../../stores/user.js'
-import { ref } from 'vue'
+<template>
+  <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <h1 class="text-2xl font-bold mb-6 text-center">Change Password</h1>
+    <form @submit.prevent="handleChangePassword" class="space-y-4">
+      <div>
+        <label for="current_password" class="block text-sm font-medium text-gray-700">Current Password:</label>
+        <input v-model="passwords.current_password" id="current_password" type="password" placeholder="Current Password"
+          required :class="{ 'border-red-500': errorStore.fieldMessage('current_password') }"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+        <span v-if="errorStore.fieldMessage('current_password')" class="text-sm text-red-500">
+          {{ errorStore.fieldMessage('current_password') }}
+        </span>
+      </div>
 
-const toast = useToast()
-const router = useRouter()
-const userStore = useUserStore()
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">New Password:</label>
+        <input v-model="passwords.password" id="password" type="password" placeholder="New Password" required
+          :class="{ 'border-red-500': errorStore.fieldMessage('password') }"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+        <span v-if="errorStore.fieldMessage('password')" class="text-sm text-red-500">
+          {{ errorStore.fieldMessage('password') }}
+        </span>
+      </div>
+
+      <div>
+        <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm New Password:</label>
+        <input v-model="passwords.password_confirmation" id="password_confirmation" type="password"
+          placeholder="Confirm New Password" required
+          :class="{ 'border-red-500': errorStore.fieldMessage('password_confirmation') }"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+        <span v-if="errorStore.fieldMessage('password_confirmation')" class="text-sm text-red-500">
+          {{ errorStore.fieldMessage('password_confirmation') }}
+        </span>
+      </div>
+
+      <button type="submit"
+        class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        Change Password
+      </button>
+    </form>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { useErrorStore } from '@/stores/error';
+import { useRouter } from 'vue-router';
+
+const authStore = useAuthStore();
+const errorStore = useErrorStore();
+const router = useRouter();
 
 const passwords = ref({
   current_password: '',
   password: '',
   password_confirmation: ''
-})
+});
 
-const errors = ref(null)
+const handleChangePassword = async () => {
+  const success = await authStore.changePassword({
+    current_password: passwords.value.current_password,
+    password: passwords.value.password,
+    password_confirmation: passwords.value.password_confirmation,
+  });
 
-const emit = defineEmits(['changedPassword'])
-
-const changePassword = async () => {
-  try {
-    await userStore.changePassword(passwords.value)
-    toast.success('Password has been changed.')
-    emit('changedPassword')
-    router.back()
-  } catch (error) {
-    if (error.response.status == 422) {
-      errors.value = error.response.data.errors
-      toast.error('Password has not been changed due to validation errors!')
-    } else {
-      toast.error('Password has not been changed due to unknown server error!')
-    }
+  if (success) {
+    alert('Password successfully changed!');
+    await router.push('/'); // Redirect after success
+  } else {
+    // Errors are handled by the error store and displayed via the template
   }
-}
+};
 </script>
-
-<template>
-  <form class="row g-3 needs-validation" novalidate @submit.prevent="changePassword">
-    <h3 class="mt-5 mb-3">Change Password</h3>
-    <hr>
-    <div class="mb-3">
-      <div class="mb-3">
-        <label for="inputCurrentPassword" class="form-label">Current Password</label>
-        <input type="password" class="form-control" id="inputCurrentPassword" required
-          v-model="passwords.current_password">
-        <field-error-message :errors="errors" fieldName="current_password"></field-error-message>
-      </div>
-    </div>
-    <div class="mb-3">
-      <div class="mb-3">
-        <label for="inputPassword" class="form-label">New Password</label>
-        <input type="password" class="form-control" id="inputPassword" required v-model="passwords.password">
-        <field-error-message :errors="errors" fieldName="password"></field-error-message>
-      </div>
-    </div>
-    <div class="mb-3">
-      <div class="mb-3">
-        <label for="inputPasswordConfirm" class="form-label">Password Confirmation</label>
-        <input type="password" class="form-control" id="inputPasswordConfirm" required
-          v-model="passwords.password_confirmation">
-        <field-error-message :errors="errors" fieldName="password_confirmation"></field-error-message>
-      </div>
-    </div>
-    <div class="mb-3 d-flex justify-content-center">
-      <button type="button" class="btn btn-primary px-5" @click="changePassword">Change Password</button>
-    </div>
-  </form>
-</template>
