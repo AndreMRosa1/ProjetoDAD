@@ -53,7 +53,7 @@
         <!-- Page Number Input -->
         <div class="flex items-center gap-2">
           <input type="number" v-model="inputPage" min="1" :max="totalPages"
-            class="text-center px-4 py-2 border rounded-md w-16" @blur="onPageInputBlur"
+            class="text-center px-1 py-2 border rounded-md w-16" @blur="onPageInputBlur"
             @keydown.enter="handlePageInput" :disabled="games.length === 0" />
           <span class="text-lg">of {{ totalPages }}</span>
         </div>
