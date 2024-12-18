@@ -157,6 +157,8 @@ public function personalScoreboard(Request $request)
     return response()->json($personalScores);
 }
 
+
+
 public function history(Request $request)
 {
     $userId = auth()->id();
@@ -176,8 +178,7 @@ public function history(Request $request)
             });
         })
         ->with(['board', 'creator', 'winner'])
-        ->limit(15)
-        ->get();
+        ->paginate(13); // Pagination with 10 games per page
 
     return response()->json($games);
 }
@@ -191,6 +192,7 @@ public function history(Request $request)
 
 
 /* //TAES!!!
+
     public function personalScoreboard()
 {
     $user = auth()->user();
