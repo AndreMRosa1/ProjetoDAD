@@ -77,7 +77,7 @@ export default {
             <th class="border border-gray-300 px-4 py-2">Ended At</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="overflow-y-auto" style="height: 400px;"> <!-- Set a height for scrollable content -->
           <tr v-for="game in games" :key="game.id" class="even:bg-gray-50 hover:bg-gray-100">
             <td class="border border-gray-300 px-4 py-2">{{ game.id }}</td>
             <td class="border border-gray-300 px-4 py-2">

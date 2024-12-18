@@ -89,7 +89,7 @@ const handleMessageFromInputDialog = (message) => {
   <GlobalAlertDialog ref="alert-dialog" />
   <GlobalInputDialog ref="input-dialog" />
   <div class="bg-gray-50 min-h-screen">
-    <header class="bg-white shadow-sm">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
       <div class="w-full px-4">
         <nav class="flex items-center justify-between h-16">
           <!-- Left Side Navigation Links -->
