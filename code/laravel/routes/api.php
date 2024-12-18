@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/auth/refreshtoken', [AuthController::class, 'refreshToken']);
     Route::post('/user/change-password', [UserController::class, 'changePassword'])->middleware('auth:sanctum');
+    Route::get('/user/{user_id}', [UserController::class, 'show']);
     
     Route::get('/users/me', function (Request $request) {
         return $request->user();
@@ -28,7 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/history', [GameController::class, 'history']);
 
-
+    Route::patch('/users/me/reduce-coins', [UserController::class, 'reduceCoins']);
+    
     // Jogos
     Route::get('/games', [GameController::class, 'indexSinglePlayer']);
     Route::patch('/games/{game_id}', [GameController::class, 'update']);
@@ -39,7 +41,6 @@ Route::middleware('auth:sanctum')->group(function () {
     /*
     //ROTAS APENAS PARA TAES!!!!!!!!!!!!!!
     Route::get('/users/me/games', [UserController::class, 'getUserGames']);
-    Route::patch('/users/me/reduce-coins', [UserController::class, 'reduceCoins']);
     Route::patch('/users/me/add-coins', [UserController::class, 'addCoins']);
     // Scoreboards TAES
     Route::get('/scoreboards/personal', [UserController::class, 'personalScoreboard']);

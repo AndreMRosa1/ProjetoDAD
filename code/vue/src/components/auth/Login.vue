@@ -6,26 +6,17 @@
       <input v-model="email" id="email" placeholder="Email" type="email" required />
 
       <label for="password">Password:</label>
-      <input
-        v-model="password"
-        id="password"
-        placeholder="Password"
-        type="password"
-        required
-      />
-      
+      <input v-model="password" id="password" placeholder="Password" type="password" required />
+
       <!-- Mensagem de erro -->
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
       <button type="submit" class="btn">Login</button>
     </form>
-    
+
     <div class="register-link">
       <p>Don't have an account?</p>
-      <RouterLink
-        to="/register"
-        class="btn-register"
-      >
+      <RouterLink to="/register" class="btn-register">
         Register
       </RouterLink>
     </div>
@@ -53,7 +44,7 @@ const handleLogin = async () => {
   });
 
   if (success) {
-    router.push('/dashboard');
+    router.push('/');
   } else {
     // Define a mensagem de erro se o login falhar
     errorMessage.value = 'Credenciais inválidas. Por favor, tente novamente.';

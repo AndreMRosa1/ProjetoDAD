@@ -16,7 +16,7 @@
         </button>
 
         <RouterLink to="/new-memory-game" class="nav-link">
-          <button
+          <button v-if="authStore.user"
             class="whitespace-nowrap px-8 py-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none">
             Go Back
           </button>

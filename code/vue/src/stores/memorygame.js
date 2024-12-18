@@ -19,7 +19,6 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   const gameEndTime = ref(null);
   const gameId = ref(null);
   const gameSize = ref(0);
-  const cardSize = ref(0);
 
   const initializeBoard = () => {
     const images = Object.values(import.meta.glob('@/assets/images/*.png', { eager: true }))
@@ -40,6 +39,8 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   };
 
   const start = async (size) => {
+    await axios.patch('/users/me/reduce-coins');
+    await authStore.updateUser();
     gameStatus.value = 'I';
     gameSize.value = size
     initializeBoard();
@@ -66,28 +67,37 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     if (status.value || flippedCards.value.length >= 2 || board.value[index].state === 'flipped') {
       return;
     }
-
+  
     board.value[index].state = 'flipped';
     flippedCards.value.push(board.value[index]);
-
+  
     if (flippedCards.value.length === 2) {
       turnCounter.value++;
       if (flippedCards.value[0].face === flippedCards.value[1].face) {
         matchedCards.value.push(...flippedCards.value);
         pairCounter.value++;
-        flippedCards.value = [];
-        if (matchedCards.value.length === board.value.length) {
-          status.value = true;
-          endGame();
-        }
+  
+        setTimeout(() => {
+          flippedCards.value.forEach(card => {
+            card.state = 'invisible'; 
+          });
+          flippedCards.value = []; 
+  
+          if (matchedCards.value.length === board.value.length) {
+            status.value = true;
+            endGame();
+          }
+        }, 1000);
       } else {
         setTimeout(() => {
           flippedCards.value.forEach(card => card.state = 'hidden');
           flippedCards.value = [];
-        }, 1000);
+        }, 1000);  // Flip the cards back after 1 second if no match
       }
     }
   };
+  
+
 
   const startTimer = () => {
     if (timerInterval) clearInterval(timerInterval);
@@ -108,6 +118,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
         total_turns_winner: turnCounter.value,
         ended_at: gameEndTime.value,
       });
+
     } catch (error) {
       console.error('Error updating game:', error.response?.data || error.message);
     }
@@ -119,13 +130,13 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     return boardIds[size] || 1;
   };
 
-  const useHint = () => {
-    console.log(board.value)
-    if (!board.value || board.value.length == 0) return 
+  const useHint = async () => {
+    console.log(board.value);
+    if (!board.value || board.value.length == 0) return;
   
     if (status.value || flippedCards.value.length > 0) {
       console.log('Hint not available: game is over or a turn is in progress.');
-      return; // Avoid using hint during an ongoing turn
+      return;
     }
   
     const unmatchedPairs = board.value.filter(card => card.state === 'hidden');
@@ -133,7 +144,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   
     if (unmatchedPairs.length < 2) {
       console.log('Not enough unmatched cards for a hint.');
-      return; // Not enough cards to hint
+      return;
     }
   
     const seenFaces = new Map();
@@ -152,16 +163,28 @@ export const useMemorygameStore = defineStore('memorygame', () => {
       hintPair[0].state = 'revealed';
       hintPair[1].state = 'revealed';
       console.log('Hint pair revealed:', hintPair);
-
+  
       // Check if this was the last pair
       const remainingHiddenCards = board.value.filter(card => card.state === 'hidden');
       if (remainingHiddenCards.length === 0) {
         console.log('Game over: all pairs matched.');
         status.value = 'gameover';
       }
+  
+      pairCounter.value++;
+  
+      // Only reduce the coins if the hint was successfully revealed
+      try {
+        await axios.patch('/users/me/reduce-coins'); // API call to reduce coins
+        await authStore.updateUser(); // Update user data to refresh coin balance
+      } catch (error) {
+        console.error('Error reducing coins:', error.response?.data || error.message);
+        // Optionally, notify the user that the coin reduction failed
+      }
+  
+    } else {
+      console.log('Failed to reveal a hint pair. No coins will be deducted.');
     }
-
-    pairCounter.value++;
   };
 
   onUnmounted(() => timerInterval && clearInterval(timerInterval));

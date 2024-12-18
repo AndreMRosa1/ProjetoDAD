@@ -157,8 +157,6 @@ public function personalScoreboard(Request $request)
     return response()->json($personalScores);
 }
 
-
-
 public function history(Request $request)
 {
     $userId = auth()->id();

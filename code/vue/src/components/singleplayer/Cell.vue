@@ -1,5 +1,6 @@
 <template>
-    <div class="cursor-pointer m-0.5" @click="play" style="width: fit-content;">
+    <div class="cursor-pointer m-0.5" @click="play" style="width: fit-content;"
+        v-bind:style="{ visibility: card.state === 'invisible' ? 'hidden' : 'visible' }">
         <img :style="{ height: cardSizeCalc }" v-if="card.state !== 'hidden'" :src="card.face" :alt="card.state" />
         <img :style="{ height: cardSizeCalc }" v-else src="../../assets/images/semFace.png" alt="Card back" />
     </div>

@@ -42,16 +42,23 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
+const authStore = useAuthStore();
 
-// Navigate to the home page
 const goHome = () => {
     router.push('/');
 };
 
-// Start the game based on the selected size
-const startGame = (size) => {
-    router.push({ name: 'game', query: { size } });
+
+const startGame = async (size) => {
+    try {
+        router.push({ name: 'game', query: { size } });
+    } catch (error) {
+        console.error('Failed to reduce coins:', error);
+        alert('Error reducing coins. Please try again.');
+    }
 };
 </script>
