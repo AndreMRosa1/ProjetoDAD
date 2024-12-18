@@ -1,77 +1,66 @@
 <template>
-  <div class="p-8">
-    <h1 class="text-2xl font-bold mb-6 text-center">Game History</h1>
-    <div>
-      <table class="table-auto border-collapse border border-gray-300 w-full text-center mb-6">
-        <!-- Added mb-6 for margin-bottom -->
-        <thead class="bg-gray-100 sticky top-0 z-10">
-          <tr>
-            <th class="border border-gray-300 px-4 py-2">Type</th>
-            <th class="border border-gray-300 px-4 py-2">Board Size</th>
-            <th class="border border-gray-300 px-4 py-2">Status</th>
-            <th class="border border-gray-300 px-4 py-2">Time</th>
-            <th class="border border-gray-300 px-4 py-2">Winner</th>
-            <th class="border border-gray-300 px-4 py-2">Began At</th>
-            <th class="border border-gray-300 px-4 py-2">Ended At</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="game in games" :key="game.id" class="even:bg-gray-50 hover:bg-gray-100">
-            <td class="border border-gray-300 px-4 py-2">
-              {{ game.type === 'S' ? 'Single Player' : 'Multiplayer' }}
-            </td>
-            <td class="border border-gray-300 px-4 py-2">
-              {{ game.board_id === '1' ? '3x4' :
-                game.status === '2' ? '4x4' :
-                  game.status === '3' ? '6x6' : '3x4' }}
-            </td>
-            <td class="border border-gray-300 px-4 py-2">
-              {{ game.status === 'PE' ? 'Pending' :
-                game.status === 'PL' ? 'Playing' :
-                  game.status === 'E' ? 'Ended' : 'Interrupted' }}
-            </td>
-            <td class="border border-gray-300 px-4 py-2">{{ game.total_time }} seconds</td>
-            <td class="border border-gray-300 px-4 py-2">{{ game.winner_name || 'N/A' }}</td>
-            <td class="border border-gray-300 px-4 py-2">{{ game.began_at }}</td>
-            <td class="border border-gray-300 px-4 py-2">{{ game.ended_at }}</td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="p-6 bg-white rounded-lg max-w-4xl mx-auto shadow-lg">
+    <h1 class="text-3xl font-semibold text-center text-gray-800 mb-2">
+      <span class="mr-2">🎮</span> Game History
+    </h1>
+    <p class="text-center text-gray-600 mb-6">Track your game history</p>
 
-      <!-- Pagination -->
-      <div class="flex justify-center items-center mt-15 gap-4"> <!-- Increased mt-4 to mt-6 for more space -->
-        <button
-          class="whitespace-nowrap px-8 py-3 bg-gray-200 text-black rounded-md hover:bg-gray-300 focus:outline-none"
-          :class="{
-            'bg-gray-300': currentPage === 1,
-            'bg-gray-200': currentPage !== 1
-          }" :disabled="currentPage === 1" @click="handlePageChange(currentPage - 1)"
-          :style="{ cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }">
-          Previous
-        </button>
-
-        <!-- Page Number Input -->
-        <div class="flex items-center gap-2">
-          <input type="number" v-model="inputPage" min="1" :max="totalPages"
-            class="text-center px-1 py-2 border rounded-md w-16" @blur="onPageInputBlur"
-            @keydown.enter="handlePageInput" :disabled="games.length === 0" />
-          <span class="text-lg">of {{ totalPages }}</span>
-        </div>
-
-        <button
-          class="whitespace-nowrap px-8 py-3 bg-gray-200 text-black rounded-md hover:bg-gray-300 focus:outline-none"
-          :class="{
-            'bg-gray-300': currentPage === totalPages,
-            'bg-gray-200': currentPage !== totalPages
-          }" :disabled="currentPage === totalPages" @click="handlePageChange(currentPage + 1)"
-          :style="{ cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }">
-          Next
-        </button>
+    <!-- Game History Table -->
+    <div class="bg-gray-50 rounded-lg p-4">
+      <div class="flex justify-around bg-green-600 text-white font-semibold rounded-md p-2">
+        <span class="flex-1 text-center">Type</span>
+        <span class="flex-1 text-center">Board Size</span>
+        <span class="flex-1 text-center">Status</span>
+        <span class="flex-1 text-center">Time</span>
+        <span class="flex-1 text-center">Winner</span>
+        <span class="flex-1 text-center">Began At</span>
+        <span class="flex-1 text-center">Ended At</span>
       </div>
+
+      <div v-for="(game, index) in games" :key="game.id"
+        class="flex justify-around border-b last:border-b-0 hover:bg-green-100 p-2">
+        <span class="flex-1 text-center">
+          {{ game.type === 'S' ? 'Single Player' : 'Multiplayer' }}
+        </span>
+        <span class="flex-1 text-center">
+          {{ game.board_id === '1' ? '3x4' : game.board_id === '2' ? '4x4' : '6x6' }}
+        </span>
+        <span class="flex-1 text-center">
+          {{ game.status === 'PE' ? 'Pending' : game.status === 'PL' ? 'Playing' : game.status === 'E' ? 'Ended' :
+            'Interrupted' }}
+        </span>
+        <span class="flex-1 text-center">{{ game.total_time }} seconds</span>
+        <span class="flex-1 text-center">{{ game.winner_name || 'N/A' }}</span>
+        <span class="flex-1 text-center">{{ game.began_at }}</span>
+        <span class="flex-1 text-center">{{ game.ended_at }}</span>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center items-center mt-6 gap-4">
+      <button class="whitespace-nowrap px-8 py-3 bg-gray-200 text-black rounded-md hover:bg-gray-300 focus:outline-none"
+        :class="{ 'bg-gray-300': currentPage === 1, 'bg-gray-200': currentPage !== 1 }" :disabled="currentPage === 1"
+        @click="handlePageChange(currentPage - 1)" :style="{ cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }">
+        Previous
+      </button>
+
+      <!-- Page Number Input -->
+      <div class="flex items-center gap-2">
+        <input type="number" v-model="inputPage" min="1" :max="totalPages"
+          class="text-center px-1 py-2 border rounded-md w-16" @blur="onPageInputBlur" @keydown.enter="handlePageInput"
+          :disabled="games.length === 0" />
+        <span class="text-lg">of {{ totalPages }}</span>
+      </div>
+
+      <button class="whitespace-nowrap px-8 py-3 bg-gray-200 text-black rounded-md hover:bg-gray-300 focus:outline-none"
+        :class="{ 'bg-gray-300': currentPage === totalPages, 'bg-gray-200': currentPage !== totalPages }"
+        :disabled="currentPage === totalPages" @click="handlePageChange(currentPage + 1)"
+        :style="{ cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }">
+        Next
+      </button>
     </div>
   </div>
 </template>
-
 
 <script>
 import { ref, onMounted } from 'vue';
@@ -88,14 +77,13 @@ export default {
       if (!isoString) return 'N/A';
       const date = new Date(isoString);
       return date.toLocaleString('en-US', {
-        weekday: 'short',
         year: 'numeric',
-        month: 'short',
+        month: 'numeric',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-        hour12: true,
+        hour12: false,
       });
     };
 

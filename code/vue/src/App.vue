@@ -14,6 +14,7 @@ const authStore = useAuthStore();
 const router = useRouter();
 const showDropdown = ref(false);
 const showDropdownPlay = ref(false);
+const showDropdownScoreboard = ref(false);
 
 const alertDialog = useTemplateRef('alert-dialog');
 provide('alertDialog', alertDialog);
@@ -29,6 +30,10 @@ const toggleDropdownPlay = () => {
   showDropdownPlay.value = !showDropdownPlay.value;
 };
 
+const toggleDropdownScoreboard = () => {
+  showDropdownScoreboard.value = !showDropdownScoreboard.value;
+};
+
 const handleClickOutside = (event) => {
   // Close Play Dropdown if clicking outside
   if (!event.target.closest('.play-dropdown') && !event.target.closest('.play-button')) {
@@ -37,6 +42,10 @@ const handleClickOutside = (event) => {
   // Close User Dropdown if clicking outside
   if (!event.target.closest('.user-dropdown') && !event.target.closest('.user-button')) {
     showDropdown.value = false;
+  }
+  // Close Scoreboard Dropdown if clicking outside
+  if (!event.target.closest('.scoreboard-dropdown') && !event.target.closest('.scoreboard-button')) {
+    showDropdownScoreboard.value = false;
   }
 };
 
@@ -130,11 +139,29 @@ const handleMessageFromInputDialog = (message) => {
               active-class="text-blue-600 font-semibold" v-if="authStore.user && authStore.user.type === 'P'">
               Game History
             </RouterLink>
-            <RouterLink to="/scoreboards"
-              class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              active-class="text-blue-600 font-semibold" v-if="authStore.user && authStore.user.type === 'P'">
-              Scoreboards
-            </RouterLink>
+            <div v-if="authStore.user && authStore.user.type === 'P'" class="relative">
+              <button @click="toggleDropdownScoreboard"
+                class="scoreboard-button text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                Scoreboards
+              </button>
+              <div v-show="showDropdownScoreboard"
+                class="scoreboard-dropdown absolute mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                <div class="py-1">
+                  <RouterLink to="/scoreboards/personal">
+                    <a @click="toggleDropdownScoreboard"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Personal
+                    </a>
+                  </RouterLink>
+                  <RouterLink to="/scoreboards/global">
+                    <a @click="toggleDropdownScoreboard"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Global
+                    </a>
+                  </RouterLink>
+                </div>
+              </div>
+            </div>
             <RouterLink to="/statistics"
               class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
               active-class="text-blue-600 font-semibold" v-if="authStore.user">

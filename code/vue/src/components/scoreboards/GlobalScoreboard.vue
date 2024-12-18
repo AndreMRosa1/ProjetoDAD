@@ -125,7 +125,8 @@ export default {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 600;
   margin-bottom: 10px;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra no título */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  /* Sombra no título */
 }
 
 /* Ícone de mundo com rotação */
@@ -136,13 +137,15 @@ export default {
   vertical-align: middle;
   display: inline-block;
   animation: rotate 5s linear infinite;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra no ícone */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  /* Sombra no ícone */
 }
 
 @keyframes rotate {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -208,7 +211,8 @@ select:focus {
 .scoreboard-table-header {
   display: flex;
   justify-content: space-around;
-  background-color: #4CAF50; /* Verde */
+  background-color: #4CAF50;
+  /* Verde */
   color: #ffffff;
   padding: 10px;
   border-bottom: 1px solid #333;
