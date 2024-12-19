@@ -1,8 +1,10 @@
-import { ref, onUnmounted, computed } from 'vue';
+import { ref, onUnmounted } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import dayjs from 'dayjs';
 import { defineStore } from 'pinia';
+import { useErrorStore } from '@/stores/error'
+import router from '@/router';
 
 export const useMemorygameStore = defineStore('memorygame', () => {
   const authStore = useAuthStore();
@@ -19,6 +21,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   const gameEndTime = ref(null);
   const gameId = ref(null);
   const gameSize = ref(0);
+  const errorStore = useErrorStore()
 
   const initializeBoard = () => {
     const images = Object.values(import.meta.glob('@/assets/images/*.png', { eager: true }))
@@ -39,7 +42,12 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   };
 
   const start = async (size) => {
-    await axios.patch('/users/me/reduce-coins');
+    if(authStore.user.brain_coins_balance < 1) {
+      errorStore.setErrorMessages('Not enough Brain Coins')
+      router.push('/new-memory-game')
+      return
+    }
+    await axios.patch('/users/me/reduce-coin');
     await authStore.updateUser();
     gameStatus.value = 'I';
     gameSize.value = size
@@ -131,59 +139,57 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   };
 
   const useHint = async () => {
-    console.log(board.value);
-    if (!board.value || board.value.length == 0) return;
+
+    if( authStore.user.brain_coins_balance < 1) {
+      errorStore.setErrorMessages('Not enough Brain Coins')
+      return
+    }
   
+    if (!board.value || board.value.length === 0) return;
+  
+    // Check if the game is over or a turn is in progress
     if (status.value || flippedCards.value.length > 0) {
       console.log('Hint not available: game is over or a turn is in progress.');
       return;
     }
   
-    const unmatchedPairs = board.value.filter(card => card.state === 'hidden');
-    console.log('Unmatched pairs:', unmatchedPairs);
+    // Filter out cards that are already revealed
+    const hiddenCards = board.value.filter(card => card.state === 'hidden');
   
-    if (unmatchedPairs.length < 2) {
-      console.log('Not enough unmatched cards for a hint.');
+    if (hiddenCards.length < 2) {
+      console.log('Not enough hidden cards for a hint.');
       return;
     }
   
-    const seenFaces = new Map();
-    let hintPair = [];
-  
-    for (const card of unmatchedPairs) {
-      if (seenFaces.has(card.face)) {
-        hintPair = [seenFaces.get(card.face), card];
-        break;
-      } else {
-        seenFaces.set(card.face, card);
+    // Randomly select two hidden cards
+    const randomIndexes = [];
+    while (randomIndexes.length < 2) {
+      const randomIndex = Math.floor(Math.random() * hiddenCards.length);
+      if (!randomIndexes.includes(randomIndex)) {
+        randomIndexes.push(randomIndex);
       }
     }
   
-    if (hintPair.length === 2) {
-      hintPair[0].state = 'revealed';
-      hintPair[1].state = 'revealed';
-      console.log('Hint pair revealed:', hintPair);
+    const hintPair = [hiddenCards[randomIndexes[0]], hiddenCards[randomIndexes[1]]];
   
-      // Check if this was the last pair
-      const remainingHiddenCards = board.value.filter(card => card.state === 'hidden');
-      if (remainingHiddenCards.length === 0) {
-        console.log('Game over: all pairs matched.');
-        status.value = 'gameover';
-      }
+    // Flip the selected cards
+    hintPair.forEach(card => {
+      card.state = 'revealed';
+    });
   
-      pairCounter.value++;
+    // Wait 1.5 seconds before flipping them back
+    setTimeout(() => {
+      hintPair.forEach(card => {
+        card.state = 'hidden';
+      });
+    }, 1500);
   
-      // Only reduce the coins if the hint was successfully revealed
-      try {
-        await axios.patch('/users/me/reduce-coins'); // API call to reduce coins
-        await authStore.updateUser(); // Update user data to refresh coin balance
-      } catch (error) {
-        console.error('Error reducing coins:', error.response?.data || error.message);
-        // Optionally, notify the user that the coin reduction failed
-      }
-  
-    } else {
-      console.log('Failed to reveal a hint pair. No coins will be deducted.');
+    // Deduct coins only after revealing the hint
+    try {
+      await axios.patch('/users/me/reduce-coin'); // API call to reduce coins
+      await authStore.updateUser(); // Update user data to refresh coin balance
+    } catch (error) {
+      errorStore.setErrorMessages('Not enough Brain Coins')
     }
   };
 

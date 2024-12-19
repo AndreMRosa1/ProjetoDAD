@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/history', [GameController::class, 'history']);
 
-    Route::patch('/users/me/reduce-coins', [UserController::class, 'reduceCoins']);
+    Route::patch('/users/me/reduce-coin', [UserController::class, 'reduceCoin']);
     
     // Jogos
     Route::get('/games', [GameController::class, 'indexSinglePlayer']);

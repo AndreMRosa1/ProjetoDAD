@@ -42,18 +42,23 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
+import { useErrorStore } from '@/stores/error';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const errorStore = useErrorStore();
 
 const goHome = () => {
     router.push('/');
 };
 
-
 const startGame = async (size) => {
+    if (authStore.user.brain_coins_balance < 1) {
+        errorStore.setErrorMessages('Not enough Brain Coins')
+        router.push('/new-memory-game');
+        return
+    }
     try {
         router.push({ name: 'game', query: { size } });
     } catch (error) {

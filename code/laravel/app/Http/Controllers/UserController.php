@@ -118,23 +118,23 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully']);
     }
 
-    public function reduceCoins(Request $request)
+    public function reduceCoin(Request $request)
     {
-    $user = auth()->user();
-    if (!$user) {
-        return response()->json(['message' => 'User not found'], 404);
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Reduzir 1 coin
+        if ($user->brain_coins_balance < 1) {
+            return response()->json(['message' => 'You have 0 coins!'], 400);
+        }
+
+        $user->brain_coins_balance -= 1;
+        $user->save();
+
+        return response()->json($user);
     }
-
-    // Reduzir 1 coin
-    if ($user->brain_coins_balance < 1) {
-        return response()->json(['message' => 'You have 0 coins!'], 400);
-    }
-
-    $user->brain_coins_balance -= 1;
-    $user->save();
-
-    return response()->json($user);
-}
 
 public function addCoins(Request $request)
 {
