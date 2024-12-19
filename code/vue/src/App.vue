@@ -59,7 +59,7 @@ onUnmounted(() => {
 
 const handleEditProfile = () => {
   showDropdown.value = false;
-  router.push('/profile');
+  router.push('/edit-profile');
 };
 
 const handleChangePassword = () => {
@@ -110,11 +110,11 @@ const handleMessageFromInputDialog = (message) => {
             </RouterLink>
             <div v-if="authStore.user && authStore.user.type === 'P'" class="relative">
               <button @click="toggleDropdownPlay"
-                class="play-button text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                class="play-button w-max text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 Play
               </button>
               <div v-show="showDropdownPlay"
-                class="play-dropdown absolute mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                class="cursor-pointer play-dropdown absolute mt-2 w-max rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                 <div class="py-1">
                   <RouterLink to="/new-memory-game">
                     <a @click="toggleDropdownPlay" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -141,11 +141,11 @@ const handleMessageFromInputDialog = (message) => {
             </RouterLink>
             <div v-if="authStore.user && authStore.user.type === 'P'" class="relative">
               <button @click="toggleDropdownScoreboard"
-                class="scoreboard-button text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                class="scoreboard-button w-max text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 Scoreboards
               </button>
               <div v-show="showDropdownScoreboard"
-                class="scoreboard-dropdown absolute mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                class="cursor-pointer scoreboard-dropdown absolute mt-2 w-max rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                 <div class="py-1">
                   <RouterLink to="/scoreboards/personal">
                     <a @click="toggleDropdownScoreboard"
@@ -183,7 +183,7 @@ const handleMessageFromInputDialog = (message) => {
                 </span>
               </button>
               <div v-if="showDropdown"
-                class="user-dropdown absolute mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                class="cursor-pointer right-0 user-dropdown absolute w-max rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-100">
                 <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                   <a @click="handleEditProfile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     Edit Profile

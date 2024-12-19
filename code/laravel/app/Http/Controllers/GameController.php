@@ -174,11 +174,12 @@ public function history(Request $request)
                     ->from('users')
                     ->join('multiplayer_games_played', 'users.id', '=', 'multiplayer_games_played.user_id')
                     ->whereColumn('games.id', 'multiplayer_games_played.game_id')
-                    ->where('users.id', $userId); // Explicitly qualify the ambiguous `id`
+                    ->where('users.id', $userId);
             });
         })
         ->with(['board', 'creator', 'winner'])
-        ->paginate(10); // Pagination with 10 games per page
+        ->orderby('created_at', 'desc')
+        ->paginate(10);
 
     return response()->json($games);
 }

@@ -27,6 +27,7 @@ import GameHistory from '@/components/GameHistory.vue';
 import MultiPlayerGames from '@/components/multiplayer/MultiPlayerGames.vue'
 import SinglePlayerGame from '@/components/singleplayer/SinglePlayerGame.vue'
 import ChangePassword from '@/components/auth/ChangePassword.vue'
+import EditProfile from '@/components/auth/EditProfile.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,15 +36,30 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: HomeComponent,
+    },{ 
+      path: '/login', 
+      name: 'login', 
+      component: Login 
     },
-    {
-      path: '/testers',
-      children: [
-        { path: '/login', name: 'login', component: Login },
-        { path: '/register', name: 'register', component: Register },
-        { path: '/', name: 'home', component: HomeComponent },
-        { path: '/change-password', name: 'changepassword', component: ChangePassword}
-      ],
+    { 
+      path: '/register', 
+      name: 'register', 
+      component: Register 
+    },
+    { 
+      path: '/', 
+      name: 'home',
+      component: HomeComponent
+    },
+    { 
+      path: '/change-password', 
+      name: 'changepassword', 
+      component: ChangePassword
+    },
+    { 
+      path: '/edit-profile', 
+      name: 'editprofile', 
+      component: EditProfile
     },
     { 
       path: '/history',

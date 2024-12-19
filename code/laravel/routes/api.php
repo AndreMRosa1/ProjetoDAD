@@ -16,6 +16,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/auth/refreshtoken', [AuthController::class, 'refreshToken']);
     Route::post('/user/change-password', [UserController::class, 'changePassword'])->middleware('auth:sanctum');
+    Route::put('/user/edit-profile', [UserController::class, 'editProfile']);
+    Route::post('user/upload-photo', [UserController::class, 'uploadPhoto']);
+    Route::post('users/{id}/change-photo', [UserController::class, 'changePhoto']);
     Route::get('/user/{user_id}', [UserController::class, 'show']);
     
     Route::get('/users/me', function (Request $request) {

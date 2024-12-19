@@ -19,6 +19,7 @@ class User extends Authenticatable
         'brain_coins_balance',
         'type',
         'blocked',
+        'photo_filename'
     ];
 
     protected $hidden = [
