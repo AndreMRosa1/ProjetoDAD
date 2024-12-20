@@ -32,29 +32,29 @@ const startGame = (size) => {
       </div>
 
       <!-- Right side container for New Game and Chat -->
-      <div class="relative w-full object-center h-fit flex flex-col space-y-4">
-        <!-- New Single Player Game Button -->
-        <div @click="startGame(90)" v-if="!authStore.user"
-          class="w-fit h-fit bg-white rounded-lg shadow-lg hover:cursor-pointer">
-          <img src="/sp.png" alt="Home" class="h-48 object-cover flex-grow mx-auto rounded-t-lg">
-          <div class="p-4 text-center bg-gray-900 text-white text-lg font-bold rounded-b-lg">
-            New Single Player Game (Guest)
-          </div>
-        </div>
-
-        <div v-if="authStore.user"
-          class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
-          <RouterLink to="/new-memory-game">
-            <div class="relative w-fit h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
+      <div class="relative w-full flex flex-col space-y-4">
+        <!-- New Single Player and Multiplayer Game Buttons side by side -->
+        <div class="flex space-x-4 justify-center">
+          <RouterLink to="/new-memory-game" class="w-full sm:w-1/2">
+            <div class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
               <img src="/sp.png" alt="Home" class="h-48 object-cover flex-grow mx-auto rounded-t-lg">
               <div class="p-4 text-center bg-gray-900 text-white text-lg font-bold rounded-b-lg">
                 New Single Player Game
               </div>
             </div>
           </RouterLink>
+
+          <RouterLink to="/multiplayer" class="w-full sm:w-1/2">
+            <div class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
+              <img src="/mp.png" alt="Home" class="h-48 object-cover flex-grow mx-auto rounded-t-lg">
+              <div class="p-4 text-center bg-gray-900 text-white text-lg font-bold rounded-b-lg">
+                New Multiplayer Game
+              </div>
+            </div>
+          </RouterLink>
         </div>
 
-        <!-- Chat under the New Game button -->
+        <!-- Chat under the New Game buttons -->
         <div v-if="authStore.user"
           class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
           <Chat></Chat>
