@@ -1,25 +1,52 @@
 <template>
   <div>
-    <h1>Users List</h1>
-    <p>Total Users: {{ totalUsers }}</p>
+    <h1 class="title">Users List</h1>
+    <p class="total-users">Total Users: {{ totalUsers }}</p>
+
+    <!-- Filters -->
+    <div class="filters">
+      <label for="sort-id">Sort by ID:</label>
+      <select id="sort-id" v-model="filters.sortOrder" @change="applyFilters">
+        <option value="">None</option>
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+      </select>
+
+      <label for="filter-type">Filter by Type:</label>
+      <select id="filter-type" v-model="filters.type" @change="applyFilters">
+        <option value="">All</option>
+        <option value="A">Admin</option>
+        <option value="P">Player</option>
+      </select>
+
+      <button class="reset-button" @click="resetFilters">Reset Filters</button>
+    </div>
+
     <table>
       <thead>
         <tr>
           <th>ID</th>
           <th>Name</th>
           <th>Email</th>
-          <th>Actions</th>
+          <th>Type</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in users" :key="user.id">
+        <tr v-for="user in paginatedUsers" :key="user.id">
           <td>{{ user.id }}</td>
           <td>{{ user.name }}</td>
           <td>{{ user.email }}</td>
-          
+          <td>{{ user.type }}</td>
         </tr>
       </tbody>
     </table>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-controls">
+      <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+    </div>
   </div>
 </template>
 
@@ -28,19 +55,79 @@ import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 
 const users = ref([]);
+const currentPage = ref(1);
+const itemsPerPage = 10;
+const filters = ref({
+  sortOrder: '',
+  type: ''
+});
 
 const fetchUsers = async () => {
   try {
-    const response = await axios.get('/users')
-    users.value = response.data
+    const response = await axios.get('/users');
+    users.value = response.data;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };
 
+const applyFilters = () => {
+  currentPage.value = 1;
+};
+
+const resetFilters = () => {
+  filters.value.sortOrder = 'asc';
+  filters.value.type = '';
+  applyFilters();
+};
+
+const paginatedUsers = computed(() => {
+  let filteredUsers = users.value;
+
+  if (filters.value.type) {
+    filteredUsers = filteredUsers.filter(user => user.type === filters.value.type);
+  }
+
+  if (filters.value.sortOrder) {
+    filteredUsers = filteredUsers.sort((a, b) => {
+      if (filters.value.sortOrder === 'asc') {
+        return a.id - b.id;
+      } else {
+        return b.id - a.id;
+      }
+    });
+  }
+
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filteredUsers.slice(start, end);
+});
+
+const totalPages = computed(() => {
+  let filteredUsers = users.value;
+
+  if (filters.value.type) {
+    filteredUsers = filteredUsers.filter(user => user.type === filters.value.type);
+  }
+
+  return Math.ceil(filteredUsers.length / itemsPerPage);
+});
+
 const totalUsers = computed(() => {
-  return users.value.length
-})
+  return users.value.length;
+});
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
 
 onMounted(() => {
   fetchUsers();
@@ -48,14 +135,53 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Add your styles here */
+.title {
+  font-size: 2em;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.total-users {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filters label {
+  margin-right: 10px;
+}
+
+.filters select {
+  margin-right: 20px;
+  padding: 5px;
+}
+
+.reset-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.reset-button:hover {
+  background-color: #d32f2f;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
-th,
-td {
+th, td {
   border: 1px solid #ddd;
   padding: 8px;
 }
@@ -63,5 +189,31 @@ td {
 th {
   background-color: #f2f2f2;
   text-align: left;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination-controls button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.pagination-controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination-controls span {
+  margin: 0 10px;
 }
 </style>

@@ -28,6 +28,7 @@ import SinglePlayerGame from '@/components/singleplayer/SinglePlayerGame.vue'
 import ChangePassword from '@/components/auth/ChangePassword.vue'
 import EditProfile from '@/components/auth/EditProfile.vue'
 
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -63,35 +64,39 @@ const router = createRouter({
     { 
       path: '/history',
       name: 'history',
-      component: GameHistory 
+      component: GameHistory ,
+      meta: { requiresAuth: true, allowedTypes: ['P'] }
     },
     {
       path: '/memory-game',
       name: 'game',
       component: SinglePlayerGame,
+      meta: { requiresAuth: true, allowedTypes: ['P'] }
     },
     {
       path: '/scoreboards/global',
       name: 'scoreboardglobal',
       component: GlobalScoreboard,
+
     },
     {
       path: '/scoreboards/personal',
       name: 'scoreboardpersonal',
       component: PersonalScoreboard,
+      meta: { requiresAuth: true, allowedTypes: ['P'] }
     },
     { 
       path: '/new-memory-game',
       name: 'newmemorygame',
-      component: StartNewMemoryGame 
+      component: StartNewMemoryGame,
+      meta: { requiresAuth: true, allowedTypes: ['P'] }
     },
-    { 
-      path: '/multiplayer', 
+    { path: '/multiplayer', 
       name: 'multiplayer',
-      component: MultiPlayerGames 
+      component: MultiPlayerGames,
+      meta: { requiresAuth: true, allowedTypes: ['P'] } 
     },
-    { 
-      path: '/scoreboards',
+    { path: '/scoreboards',
       name: 'scoreboards',
       component: ScoreboardsPage 
     },
@@ -103,7 +108,42 @@ const router = createRouter({
     { 
       path: '/shop',
       name: 'shop',
-      component: PurchaseBrainCoins 
+      component: PurchaseBrainCoins,
+      meta: { requiresAuth: true, allowedTypes: ['P'] } 
+    },
+    { path: '/users',
+        name: 'users',
+        component: UserList ,
+        meta: { requiresAuth: true, allowedTypes: ['A'] }
+      },
+    {
+      path: '/dashboard',
+      component: DashboardPage,
+      children: [
+        {
+          path: 'transactions',
+          name: 'transactions',
+          component: TransactionsPage,
+          children: [
+            {
+              path: '',
+              name: 'transaction-list',
+              component: TransactionList,
+            },
+            {
+              path: 'new',
+              name: 'transaction-form',
+              component: TransactionForm,
+            },
+            {
+              path: 'history',
+              name: 'transaction-history',
+              component: TransactionHistory,
+            },
+            
+          ],
+        },        
+      ],
     },
     { 
       path: '/users',
@@ -123,6 +163,8 @@ const router = createRouter({
   ],
 });
 
+
+
 let handlingFirstRoute = true
 
 router.beforeEach(async (to, from, next) => {
@@ -131,7 +173,17 @@ router.beforeEach(async (to, from, next) => {
   handlingFirstRoute = false
   await storeAuth.restoreToken()
  }
- next();
+ 
+  const isAuthenticated = storeAuth.user;
+  const userType = storeAuth.user?.type || '';
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next({ name: 'login' });
+  } else if (to.meta.allowedTypes && !to.meta.allowedTypes.includes(userType)) {
+    next({ name: 'home' });
+  } else {
+    next();
+  }
 })
 
 export default router;
