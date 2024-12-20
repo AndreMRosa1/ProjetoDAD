@@ -29,7 +29,7 @@
         <div v-if="errors.euros" class="text-red-500 text-sm mt-1">{{ errors.euros }}</div>
       </div>
 
-      <button type="submit"
+      <button @click="handlePurchase" type="submit"
         class="w-full py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
         Comprar
       </button>
@@ -42,46 +42,8 @@
 <script setup>
 import { usePurchaseStore } from '@/components/coins/purchaseStore';
 import { storeToRefs } from 'pinia';
-import { useAuthStore } from '@/stores/auth';
-import { useTransactionsStore } from '@/stores/transactions';
-import { useErrorStore } from '@/stores/error';
 
 const purchaseStore = usePurchaseStore();
 const { paymentType, paymentReference, euros, message, errors } = storeToRefs(purchaseStore);
 const { validatePaymentType, validatePaymentReference, validateEuros, purchaseBrainCoins } = purchaseStore;
-
-const transactionsStore = useTransactionsStore();
-const authStore = useAuthStore();
-const errorStore = useErrorStore();
-
-const handlePurchase = async () => {
-  // First validate the fields
-  const isPaymentTypeValid = validatePaymentType();
-  const isPaymentReferenceValid = validatePaymentReference();
-  const isEurosValid = validateEuros();
-
-  if (!isPaymentTypeValid || !isPaymentReferenceValid || !isEurosValid) {
-    return;
-  }
-
-  try {
-    // Construct the payload
-    const payload = {
-      transaction_datetime: new Date().toISOString(), // Current datetime
-      user_id: authStore.user.id, // Replace with actual user ID if available
-      type: 'P',
-      euros: euros.value,
-      brain_coins: Math.floor(euros.value * 10), // Example conversion rate: 1 Euro = 10 Brain Coins
-      payment_type: paymentType.value,
-      payment_reference: paymentReference.value,
-    };
-
-    // Call the transactions store's createTransaction method
-    const response = await transactionsStore.createTransaction(payload);
-    message.value = `Compra realizada com sucesso! ID da transação: ${response.data.id}`;
-  } catch (error) {
-    console.error('Error creating transaction:', error);
-    errorStore.setErrorMessages('Erro ao processar a compra. Tente novamente mais tarde.');
-  }
-};
 </script>

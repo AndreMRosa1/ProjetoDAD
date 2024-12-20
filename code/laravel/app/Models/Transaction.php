@@ -13,6 +13,7 @@ class Transaction extends Model
 
     protected $fillable = [
         'user_id',
+        'transaction_datetime',
         'game_id',
         'type',
         'euros',
@@ -20,7 +21,6 @@ class Transaction extends Model
         'payment_type',
         'payment_reference',
         'transaction_datetime',
-        'game',
     ];
 
     protected $casts = [
