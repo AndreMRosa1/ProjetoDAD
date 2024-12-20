@@ -35,6 +35,9 @@ export const useGameHistoryStore = defineStore('gameHistory', {
         const nameParts = fullName.split(' ');
         const firstName = nameParts[0]; // First part
         const lastName = nameParts[nameParts.length - 1]; // Last part
+        if(nameParts.length == 1) {
+          return `${firstName}`;
+        }
         return `${firstName} ${lastName}`;
       } catch (error) {
         return 'N/A';

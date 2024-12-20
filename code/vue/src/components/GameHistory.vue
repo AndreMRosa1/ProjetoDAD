@@ -17,7 +17,7 @@
         <span class="flex-1 text-center">Ended At</span>
       </div>
 
-      <div v-for="(game, index) in gameHistoryStore.games" :key="game.id"
+      <div v-for="(game) in gameHistoryStore.games" :key="game.id"
         class="flex justify-around border-b last:border-b-0 hover:bg-green-100 p-2">
         <span class="flex-1 text-center">
           {{ game.type === 'S' ? 'Single Player' : 'Multiplayer' }}

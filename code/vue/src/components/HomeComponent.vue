@@ -36,7 +36,7 @@ const startGame = (size) => {
         class="relative w-fit h-fit bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
         <img src="/sp.png" alt="Home" class="h-48 object-cover flex-grow mx-auto rounded-t-lg">
         <div class="p-4 text-center bg-gray-900 text-white text-lg font-bold rounded-b-lg">
-          New Single Player Game (Guest)
+          New Singleplayer Game (Guest)
         </div>
       </div>
 
@@ -48,7 +48,7 @@ const startGame = (size) => {
             <div class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
               <img src="/sp.png" alt="Home" class="h-48 object-cover flex-grow mx-auto rounded-t-lg">
               <div class="p-4 text-center bg-gray-900 text-white text-lg font-bold rounded-b-lg">
-                New Single Player Game
+                New Singleplayer Game
               </div>
             </div>
           </RouterLink>
