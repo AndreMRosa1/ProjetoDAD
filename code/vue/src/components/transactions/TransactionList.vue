@@ -29,18 +29,17 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
-import transactionsAPI from '@/stores/transactions';
+import { onMounted } from 'vue';
+import { useTransactionsStore } from '@/stores/transactions'; // Import the store
 
 export default {
-  name: 'TransactionHistory',
   setup() {
-    const transactions = ref([]);
+    const transactionsStore = useTransactionsStore(); // Access the store
+    const { transactions, getTransactions } = transactionsStore; // Destructure the necessary properties
 
     const fetchTransactions = async () => {
       try {
-        const response = await transactionsAPI.getTransactions();
-        transactions.value = response.data;
+        await getTransactions(); // Call the action to fetch transactions
       } catch (error) {
         console.error('Error fetching transactions:', error);
       }
@@ -51,7 +50,7 @@ export default {
       return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
     };
 
-    onMounted(fetchTransactions);
+    onMounted(fetchTransactions); // Fetch transactions when the component is mounted
 
     return {
       transactions,

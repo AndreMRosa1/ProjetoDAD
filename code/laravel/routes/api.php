@@ -52,8 +52,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Transações
     Route::get('/transactions', [TransactionController::class, 'index']);
-    Route::post('/transactions/purchase', [TransactionController::class, 'purchase']); //ROTA TAES PODE SER UTIL PARA O PROJETO
+    Route::post('/transactions', [TransactionController::class, 'store']);
     Route::get('/transactions/{id}', [TransactionController::class, 'show']);
+    Route::post('/transactions/purchase', [TransactionController::class, 'purchase']); //ROTA TAES PODE SER UTIL PARA O PROJETO
     Route::get('/transactions/history', [TransactionController::class, 'index']);
 
     // Lobbies Multiplayer

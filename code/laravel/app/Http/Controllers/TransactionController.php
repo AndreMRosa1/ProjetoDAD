@@ -35,6 +35,25 @@ class TransactionController extends Controller
         return response()->json($transactions);
     }
 
+    // Store a new transactions
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'transaction_datetime' => 'required|date',
+            'user_id' => 'required|integer|exists:users,id',
+            'game_id' => 'required|integer|exists:games,id',
+            'type' => 'required|in:B,P,I',
+            'euros' => 'nullable|numeric|min:0|max:999999.99',
+            'brain_coins' => 'nullable|integer|min:0',
+            'payment_type' => 'nullable|in:MBWAY,PAYPAL,IBAN,MB,VISA',
+            'payment_reference' => 'nullable|string|max:255',
+        ]);
+
+        $transaction = Transaction::create($validated);
+
+        return response()->json($transaction, 201);
+    }
+
     public function totalTransactions()
     {
         $totalTransactions = Transaction::count();
