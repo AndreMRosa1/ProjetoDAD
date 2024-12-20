@@ -27,6 +27,7 @@ import MultiPlayerGames from '@/components/multiplayer/MultiPlayerGames.vue'
 import SinglePlayerGame from '@/components/singleplayer/SinglePlayerGame.vue'
 import ChangePassword from '@/components/auth/ChangePassword.vue'
 import EditProfile from '@/components/auth/EditProfile.vue'
+import NewUser from '@/components/users/NewUser.vue'
 
 
 const router = createRouter({
@@ -60,6 +61,12 @@ const router = createRouter({
       path: '/edit-profile', 
       name: 'editprofile', 
       component: EditProfile
+    },
+    { 
+      path: '/users/create', 
+      name: 'newuser', 
+      component: NewUser,
+      meta: { requiresAuth: true, allowedTypes: ['A'] }
     },
     { 
       path: '/history',
@@ -130,7 +137,8 @@ const router = createRouter({
       path: '/transactions/history',
         name: 'transactions-history',
         component: TransactionHistory 
-      }
+      },
+      
   ],
 });
 

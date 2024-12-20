@@ -19,8 +19,16 @@
         <option value="P">Player</option>
       </select>
 
+      <label for="filter-email">Filter by Email:</label>
+      <input id="filter-email" v-model="filters.email" @input="applyFilters" type="text" />
+
+      <label for="filter-name">Filter by Name:</label>
+      <input id="filter-name" v-model="filters.name" @input="applyFilters" type="text" />
+
       <button class="reset-button" @click="resetFilters">Reset Filters</button>
     </div>
+
+    <button class="create-button" @click="createUser">Create New User</button>
 
     <table>
       <thead>
@@ -29,6 +37,7 @@
           <th>Name</th>
           <th>Email</th>
           <th>Type</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -37,6 +46,11 @@
           <td>{{ user.name }}</td>
           <td>{{ user.email }}</td>
           <td>{{ user.type }}</td>
+          <td class="border px-4 py-2">
+            <button @click="blockedUser(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Block</button>
+            <button @click="editUser(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Edit</button>
+            <button @click="deleteUser(user.id)" class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+        </td>
         </tr>
       </tbody>
     </table>
@@ -53,13 +67,17 @@
 <script setup>
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const users = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const filters = ref({
   sortOrder: '',
-  type: ''
+  type: '',
+  email: '',
+  name: ''
 });
 
 const fetchUsers = async () => {
@@ -78,7 +96,13 @@ const applyFilters = () => {
 const resetFilters = () => {
   filters.value.sortOrder = 'asc';
   filters.value.type = '';
+  filters.value.email = '';
+  filters.value.name = '';
   applyFilters();
+};
+
+const createUser = () => {
+  router.push('/users/create');
 };
 
 const paginatedUsers = computed(() => {
@@ -86,6 +110,14 @@ const paginatedUsers = computed(() => {
 
   if (filters.value.type) {
     filteredUsers = filteredUsers.filter(user => user.type === filters.value.type);
+  }
+
+  if (filters.value.email) {
+    filteredUsers = filteredUsers.filter(user => user.email.includes(filters.value.email));
+  }
+
+  if (filters.value.name) {
+    filteredUsers = filteredUsers.filter(user => user.name.includes(filters.value.name));
   }
 
   if (filters.value.sortOrder) {
@@ -108,6 +140,14 @@ const totalPages = computed(() => {
 
   if (filters.value.type) {
     filteredUsers = filteredUsers.filter(user => user.type === filters.value.type);
+  }
+
+  if (filters.value.email) {
+    filteredUsers = filteredUsers.filter(user => user.email.includes(filters.value.email));
+  }
+
+  if (filters.value.name) {
+    filteredUsers = filteredUsers.filter(user => user.name.includes(filters.value.name));
   }
 
   return Math.ceil(filteredUsers.length / itemsPerPage);
@@ -158,7 +198,8 @@ onMounted(() => {
   margin-right: 10px;
 }
 
-.filters select {
+.filters select,
+.filters input {
   margin-right: 20px;
   padding: 5px;
 }
@@ -174,6 +215,23 @@ onMounted(() => {
 
 .reset-button:hover {
   background-color: #d32f2f;
+}
+
+.create-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.create-button:hover {
+  background-color: #45a049;
 }
 
 table {
