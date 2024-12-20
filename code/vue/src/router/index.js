@@ -99,35 +99,28 @@ const router = createRouter({
       name: 'shop',
       component: PurchaseBrainCoins },
     { path: '/users',
-        name: 'users',
-        component: UserList },
+      name: 'users',
+      component: UserList 
+    },
     {
-      path: '/dashboard',
-      component: DashboardPage,
-      children: [
-        {
-          path: 'transactions',
-          name: 'transactions',
-          component: TransactionsPage,
-          children: [
-            {
-              path: '',
-              name: 'transaction-list',
-              component: TransactionList,
-            },
-            {
-              path: 'new',
-              name: 'transaction-form',
-              component: TransactionForm,
-            },
-            {
-              path: 'history',
-              name: 'transaction-history',
-              component: TransactionHistory,
-            },
-          ],
-        },        
-      ],
+      path: '/transactions',
+      name: 'transactions',
+      component: TransactionsPage 
+    },
+    {
+      path: '/transactions/list',
+      name: 'transaction-list',
+      component: TransactionList 
+    },
+    {
+      path: '/transactions/new',
+      name: 'transaction-new',
+      component: TransactionForm 
+    },
+    {
+      path: '/transactions/history',
+      name: 'transaction-history',
+      component: TransactionHistory 
     },
   ],
 });

@@ -14,7 +14,8 @@ export const useTransactionHistoryStore = defineStore('transactionHistory', {
       this.error = null;
 
       try {
-        const response = await axios.get('/transactions/history');
+        const response = await axios.get('/transactions');
+        
         this.transactions = response.data;
       } catch (error) {
         console.error('Error fetching transactions:', error);

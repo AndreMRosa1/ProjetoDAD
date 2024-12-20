@@ -28,6 +28,9 @@ class TransactionController extends Controller
                 ->orderBy('transaction_datetime', 'desc')
                 ->get();
         }
+        if ($transactions->isEmpty()) {
+            Log::info('No transactions found for user ID ' . $user->id);
+        }
 
         return response()->json($transactions);
     }

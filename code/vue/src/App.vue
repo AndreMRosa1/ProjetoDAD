@@ -196,6 +196,11 @@ const handleMessageFromInputDialog = (message) => {
                   <a @click="handleChangePassword" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     Change Password
                   </a>
+                  <RouterLink to="/transactions/history"><a
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Transaction History
+                    </a></RouterLink>
+
                   <a @click="handleLogout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     Logout
                   </a>
