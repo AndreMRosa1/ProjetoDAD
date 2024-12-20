@@ -27,19 +27,18 @@ import { ref, onMounted, computed } from 'vue';
 
 const users = ref([]);
 
-const totalUsers = computed(() => {
-  return users.value.length
-})
-
 const fetchUsers = async () => {
   try {
     const response = await axios.get('/users')
-    users.value = response.data.data
-
+    users.value = response.data
   } catch (error) {
     console.log(error)
   }
 };
+
+const totalUsers = computed(() => {
+  return users.value.length
+})
 
 onMounted(() => {
   fetchUsers();
@@ -53,7 +52,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ddd;
   padding: 8px;
 }
