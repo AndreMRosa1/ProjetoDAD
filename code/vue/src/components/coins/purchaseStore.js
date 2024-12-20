@@ -6,9 +6,9 @@ import { useAuthStore } from '@/stores/auth';
 
 export const usePurchaseStore = defineStore('purchase', {
   state: () => ({
-    paymentType: '',
+    paymentType: 'MBWAY',
     paymentReference: '',
-    euros: 0,
+    euros: 1,
     message: '',
     errors: {
       paymentType: '',

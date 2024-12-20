@@ -12,12 +12,12 @@
           <option value="MB">MB</option>
           <option value="VISA">VISA</option>
         </select>
-        <div v-if="errors.paymentType" class="text-red-500 text-sm mt-1">{{ errors.paymentType }}</div>
       </div>
 
       <div class="form-group">
         <label for="paymentReference" class="block text-gray-700 font-medium mb-2">Referência de Pagamento:</label>
         <input type="text" id="paymentReference" v-model="paymentReference" @blur="validatePaymentReference" required
+          :placeholder="getPlaceholder(paymentType)"
           class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none">
         <div v-if="errors.paymentReference" class="text-red-500 text-sm mt-1">{{ errors.paymentReference }}</div>
       </div>
@@ -46,4 +46,22 @@ import { storeToRefs } from 'pinia';
 const purchaseStore = usePurchaseStore();
 const { paymentType, paymentReference, euros, message, errors } = storeToRefs(purchaseStore);
 const { validatePaymentType, validatePaymentReference, validateEuros, purchaseBrainCoins } = purchaseStore;
+
+// Get dynamic placeholder based on payment type
+const getPlaceholder = (paymentType) => {
+  switch (paymentType) {
+    case 'MBWAY':
+      return 'e.g. 915785345';
+    case 'PAYPAL':
+      return 'e.g. john.doe@gmail.com';
+    case 'IBAN':
+      return 'e.g. PT50123456781234567812349';
+    case 'MB':
+      return 'e.g. 45634-123456789';
+    case 'VISA':
+      return 'e.g. 4321567812345678';
+    default:
+      return '';
+  }
+};
 </script>
