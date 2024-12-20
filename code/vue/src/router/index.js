@@ -34,94 +34,26 @@ import EditProfile from '@/components/auth/EditProfile.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/home',
-      name: 'home',
-      component: HomeComponent,
-    },{ 
-      path: '/login', 
-      name: 'login', 
-      component: Login 
-    },
-    { 
-      path: '/register', 
-      name: 'register', 
-      component: Register 
-    },
-    { 
-      path: '/', 
-      name: 'home',
-      component: HomeComponent
-    },
-    { 
-      path: '/change-password', 
-      name: 'changepassword', 
-      component: ChangePassword
-    },
-    { 
-      path: '/edit-profile', 
-      name: 'editprofile', 
-      component: EditProfile
-    },
-    { 
-      path: '/history',
-      name: 'history',
-      component: GameHistory 
-    },
-    {
-      path: '/memory-game',
-      name: 'game',
-      component: SinglePlayerGame,
-    },
-    {
-      path: '/scoreboards/global',
-      name: 'scoreboardglobal',
-      component: GlobalScoreboard,
-    },
-    {
-      path: '/scoreboards/personal',
-      name: 'scoreboardpersonal',
-      component: PersonalScoreboard,
-    },
-    { path: '/new-memory-game',
-      name: 'newmemorygame',
-      component: StartNewMemoryGame },
-    { path: '/multiplayer', 
-      name: 'multiplayer',
-      component: MultiPlayerGames },
-    { path: '/scoreboards',
-      name: 'scoreboards',
-      component: ScoreboardsPage },
-    { path: '/statistics',
-      name: 'statistics',
-      component: StatisticsPage },
-    { path: '/shop',
-      name: 'shop',
-      component: PurchaseBrainCoins },
-    { path: '/users',
-      name: 'users',
-      component: UserList 
-    },
-    {
-      path: '/transactions',
-      name: 'transactions',
-      component: TransactionsPage 
-    },
-    {
-      path: '/transactions/list',
-      name: 'transaction-list',
-      component: TransactionList 
-    },
-    {
-      path: '/transactions/new',
-      name: 'transaction-new',
-      component: TransactionForm 
-    },
-    {
-      path: '/transactions/history',
-      name: 'transaction-history',
-      component: TransactionHistory 
-    },
+    { path: '/login', name: 'login', component: Login },
+  { path: '/register', name: 'register', component: Register },
+  { path: '/', name: 'home', component: HomeComponent },
+  { path: '/dashboard', name: 'dashboard', component: DashboardPage },
+  { path: '/start-new-memory-game', name: 'start-new-memory-game', component: StartNewMemoryGame, meta: { requiresAuth: true, roles: ['player'] } },
+  { path: '/scoreboards', name: 'scoreboards', component: ScoreboardsPage, meta: { requiresAuth: true, roles: ['player'] } },
+  { path: '/statistics', name: 'statistics', component: StatisticsPage, meta: { requiresAuth: true, roles: ['player'] } },
+  { path: '/users', name: 'user-list', component: UserList, meta: { requiresAuth: true, roles: ['admin'] } },
+  { path: '/purchase-brain-coins', name: 'purchase-brain-coins', component: PurchaseBrainCoins, meta: { requiresAuth: true, roles: ['player'] } },
+  { path: '/transactions', name: 'transactions', component: TransactionsPage, meta: { requiresAuth: true, roles: ['admin'] } },
+  { path: '/transaction-list', name: 'transaction-list', component: TransactionList, meta: { requiresAuth: true, roles: ['admin'] } },
+  { path: '/transaction-form', name: 'transaction-form', component: TransactionForm, meta: { requiresAuth: true, roles: ['admin'] } },
+  { path: '/transaction-history', name: 'transaction-history', component: TransactionHistory, meta: { requiresAuth: true, roles: ['admin'] } },
+  { path: '/global-scoreboard', name: 'global-scoreboard', component: GlobalScoreboard, meta: { requiresAuth: true, roles: ['player'] } },
+  { path: '/personal-scoreboard', name: 'personal-scoreboard', component: PersonalScoreboard, meta: { requiresAuth: true, roles: ['player'] } },
+  { path: '/game-history', name: 'game-history', component: GameHistory, meta: { requiresAuth: true, roles: ['player'] } },
+  { path: '/multiplayer-games', name: 'multiplayer-games', component: MultiPlayerGames, meta: { requiresAuth: true, roles: ['player'] } },
+  { path: '/single-player-game', name: 'single-player-game', component: SinglePlayerGame, meta: { requiresAuth: true, roles: ['player'] } },
+  { path: '/change-password', name: 'change-password', component: ChangePassword, meta: { requiresAuth: true } },
+  { path: '/edit-profile', name: 'edit-profile', component: EditProfile, meta: { requiresAuth: true } },
   ],
 });
 

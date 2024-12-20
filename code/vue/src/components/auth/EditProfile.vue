@@ -48,12 +48,14 @@
                 Save Changes
             </button>
         </form>
-
+        <div v-if="loggedIn && userRole === 'P'" class="mt-4">
         <!-- Delete Account Button -->
-        <button @click="showDeleteModal = true"
-            class="w-full mt-4 bg-red-600 text-white py-2 px-4 rounded-md shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+        <button 
+        @click="showDeleteModal = true" 
+        class="w-full mt-4 bg-red-600 text-white py-2 px-4 rounded-md shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
             Delete Account
         </button>
+        </div>
 
         <!-- Delete Account Modal -->
         <div v-if="showDeleteModal"
@@ -82,6 +84,7 @@
     </div>
 </template>
 
+
 <script>
 import { ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
@@ -93,15 +96,19 @@ export default {
     name: 'EditProfile',
     setup() {
         const authStore = useAuthStore();
+        const loggedIn = ref(authStore.user);
         const errorStore = useErrorStore();
         const showDeleteModal = ref(false);
         const password = ref('');
+        const userRole = authStore.user?.type || '';
         const form = ref({
             name: authStore.user?.name || '',
             nickname: authStore.user?.nickname || '',
             email: authStore.user?.email || '',
             photo_url: authStore.user?.photo_url || '',
+            
         });
+        
 
         const handleFileChange = async (event) => {
             // File upload logic...
@@ -138,6 +145,8 @@ export default {
             password,
             deleteAccount,
             errorStore,
+            userRole,
+            loggedIn,
         };
     },
 };
