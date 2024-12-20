@@ -111,11 +111,14 @@ const router = createRouter({
     { 
       path: '/shop',
       name: 'shop',
-      component: PurchaseBrainCoins },
+      component: PurchaseBrainCoins,
+      meta: { requiresAuth: true, allowedTypes: ['P'] } 
+    },
     { path: '/users',
         name: 'users',
         component: UserList ,
-        meta: { requiresAuth: true, allowedTypes: ['A'] }},
+        meta: { requiresAuth: true, allowedTypes: ['A'] }
+      },
     {
       path: '/dashboard',
       component: DashboardPage,
@@ -140,6 +143,7 @@ const router = createRouter({
               name: 'transaction-history',
               component: TransactionHistory,
             },
+            
           ],
         },        
       ],
