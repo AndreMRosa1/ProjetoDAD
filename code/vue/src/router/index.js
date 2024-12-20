@@ -83,52 +83,46 @@ const router = createRouter({
       name: 'scoreboardpersonal',
       component: PersonalScoreboard,
     },
-    { path: '/new-memory-game',
+    { 
+      path: '/new-memory-game',
       name: 'newmemorygame',
-      component: StartNewMemoryGame },
-    { path: '/multiplayer', 
-      name: 'multiplayer',
-      component: MultiPlayerGames },
-    { path: '/scoreboards',
-      name: 'scoreboards',
-      component: ScoreboardsPage },
-    { path: '/statistics',
-      name: 'statistics',
-      component: StatisticsPage },
-    { path: '/shop',
-      name: 'shop',
-      component: PurchaseBrainCoins },
-    { path: '/users',
-        name: 'users',
-        component: UserList },
-    {
-      path: '/dashboard',
-      component: DashboardPage,
-      children: [
-        {
-          path: 'transactions',
-          name: 'transactions',
-          component: TransactionsPage,
-          children: [
-            {
-              path: '',
-              name: 'transaction-list',
-              component: TransactionList,
-            },
-            {
-              path: 'new',
-              name: 'transaction-form',
-              component: TransactionForm,
-            },
-            {
-              path: 'history',
-              name: 'transaction-history',
-              component: TransactionHistory,
-            },
-          ],
-        },        
-      ],
+      component: StartNewMemoryGame 
     },
+    { 
+      path: '/multiplayer', 
+      name: 'multiplayer',
+      component: MultiPlayerGames 
+    },
+    { 
+      path: '/scoreboards',
+      name: 'scoreboards',
+      component: ScoreboardsPage 
+    },
+    { 
+      path: '/statistics',
+      name: 'statistics',
+      component: StatisticsPage 
+    },
+    { 
+      path: '/shop',
+      name: 'shop',
+      component: PurchaseBrainCoins 
+    },
+    { 
+      path: '/users',
+        name: 'users',
+        component: UserList 
+      },
+    { 
+      path: '/transactions/list',
+        name: 'transactions-list',
+        component: TransactionList 
+      },
+    { 
+      path: '/transactions/history',
+        name: 'transactions-history',
+        component: TransactionHistory 
+      }
   ],
 });
 
