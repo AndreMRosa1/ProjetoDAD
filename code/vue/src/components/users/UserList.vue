@@ -1,8 +1,6 @@
 <template>
   <div>
     <h1 class="title">Users List</h1>
-    <p class="total-users">Total Users: {{ totalUsers }}</p>
-
     <!-- Filters -->
     <div class="filters">
       <label for="sort-id">Sort by ID:</label>
@@ -37,7 +35,7 @@
           <th>Name</th>
           <th>Email</th>
           <th>Type</th>
-          <th>Actions</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -47,8 +45,6 @@
           <td>{{ user.email }}</td>
           <td>{{ user.type }}</td>
           <td class="border px-4 py-2">
-            <button @click="blockedUser(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Block</button>
-            <button @click="editUser(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Edit</button>
             <button @click="deleteUser(user.id)" class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
         </td>
         </tr>
@@ -68,6 +64,11 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+import { useErrorStore } from '@/stores/error';
+
+const storeUser = useUserStore()
+const storeError = useErrorStore()
 
 const router = useRouter();
 const users = ref([]);
@@ -89,6 +90,17 @@ const fetchUsers = async () => {
   }
 };
 
+const deleteUser = async (userId) => {
+    storeError.resetMessages()
+    try {
+      await axios.delete(`/users/${userId}`)
+      users.value = users.value.filter(user => user.id !== userId)
+    } catch (e) {
+      storeError.setErrorMessages(
+        e.response.data.message, e.response.data.errors, e.response.status, 'Delete User Error!'
+      )
+    }
+  }
 const applyFilters = () => {
   currentPage.value = 1;
 };
@@ -151,10 +163,6 @@ const totalPages = computed(() => {
   }
 
   return Math.ceil(filteredUsers.length / itemsPerPage);
-});
-
-const totalUsers = computed(() => {
-  return users.value.length;
 });
 
 const prevPage = () => {
