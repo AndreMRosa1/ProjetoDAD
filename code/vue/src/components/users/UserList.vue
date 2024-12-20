@@ -34,8 +34,7 @@ const totalUsers = computed(() => {
 const fetchUsers = async () => {
   try {
     const response = await axios.get('/users')
-    const gamesData = await Promise.all(response.data.data)
-    this.users = gamesData
+    users.value = response.data.data
 
   } catch (error) {
     console.log(error)
