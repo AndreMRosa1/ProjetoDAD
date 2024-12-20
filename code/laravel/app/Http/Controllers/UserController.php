@@ -104,7 +104,7 @@ class UserController extends Controller
                 'current_password' => ['The provided password does not match your current password.'],
             ]);
         }
-        
+
         $user->password = Hash::make($validated['password']);
         $user->save();
 

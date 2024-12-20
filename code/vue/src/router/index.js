@@ -10,6 +10,7 @@ import StartNewMemoryGame from '@/components/StartNewMemoryGame.vue'
 import ScoreboardsPage from '@/components/ScoreboardsPage.vue';
 import StatisticsPage from '@/components/StatisticsPage.vue';
 import { useAuthStore } from '@/stores/auth'
+import UserList from '@/components/users/UserList.vue'
 
 //const routes = [
 //  { path: '/login', name: 'login', component: Login },
@@ -96,6 +97,9 @@ const router = createRouter({
     { path: '/shop',
       name: 'shop',
       component: PurchaseBrainCoins },
+    { path: '/users',
+        name: 'users',
+        component: UserList },
     {
       path: '/dashboard',
       component: DashboardPage,

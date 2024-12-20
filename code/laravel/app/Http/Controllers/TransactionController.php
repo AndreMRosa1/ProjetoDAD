@@ -15,7 +15,7 @@ class TransactionController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         if ($user->type === 'A') {
             // Administradores podem ver todas as transações
             $transactions = Transaction::with('user', 'game')->get();
@@ -26,6 +26,12 @@ class TransactionController extends Controller
 
         return response()->json($transactions);
     }
+
+    public function totalTransactions()
+    {
+        $totalTransactions = Transaction::count();
+        return response()->json([$totalTransactions]);
+    } 
 
     // Comprar brain coins
     public function purchase(Request $request, PaymentGatewayService $paymentService)
@@ -85,5 +91,5 @@ class TransactionController extends Controller
         return response()->json($transaction);
     }
 
-    
+
 }

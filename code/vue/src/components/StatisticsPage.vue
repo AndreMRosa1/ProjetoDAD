@@ -8,3 +8,9 @@
 <script setup>
 // No script needed for this page
 </script>
+
+<style scoped>
+.container {
+  max-width: 1200px;
+}
+</style>

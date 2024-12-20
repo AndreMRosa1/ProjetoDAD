@@ -24,15 +24,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('users/{id}/change-photo', [UserController::class, 'changePhoto']);
 
     Route::get('/user/{user_id}', [UserController::class, 'show']);
-    
+
     Route::get('/users/me', function (Request $request) {
         return $request->user();
     });
 
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users', [UserController::class, 'store']);
+
     Route::get('/history', [GameController::class, 'history']);
 
     Route::patch('/users/me/reduce-coin', [UserController::class, 'reduceCoin']);
-    
+
     // Jogos
     Route::get('/games', [GameController::class, 'indexSinglePlayer']);
     Route::patch('/games/{game_id}', [GameController::class, 'update']);
@@ -51,8 +54,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/transactions', [TransactionController::class, 'index']);
     Route::post('/transactions/purchase', [TransactionController::class, 'purchase']); //ROTA TAES PODE SER UTIL PARA O PROJETO
     Route::get('/transactions/{id}', [TransactionController::class, 'show']);
-
-    
 
     // Lobbies Multiplayer
     Route::get('/games/multiplayer/lobbies', [GameController::class, 'listLobbies']);

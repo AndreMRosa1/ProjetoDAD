@@ -27,7 +27,7 @@ const startGame = (size) => {
       </div>
 
       <!-- Personal Scoreboard in the middle (only if logged in) -->
-      <div v-if="authStore.user"
+      <div v-if="authStore.user && authStore.user.type === 'P'"
         class="relative w-fit h-fit bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
         <PersonalScoreboard :context="'home'"></PersonalScoreboard>
       </div>
@@ -41,7 +41,7 @@ const startGame = (size) => {
       </div>
 
       <!-- Right side container for New Game and Chat -->
-      <div v-if="authStore.user" class="relative w-full flex flex-col space-y-4">
+      <div v-if="authStore.user && authStore.user.type === 'P'" class="relative w-full flex flex-col space-y-4">
         <!-- New Single Player and Multiplayer Game Buttons side by side -->
         <div class="flex space-x-4 justify-center">
           <RouterLink to="/new-memory-game" class="w-full sm:w-1/2">

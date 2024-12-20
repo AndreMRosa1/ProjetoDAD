@@ -131,7 +131,7 @@ const handleMessageFromInputDialog = (message) => {
             </div>
             <RouterLink to="/shop"
               class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              active-class="text-blue-600 font-semibold" v-if="authStore.user">
+              active-class="text-blue-600 font-semibold" v-if="authStore.user && authStore.user.type === 'P'">
               Shop
             </RouterLink>
             <RouterLink to="/history"
@@ -166,6 +166,11 @@ const handleMessageFromInputDialog = (message) => {
               class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
               active-class="text-blue-600 font-semibold" v-if="authStore.user">
               Statistics
+            </RouterLink>
+            <RouterLink to="/users"
+              class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              active-class="text-blue-600 font-semibold" v-if="authStore.user && authStore.user.type === 'A'">
+              Users
             </RouterLink>
           </div>
           <div v-if="authStore.user && authStore.user.type === 'P'" class="flex items-center text-sm">
