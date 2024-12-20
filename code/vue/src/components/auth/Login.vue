@@ -1,22 +1,32 @@
 <template>
-  <div class="auth-form">
-    <h1>Login</h1>
-    <form @submit.prevent="handleLogin">
-      <label for="email">Email:</label>
-      <input v-model="email" id="email" placeholder="Email" type="email" required />
+  <div class="max-w-md mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
+    <h1 class="text-2xl font-bold text-center mb-6">Login</h1>
+    <form @submit.prevent="handleLogin" class="space-y-4">
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
+        <input v-model="email" id="email" type="email" placeholder="Email"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500 focus:border-blue-500"
+          required />
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">Password:</label>
+        <input v-model="password" id="password" type="password" placeholder="Password"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500 focus:border-blue-500"
+          required />
+      </div>
 
-      <label for="password">Password:</label>
-      <input v-model="password" id="password" placeholder="Password" type="password" required />
+      <p v-if="errorMessage" class="text-sm text-red-500">{{ errorMessage }}</p>
 
-      <!-- Mensagem de erro -->
-      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-
-      <button type="submit" class="btn">Login</button>
+      <button type="submit"
+        class="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-500">
+        Login
+      </button>
     </form>
 
-    <div class="register-link">
-      <p>Don't have an account?</p>
-      <RouterLink to="/register" class="btn-register">
+    <div class="mt-6 text-center">
+      <p class="text-sm text-gray-600">Don't have an account?</p>
+      <RouterLink to="/register"
+        class="inline-block mt-2 px-4 py-2 text-blue-600 border border-blue-600 rounded-md hover:bg-blue-600 hover:text-white">
         Register
       </RouterLink>
     </div>
@@ -24,19 +34,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useAuthStore } from '@/stores/auth';
-import { useRouter } from 'vue-router';
+import { ref } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const router = useRouter();
 
-const email = ref('');
-const password = ref('');
-const errorMessage = ref(''); // Variável para armazenar a mensagem de erro
+const email = ref("");
+const password = ref("");
+const errorMessage = ref("");
 
 const handleLogin = async () => {
-  errorMessage.value = ''; // Limpa a mensagem de erro ao iniciar o login
+  errorMessage.value = "";
 
   const success = await authStore.login({
     email: email.value,
@@ -44,76 +54,9 @@ const handleLogin = async () => {
   });
 
   if (success) {
-    router.push('/');
+    router.push("/");
   } else {
-    // Define a mensagem de erro se o login falhar
-    errorMessage.value = 'Credenciais inválidas. Por favor, tente novamente.';
+    errorMessage.value = "Invalid credentials. Please try again.";
   }
 };
 </script>
-
-<style scoped>
-.auth-form {
-  max-width: 400px;
-  margin: auto;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-label {
-  display: block;
-  margin: 8px 0 4px;
-}
-
-input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-.register-link {
-  margin-top: 16px;
-  text-align: center;
-}
-
-.btn-register {
-  display: inline-block;
-  padding: 8px 16px;
-  margin-top: 10px;
-  text-align: center;
-  color: #007bff;
-  text-decoration: none;
-  border: 1px solid #007bff;
-  border-radius: 4px;
-}
-
-.btn-register:hover {
-  background-color: #007bff;
-  color: white;
-}
-
-.error-message {
-  color: red;
-  font-size: 0.9em;
-  margin-top: -12px;
-  margin-bottom: 12px;
-}
-</style>

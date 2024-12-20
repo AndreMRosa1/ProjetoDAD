@@ -7,6 +7,7 @@ import { Globe, PersonStanding } from 'lucide-vue-next';
 import GlobalScoreboard from './scoreboards/GlobalScoreboard.vue';
 import PersonalScoreboard from './scoreboards/PersonalScoreboard.vue';
 import Chat from './chat/Chat.vue';
+import GameHistory from './GameHistory.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -21,14 +22,14 @@ const startGame = (size) => {
     <div class="button-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 w-full h-full">
       <!-- Global Scoreboard on the left -->
       <div v-if="authStore.user"
-        class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
+        class="relative w-fit h-fit bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
         <GlobalScoreboard></GlobalScoreboard>
       </div>
 
       <!-- Personal Scoreboard in the middle (only if logged in) -->
       <div v-if="authStore.user"
-        class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
-        <PersonalScoreboard></PersonalScoreboard>
+        class="relative w-fit h-fit bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
+        <PersonalScoreboard :context="'home'"></PersonalScoreboard>
       </div>
 
       <div v-if="!authStore.user" @click="startGame(90)"
@@ -63,8 +64,8 @@ const startGame = (size) => {
         </div>
 
         <!-- Chat under the New Game buttons -->
-        <div class="relative w-full h-full bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
-          <Chat></Chat>
+        <div class="relative rounded-lg flex flex-col hover:cursor-pointer">
+          <Chat :message-limit="3"></Chat>
         </div>
       </div>
     </div>

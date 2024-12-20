@@ -60,8 +60,7 @@
         <span class="flex-1 text-center">Type</span>
         <span class="flex-1 text-center">Time</span>
         <span class="flex-1 text-center">Turns</span>
-        <span class="flex-1 text-center">Start Date</span>
-        <span class="flex-1 text-center">End Date</span>
+        <span class="flex-1 text-center">Date</span>
       </div>
 
       <div v-for="(record, index) in personalScoreboard" :key="index"
@@ -70,15 +69,13 @@
           {{ `${record.board.board_cols}x${record.board.board_rows}` }}
         </span>
         <span class="flex-1 text-center">
-          {{ record.type === 'S' ? 'Single-Player' : 'Multiplayer' }}
+          {{ context === 'home' ? (record.type === 'S' ? 'SP' : 'MP') : (record.type === 'S' ? 'Singleplayer' :
+            'Multiplayer') }}
         </span>
         <span class="flex-1 text-center">{{ record.total_time }}</span>
         <span class="flex-1 text-center">{{ record.total_turns_winner }}</span>
         <span class="flex-1 text-center">
           {{ new Date(record.began_at).toLocaleDateString() }}
-        </span>
-        <span class="flex-1 text-center">
-          {{ new Date(record.ended_at).toLocaleDateString() }}
         </span>
       </div>
     </div>
@@ -97,15 +94,21 @@ import { storeToRefs } from "pinia";
 import { reactive, onMounted } from "vue";
 
 export default {
-  setup() {
+  props: {
+    context: {
+      type: String,
+      default: '', // Default to an empty string if no context is provided
+    },
+  },
+  setup(props) {
     const scoreboardStore = usePersonalScoreboardStore();
     const { personalScoreboard, isLoading, error } = storeToRefs(scoreboardStore);
 
     const filters = reactive({
-      type: "", // Todos os tipos de jogo
-      boardSize: "", // Todos os tamanhos de tabuleiro
-      sortBy: "total_time", // Critério de ordenação (tempo por padrão)
-      sortOrder: "asc", // Ordem ascendente por padrão
+      type: "", // All game types
+      boardSize: "", // All board sizes
+      sortBy: "total_time", // Default sorting criterion (time)
+      sortOrder: "asc", // Default ascending order
     });
 
     const loadScoreboard = () => {
@@ -126,6 +129,7 @@ export default {
       error,
       filters,
       applyFilters,
+      context: props.context, // Make context available in the template
     };
   },
 };
