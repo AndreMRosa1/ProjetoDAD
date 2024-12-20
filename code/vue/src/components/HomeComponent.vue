@@ -1,13 +1,11 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import StartNewMemoryGame from './StartNewMemoryGame.vue';
-import ScoreboardsPage from './ScoreboardsPage.vue';
-import { Globe, PersonStanding } from 'lucide-vue-next';
+import StartNewMemoryGame from './singleplayer/StartNewMemoryGame.vue';
 import GlobalScoreboard from './scoreboards/GlobalScoreboard.vue';
 import PersonalScoreboard from './scoreboards/PersonalScoreboard.vue';
 import Chat from './chat/Chat.vue';
-import GameHistory from './GameHistory.vue';
+import GameHistory from './users/GameHistory.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();

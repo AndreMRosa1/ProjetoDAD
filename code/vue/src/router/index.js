@@ -5,8 +5,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import Login from '@/components/auth/Login.vue'
 import Register from '@/components/auth/Register.vue'
-import DashboardPage from '@/components/DashboardPage.vue'
-import StartNewMemoryGame from '@/components/StartNewMemoryGame.vue'
+import StartNewMemoryGame from '@/components/singleplayer/StartNewMemoryGame.vue'
 import ScoreboardsPage from '@/components/ScoreboardsPage.vue';
 import StatisticsPage from '@/components/StatisticsPage.vue';
 import { useAuthStore } from '@/stores/auth'
@@ -19,13 +18,11 @@ import UserList from '@/components/users/UserList.vue'
 //]
 
 import PurchaseBrainCoins from '@/components/coins/PurchaseBrainCoins.vue';
-import TransactionsPage from '@/components/TransactionPage.vue';
 import TransactionList from '@/components/transactions/TransactionList.vue';
-import TransactionForm from '@/components/transactions/TransactionForm.vue';
 import TransactionHistory from '@/components/transactions/TransactionHistory.vue';
 import GlobalScoreboard from '@/components/scoreboards/GlobalScoreboard.vue';
 import PersonalScoreboard from '@/components/scoreboards/PersonalScoreboard.vue';
-import GameHistory from '@/components/GameHistory.vue';
+import GameHistory from '@/components/users/GameHistory.vue';
 import MultiPlayerGames from '@/components/multiplayer/MultiPlayerGames.vue'
 import SinglePlayerGame from '@/components/singleplayer/SinglePlayerGame.vue'
 import ChangePassword from '@/components/auth/ChangePassword.vue'
