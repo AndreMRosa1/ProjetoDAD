@@ -18,10 +18,15 @@ class TransactionController extends Controller
 
         if ($user->type === 'A') {
             // Administradores podem ver todas as transações
-            $transactions = Transaction::with('user', 'game')->get();
+            $transactions = Transaction::with(['user', 'game'])
+                ->orderBy('transaction_datetime', 'desc')
+                ->get();
         } else {
             // Usuários comuns veem apenas suas próprias transações
-            $transactions = $user->transactions()->with('game')->get();
+            $transactions = $user->transactions()
+                ->with('game')
+                ->orderBy('transaction_datetime', 'desc')
+                ->get();
         }
 
         return response()->json($transactions);

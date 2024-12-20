@@ -8,6 +8,9 @@
         <RouterLink to="/multiplayer" class="block mb-4 text-blue-500 hover:underline">
           Multiplayer Game
         </RouterLink>
+        <RouterLink to="/transactions/history" class="block mb-4 text-blue-500 hover:underline">
+          Transaction History
+        </RouterLink>
       </nav>
     </aside>
 

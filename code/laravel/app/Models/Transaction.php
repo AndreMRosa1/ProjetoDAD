@@ -20,6 +20,7 @@ class Transaction extends Model
         'payment_type',
         'payment_reference',
         'transaction_datetime',
+        'game',
     ];
 
     protected $casts = [

@@ -22,6 +22,7 @@ import PurchaseBrainCoins from '@/components/coins/PurchaseBrainCoins.vue';
 import TransactionsPage from '@/components/TransactionPage.vue';
 import TransactionList from '@/components/transactions/TransactionList.vue';
 import TransactionForm from '@/components/transactions/TransactionForm.vue';
+import TransactionHistory from '@/components/transactions/TransactionHistory.vue';
 import GlobalScoreboard from '@/components/scoreboards/GlobalScoreboard.vue';
 import PersonalScoreboard from '@/components/scoreboards/PersonalScoreboard.vue';
 import GameHistory from '@/components/GameHistory.vue';
@@ -118,6 +119,11 @@ const router = createRouter({
               path: 'new',
               name: 'transaction-form',
               component: TransactionForm,
+            },
+            {
+              path: 'history',
+              name: 'transaction-history',
+              component: TransactionHistory,
             },
           ],
         },        
