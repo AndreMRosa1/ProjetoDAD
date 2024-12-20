@@ -57,7 +57,7 @@
       <div v-for="(record, index) in globalScoreboard" :key="index"
         class="flex justify-around border-b last:border-b-0 hover:bg-green-100 p-2">
         <span class="flex-1 text-center">{{ index + 1 }}</span>
-        <span class="flex-1 text-center">{{ record.creator.nickname }}</span>
+        <span class="flex-1 text-center">{{ record.creator ? record.creator.nickname : 'Unknown' }}</span>
         <span class="flex-1 text-center">{{ `${record.board.board_cols}x${record.board.board_rows}` }}</span>
         <span class="flex-1 text-center">{{ record.best_time }}</span>
         <span class="flex-1 text-center">{{ record.best_turns }}</span>

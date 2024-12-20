@@ -42,6 +42,12 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   };
 
   const start = async (size) => {
+    if (size == 90) {
+      gameSize.value = 12;
+      initializeBoard();
+      startTimer();
+      return;
+    }
     if(authStore.user.brain_coins_balance < 1) {
       errorStore.setErrorMessages('Not enough Brain Coins')
       router.push('/new-memory-game')
@@ -105,8 +111,6 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     }
   };
   
-
-
   const startTimer = () => {
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(() => timer.value++, 1000);

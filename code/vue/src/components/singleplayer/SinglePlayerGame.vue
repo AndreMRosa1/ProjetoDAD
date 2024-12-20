@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center items-center h-[calc(100vh-5rem)] max-h-[calc(100vh-5rem)]">
-    <div class="flex gap-8">
+    <div class="flex gap-8" :class="{ 'mt-40': !authStore.user }">
       <!-- Sidebar -->
       <div class="flex flex-col gap-3 flex-shrink-0">
         <div>

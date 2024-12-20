@@ -54,6 +54,8 @@ export const useScoreboardStore = defineStore("scoreboard", {
         // Fazer a requisição para a API
         const response = await axios.get(`/scoreboards/global?${params}`);
 
+        //console.log(response)
+
         // Atualizar a lista global
         this.globalScoreboard = response.data;
       } catch (err) {
