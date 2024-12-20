@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+
     // Show all users
     public function index()
     {
@@ -113,6 +114,23 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = $this->findUserOrFail($id);
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted successfully']);
+    }
+
+    public function deleteAccount(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string',
+        ]);
+
+        $user = auth()->user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['errors' => ['password' => ['The provided password is incorrect.']]], 422);
+        }
+
         $user->delete();
 
         return response()->json(['message' => 'User deleted successfully']);

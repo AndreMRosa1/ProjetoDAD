@@ -25,11 +25,28 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $data = $request->validated();
+        // Validate the request data
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'nickname' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:3|confirmed',
+            'photo' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate photo field if present
+        ]);
+
+        // Hash the password before storing it
         $data['password'] = bcrypt($data['password']);
 
+        // Handle file upload if the photo is present
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('photos', 'public');
+            $data['photo_filename'] = str_replace('photos/', '', $path); // Save filename (without the 'photos/' directory)
+        }
+
+        // Create the user with the validated data
         $user = User::create($data);
 
+        // Return a success response with the created user
         return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
     }
 
