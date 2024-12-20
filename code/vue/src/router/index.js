@@ -116,35 +116,6 @@ const router = createRouter({
         component: UserList ,
         meta: { requiresAuth: true, allowedTypes: ['A'] }
       },
-    {
-      path: '/dashboard',
-      component: DashboardPage,
-      children: [
-        {
-          path: 'transactions',
-          name: 'transactions',
-          component: TransactionsPage,
-          children: [
-            {
-              path: '',
-              name: 'transaction-list',
-              component: TransactionList,
-            },
-            {
-              path: 'new',
-              name: 'transaction-form',
-              component: TransactionForm,
-            },
-            {
-              path: 'history',
-              name: 'transaction-history',
-              component: TransactionHistory,
-            },
-            
-          ],
-        },        
-      ],
-    },
     { 
       path: '/users',
         name: 'users',
