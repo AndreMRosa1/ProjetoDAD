@@ -41,12 +41,12 @@ class TransactionController extends Controller
         $validated = $request->validate([
             'transaction_datetime' => 'required|date',
             'user_id' => 'required|integer|exists:users,id',
-            'game_id' => 'required|integer|exists:games,id',
+            'game_id' => 'sometimes|nullable|integer|exists:games,id',
             'type' => 'required|in:B,P,I',
-            'euros' => 'nullable|numeric|min:0|max:999999.99',
+            'euros' => 'sometimes|nullable|numeric|min:0|max:999999.99',
             'brain_coins' => 'nullable|integer|min:0',
-            'payment_type' => 'nullable|in:MBWAY,PAYPAL,IBAN,MB,VISA',
-            'payment_reference' => 'nullable|string|max:255',
+            'payment_type' => 'sometimes|nullable|in:MBWAY,PAYPAL,IBAN,MB,VISA',
+            'payment_reference' => 'sometimes|nullable|string|max:255',
         ]);
 
         $transaction = Transaction::create($validated);

@@ -1,10 +1,11 @@
-import { ref, onUnmounted } from 'vue';
+import { ref, onUnmounted, useTransitionState } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import dayjs from 'dayjs';
 import { defineStore } from 'pinia';
 import { useErrorStore } from '@/stores/error'
 import router from '@/router';
+import { useTransactionsStore } from './transactions';
 
 export const useMemorygameStore = defineStore('memorygame', () => {
   const authStore = useAuthStore();
@@ -72,6 +73,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
       });
 
       gameId.value = response.data.id;
+      handlePurchase();
     } catch (error) {
       console.error('Error saving game:', error.response?.data || error.message);
     }
@@ -191,13 +193,33 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     // Deduct coins only after revealing the hint
     try {
       await axios.patch('/users/me/reduce-coin'); // API call to reduce coins
+      handlePurchase();
       await authStore.updateUser(); // Update user data to refresh coin balance
     } catch (error) {
       errorStore.setErrorMessages('Not enough Brain Coins')
     }
   };
 
+const handlePurchase = async () => {
+  try {
+    const payload = {
+      transaction_datetime: new Date().toISOString(), // Current datetime
+      user_id: authStore.user.id, // Replace with actual user ID if available
+      game_id: gameId.value,
+      type: 'I',
+      brain_coins: 1,
+    };
+  
+    const transactionsStore = useTransactionsStore();
+  
+    // Call the transactions store's createTransaction method
+    const response = await transactionsStore.createTransaction(payload);
+  } catch (error) {
+    errorStore.setErrorMessages('Error storing transaction');
+  }
+};
+
   onUnmounted(() => timerInterval && clearInterval(timerInterval));
 
-  return { status, board, start, play, turnCounter, pairCounter, timer, useHint, gameSize };
+  return { status, board, start, play, turnCounter, pairCounter, timer, useHint, gameSize, handlePurchase };
 })
