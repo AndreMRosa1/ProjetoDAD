@@ -78,7 +78,6 @@ const router = createRouter({
       path: '/memory-game',
       name: 'game',
       component: SinglePlayerGame,
-      meta: { requiresAuth: true, allowedTypes: ['P'] }
     },
     {
       path: '/scoreboards/global',
