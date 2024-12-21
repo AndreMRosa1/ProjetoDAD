@@ -8,7 +8,6 @@ const authStore = useAuthStore();
 
 onMounted(() => {
   transactionHistoryStore.fetchTransactions();
-  console.log(transactionHistoryStore.totalPages)
 });
 </script>
 

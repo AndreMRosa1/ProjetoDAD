@@ -22,7 +22,6 @@ onMounted(() => {
 
 // Função para criar um jogo com o grid selecionado
 const createGame = () => {
-    console.log(`Creating game with grid size: ${gridSize.value}`);
     storeLobby.addGame(gridSize.value);
 }
 </script>
@@ -31,18 +30,16 @@ const createGame = () => {
     <Card class="my-8 py-2 px-1">
         <CardHeader class="pb-0">
             <CardTitle>Lobby</CardTitle>
-            <CardDescription>{{ storeLobby.totalGames == 1 ? '1 game' : storeLobby.totalGames + ' games'}} waiting.</CardDescription>
+            <CardDescription>{{ storeLobby.totalGames == 1 ? '1 game' : storeLobby.totalGames + ' games' }} waiting.
+            </CardDescription>
         </CardHeader>
         <CardContent class="p-4">
             <div class="py-2 flex flex-col gap-4">
                 <!-- Dropdown para selecionar tamanho do grid -->
                 <div>
                     <label for="gridSize" class="block text-sm font-medium">Select grid size</label>
-                    <select
-                        id="gridSize"
-                        v-model="gridSize"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    >
+                    <select id="gridSize" v-model="gridSize"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         <option value="4x4">4x4</option>
                         <option value="6x6">6x6</option>
                     </select>
@@ -54,7 +51,7 @@ const createGame = () => {
                 </Button>
             </div>
             <div v-if="storeLobby.totalGames > 0">
-                <ListGamesLobby></ListGamesLobby> 
+                <ListGamesLobby></ListGamesLobby>
             </div>
             <div v-else>
                 <h2 class="text-xl">The lobby is empty!</h2>

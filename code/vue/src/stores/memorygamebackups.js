@@ -121,20 +121,16 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   };
 
   const useHint = () => {
-    console.log(board.value)
     if (!board.value || board.value.length == 0) return 
 
     if (status.value || flippedCards.value.length > 0) {
-      console.log('Hint not available: game is over or a turn is in progress.');
       return; // Avoid using hint during an ongoing turn
     }
 
     const unmatchedPairs = board.value.filter(card => card.state === 'hidden');
-    console.log('Unmatched pairs:', unmatchedPairs);
    
 
     if (unmatchedPairs.length < 2) {
-      console.log('Not enough unmatched cards for a hint.');
       return; // Not enough cards to hint
     }
 
@@ -149,18 +145,13 @@ export const useMemorygameStore = defineStore('memorygame', () => {
       seenFaces.set(card.face, card);
     }
 
-    console.log('Hint pair found:', hintPair);
-
     if (hintPair.length === 2) {
       hintPair.forEach(card => card.state = 'flipped');
-      console.log('Hint cards flipped:', hintPair);
 
       setTimeout(() => {
         hintPair.forEach(card => card.state = 'hidden');
-        console.log('Hint cards flipped back:', hintPair);
       }, 1500);
     } else {
-      console.log('No matching pair found for hint.');
     }
   };
 

@@ -207,7 +207,6 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   
     // Check if the game is over or a turn is in progress
     if (status.value || flippedCards.value.length > 0) {
-      console.log('Hint not available: game is over or a turn is in progress.');
       return;
     }
   
@@ -215,7 +214,6 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     const hiddenCards = board.value.filter(card => card.state === 'hidden');
   
     if (hiddenCards.length < 2) {
-      console.log('Not enough hidden cards for a hint.');
       return;
     }
   

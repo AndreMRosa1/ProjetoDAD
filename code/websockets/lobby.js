@@ -38,7 +38,6 @@ exports.createLobby = () => {
   };
 
   const getGame = (id) => {
-    console.log(id)
     return games.get(id);
   };
 

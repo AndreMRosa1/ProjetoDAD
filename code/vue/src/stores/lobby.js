@@ -113,7 +113,6 @@ export const useLobbyStore = defineStore("lobby", () => {
         type: 'I',
         brain_coins: 5,
       };
-      console.log('Payload' , payload)
       await axios.patch(`/users/${response.player1.id}/reduce-coin`, { value: 5 });
       const response1 = await transactionsStore.createTransaction(payload);
 
@@ -126,7 +125,6 @@ export const useLobbyStore = defineStore("lobby", () => {
         type: 'I',
         brain_coins: 5,
       };
-      console.log('Payload' , payload2)
       await axios.patch(`/users/${response.player2.id}/reduce-coin`, { value: 5 });
       const response2 = await transactionsStore.createTransaction(payload2);
 

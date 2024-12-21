@@ -112,7 +112,6 @@ export const useGamesStore = defineStore("games", () => {
   socket.on("gameEnded", async (game) => {
     //updateGame(game);
     // Player that created the game is responsible for updating on the database
-    console.log(game.id)
     if (playerNumberOfCurrentUser(game) === 1) {      
       const APIresponse = await axios.patch("games/" + game.id, {
         status: "E",
@@ -156,7 +155,6 @@ export const useGamesStore = defineStore("games", () => {
         
       await axios.patch(`/users/${winnerID.value}/add-coin`);
       const response = await transactionsStore.createTransaction(payload);
-      console.log('DATABASE STORED' , response)
       const updatedGameOnDB = APIresponse.data;
     }
   });

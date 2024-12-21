@@ -12,7 +12,6 @@ export const useUserStore = defineStore('user', () => {
       const response = await axios.get('/users');
       users.value = response.data;
     } catch (error) {
-      console.log(error);
     }
   }
 
