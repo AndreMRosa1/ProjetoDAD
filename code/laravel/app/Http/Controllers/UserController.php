@@ -44,6 +44,23 @@ class UserController extends Controller
         return response()->json($user, 201);
     }
 
+    public function updateAdmin(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'type' => 'required|string|in:A,P',
+        ]);
+
+        $user->type = $validated['type'];
+        $user->save();
+
+        return response()->json([
+            'message' => 'User updated successfully.',
+            'user' => $user,
+        ]);
+    }
+
     public function update(Request $request, $id)
     {
         $user = $this->findUserOrFail($id);
@@ -190,6 +207,14 @@ public function blockUser(Request $request, $id)
 {
     $user = $this->findUserOrFail($id);
     $user->blocked = 1;
+    $user->save();
+    return response()->json($user);
+}
+
+public function unblockUser(Request $request, $id)
+{
+    $user = $this->findUserOrFail($id);
+    $user->blocked = 0;
     $user->save();
     return response()->json($user);
 }

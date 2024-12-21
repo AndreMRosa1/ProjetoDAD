@@ -87,6 +87,7 @@ import { ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useErrorStore } from '@/stores/error';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 const authStore = useAuthStore();
 const errorStore = useErrorStore();
@@ -105,7 +106,6 @@ const handleFileChange = (event) => {
 };
 
 const handleRegister = async () => {
-  // Validate that the passwords match
   if (password.value !== password_confirmation.value) {
     errorStore.setErrorMessages({
       password_confirmation: ['Passwords do not match']
@@ -118,7 +118,6 @@ const handleRegister = async () => {
   formData.append('nickname', nickname.value);
   formData.append('email', email.value);
   formData.append('password', password.value);
-  formData.append('type', userType.value);
   formData.append('password_confirmation', password_confirmation.value);
 
 
@@ -126,16 +125,25 @@ const handleRegister = async () => {
     formData.append('photo', photo.value);
   }
 
-  try {
-    const success = await authStore.register(formData);
-    if (success) {
-      alert('Registration successful!');
-      await router.push('/'); // Redirect to the home page
-    } else {
-      errorStore.setErrorMessages(authStore.errorMessages);
-    }
-  } catch (error) {
-    errorStore.setErrorMessages(error.response?.data?.errors || {});
+  const success = await authStore.register(formData);
+
+  if (!success) {
+    errorStore.setErrorMessages("Error registering user");
   }
+
+  const userId = success.response.data.user.id;
+
+  updateAdmin(userId);
 };
+
+const updateAdmin = async (userId) => {
+  console.log('Update')
+  console.log(userType)
+  const success = await axios.put(`/users/${userId}/updateAdmin`, { type: userType.value });
+  console.log(success)
+
+  if (!success) {
+    errorStore.setErrorMessages("Error updating user to admin");
+  }
+}
 </script>

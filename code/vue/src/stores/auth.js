@@ -65,8 +65,8 @@ export const useAuthStore = defineStore('auth', () => {
   const register = async (userData) => {
     storeError.resetMessages();
     try {
-      await axios.post('auth/register', userData);
-      return true;
+      const response = await axios.post('auth/register', userData);
+      return { success: true, response };
     } catch (e) {
       storeError.setErrorMessages(
         e.response.data.message,

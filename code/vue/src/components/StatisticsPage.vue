@@ -6,7 +6,23 @@
 </template>
 
 <script setup>
-// No script needed for this page
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+const updateTypeResponse = ref(null);
+
+const updateUserType = async () => {
+  try {
+    updateTypeResponse.value = await axios.get('/users/getAll');
+    console.log(updateTypeResponse.value);
+  } catch (error) {
+    console.error('Error updating user type:', error);
+  }
+};
+
+onMounted(() => {
+  updateUserType();
+});
 </script>
 
 <style scoped>

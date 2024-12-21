@@ -49,12 +49,11 @@
             </button>
         </form>
         <div v-if="loggedIn && userRole === 'P'" class="mt-4">
-        <!-- Delete Account Button -->
-        <button 
-        @click="showDeleteModal = true" 
-        class="w-full mt-4 bg-red-600 text-white py-2 px-4 rounded-md shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-            Delete Account
-        </button>
+            <!-- Delete Account Button -->
+            <button @click="showDeleteModal = true"
+                class="w-full mt-4 bg-red-600 text-white py-2 px-4 rounded-md shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                Delete Account
+            </button>
         </div>
 
         <!-- Delete Account Modal -->
@@ -70,7 +69,7 @@
                     {{ errorStore.fieldMessage('password') }}
                 </span>
                 <div class="flex justify-end mt-4 space-x-2">
-                    <button @click="deleteAccount"
+                    <button v-if="!authStore.user.type == 'A'" @click="deleteAccount"
                         class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                         Confirm
                     </button>
@@ -106,9 +105,9 @@ export default {
             nickname: authStore.user?.nickname || '',
             email: authStore.user?.email || '',
             photo_url: authStore.user?.photo_url || '',
-            
+
         });
-        
+
 
         const handleFileChange = async (event) => {
             // File upload logic...

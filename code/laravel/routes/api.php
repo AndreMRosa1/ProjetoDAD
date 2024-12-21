@@ -74,6 +74,8 @@ Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
     Route::get('/admin/transactions', [TransactionController::class, 'index']);
     Route::resource('users', UserController::class)->except(['create', 'edit']);
     Route::post('users/{id}/block', [UserController::class, 'blockUser']);
+    Route::post('users/{id}/unblock', [UserController::class, 'unblockUser']);
+    Route::put('users/{id}/updateAdmin', [UserController::class, 'updateAdmin']);
     Route::get('/admin/games', [GameController::class, 'index']);
     Route::get('/admin/statistics', [GameController::class, 'detailedStatistics']);
 });
