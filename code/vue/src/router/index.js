@@ -5,8 +5,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import Login from '@/components/auth/Login.vue'
 import Register from '@/components/auth/Register.vue'
-import StartNewMemoryGame from '@/components/singleplayer/StartNewMemoryGame.vue'
-import ScoreboardsPage from '@/components/ScoreboardsPage.vue';
+import StartNewMemoryGame from '@/components/singleplayer/StartNewMemoryGame.vue';
 import StatisticsPage from '@/components/StatisticsPage.vue';
 import { useAuthStore } from '@/stores/auth'
 import UserList from '@/components/users/UserList.vue'
