@@ -26,8 +26,10 @@ export default {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: "hsl(var(--background, 0, 0%, 100%))", // White fallback
+        foreground: "hsl(var(--foreground, 0, 0%, 0%))",   // Black fallback
+        destructive: "hsl(var(--destructive, 0, 0%, 95%))", // Light red fallback
+        'destructive-foreground': "hsl(var(--destructive-foreground, 0, 100%, 10%))", // Dark red fallback
       },
     },
   },
