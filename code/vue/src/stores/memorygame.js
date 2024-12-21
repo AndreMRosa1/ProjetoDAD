@@ -43,7 +43,6 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   };
 
   const start = async (size) => {
-    console.log(size)
     if (size == 90) {
       gameSize.value = 12;
       initializeBoard();
@@ -56,7 +55,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
       return
     }
     if (size != 12) {
-      await axios.patch('/users/me/reduce-coin');
+      await axios.patch('/users/me/reduce-coin', { value: 1 });
       await authStore.updateUser();
     }
     gameStatus.value = 'I';
@@ -195,7 +194,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   
     // Deduct coins only after revealing the hint
     try {
-      await axios.patch('/users/me/reduce-coin'); // API call to reduce coins
+      await axios.patch('/users/me/reduce-coin', { value: 1 }); // API call to reduce coins
       handlePurchase();
       await authStore.updateUser(); // Update user data to refresh coin balance
     } catch (error) {
