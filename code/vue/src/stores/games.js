@@ -6,6 +6,7 @@ import { useAuthStore } from "@/stores/auth";
 import { useMemorygameStore } from "@/stores/memorygame";
 import { useToast } from "@/components/ui/toast/use-toast";
 import dayjs from "dayjs";
+import { useTransactionsStore } from "./transactions";
 
 export const useGamesStore = defineStore("games", () => {
   const storeAuth = useAuthStore();
@@ -13,6 +14,8 @@ export const useGamesStore = defineStore("games", () => {
   const storememoryGame = useMemorygameStore();
   const { toast } = useToast();
   const socket = inject("socket");
+  const winnerID = ref(0)
+  const transactionsStore = useTransactionsStore();
 
   const games = ref([]);
 
@@ -98,10 +101,7 @@ export const useGamesStore = defineStore("games", () => {
     });
   };
   socket.on("gameStarted", async (game) => {
-    //console.log("game::::::", game)
     if (game.player1_id === storeAuth.user.id) {
-      console.log("CHEGUEI AQUI!")
-      console.log(storeAuth.user.id)
       toast({
         title: "Game Started",
         description: `Game #${game.id} has started!`,
@@ -111,13 +111,9 @@ export const useGamesStore = defineStore("games", () => {
   });
   socket.on("gameEnded", async (game) => {
     //updateGame(game);
-    console.log("Game has ended: ", game);
     // Player that created the game is responsible for updating on the database
-    if (playerNumberOfCurrentUser(game) === 1) {
-      console.log({
-        total_turns_winner: game.total_turns_winner,
-        winner_user_id: game.winner,
-      });      
+    console.log(game.id)
+    if (playerNumberOfCurrentUser(game) === 1) {      
       const APIresponse = await axios.patch("games/" + game.id, {
         status: "E",
         ended_at: dayjs().format("YYYY-MM-DD HH:mm:ss"),
@@ -142,20 +138,32 @@ export const useGamesStore = defineStore("games", () => {
             : game.gameStatus === 2
             ? game.player2_id
             : null,
-        
       });
+
+      winnerID.value =  game.gameStatus === 1
+      ? game.player1_id
+      : game.gameStatus === 2
+      ? game.player2_id
+      : null
+
+      const payload = {
+        transaction_datetime: new Date().toISOString(), // Current datetime
+        user_id: winnerID.value, // Replace with actual user ID if available
+        game_id: game.id,
+        type: 'B',
+        brain_coins: 7,
+      };
+        
+      await axios.patch(`/users/${winnerID.value}/add-coin`);
+      const response = await transactionsStore.createTransaction(payload);
+      console.log('DATABASE STORED' , response)
       const updatedGameOnDB = APIresponse.data;
-      console.log(
-        "Game has ended and updated on the database: ",
-        updatedGameOnDB
-      );
     }
   });
 
 
   socket.on('gameUpdated', (updatedGame) => {
     // Atualizar o estado do jogo no cliente
-    console.log("gameUpdated", updatedGame);
     storememoryGame.board = updatedGame.board;
     storememoryGame.scores = updatedGame.scores;
     storememoryGame.currentPlayer = updatedGame.currentPlayer;
@@ -190,10 +198,6 @@ export const useGamesStore = defineStore("games", () => {
      
     });
     const updatedGameOnDB = APIresponse.data;
-    console.log(
-      "Game was interrupted and updated on the database: ",
-      updatedGameOnDB
-    );
   });
   return {
     games,

@@ -182,52 +182,69 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-public function addCoins(Request $request)
-{
-    $user = auth()->user();
-    if (!$user) {
-        return response()->json(['message' => 'User not found'], 404);
+    public function reduceCoinId(Request $request, $id)
+    {
+        $user = $this->findUserOrFail($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        
+        if ($user->brain_coins_balance < 1) {
+            return response()->json(['message' => 'You have 0 coins!'], 400);
+        }
+
+        $user->brain_coins_balance -= $request->value;
+        $user->save();
+
+        return response()->json($user);
     }
 
-    // Adicionar 2 coins
-    $user->brain_coins_balance += 2;
-    $user->save();
+    public function addCoin(Request $request, $id)
+    {
+        $user = $this->findUserOrFail($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
 
-    return response()->json($user);
-}
+        $user->brain_coins_balance += 7;
+        $user->save();
 
-public function getUserGames()
-{
-    $user = auth()->user();
-    if (!$user) {
-        return response()->json(['message' => 'User not found'], 404);
+        return response()->json($user);
     }
 
-    // Carregar os jogos criados pelo usuário
-    $games = $user->createdGames()->with('board')->orderBy('created_at', 'desc')->get();
+    public function getUserGames()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
 
-    return response()->json($games);
-}
+        // Carregar os jogos criados pelo usuário
+        $games = $user->createdGames()->with('board')->orderBy('created_at', 'desc')->get();
 
-public function blockUser(Request $request, $id)
-{
-    $user = $this->findUserOrFail($id);
-    $user->blocked = 1;
-    $user->save();
-    return response()->json($user);
-}
+        return response()->json($games);
+    }
 
-public function unblockUser(Request $request, $id)
-{
-    $user = $this->findUserOrFail($id);
-    $user->blocked = 0;
-    $user->save();
-    return response()->json($user);
-}
+    public function blockUser(Request $request, $id)
+    {
+        $user = $this->findUserOrFail($id);
+        $user->blocked = 1;
+        $user->save();
+        return response()->json($user);
+    }
 
-private function findUserOrFail($id)
-{
-    return User::findOrFail($id);
-}
+    public function unblockUser(Request $request, $id)
+    {
+        $user = $this->findUserOrFail($id);
+        $user->blocked = 0;
+        $user->save();
+        return response()->json($user);
+    }
+
+    private function findUserOrFail($id)
+    {
+        return User::findOrFail($id);
+    }
 
 }

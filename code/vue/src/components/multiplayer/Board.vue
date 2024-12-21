@@ -1,10 +1,11 @@
 <template>
     <div>
         <div class="grid max-h-full"
-        :style="{ gridTemplateColumns: boardGridTemplateColumns, gridTemplateRows: boardGridTemplateRows }">
-      <Cell v-for="(card, idx) in memoryGameStore.board" :key="card.id" :card="card" :index="idx"
-          @play="playCard" />
-    </div>
+            :style="{ gridTemplateColumns: boardGridTemplateColumns, gridTemplateRows: boardGridTemplateRows }"
+            style="max-width:fit-content;">
+            <Cell v-for="(card, idx) in memoryGameStore.board" :key="card.id" :card="card" :index="idx"
+                @play="playCard" />
+        </div>
 
         <div v-if="memoryGameStore.status"
             class="game-over fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center p-5 bg-white rounded-lg shadow-lg z-50">
@@ -38,17 +39,17 @@ const memoryGameStore = useMemorygameStore()
 //console.log('Tamanho do tabuleiro:', props.size);
 //console.log('Tabuleiro inicial:', memoryGameStore.board);
 
+console.log(props.size)
+
 const boardGridTemplateColumns = computed(() => {
-    //if (props.size === 12) return 'repeat(4, 1fr)';  // 3x4 grid
-    if (props.size === 2) return 'repeat(4, 1fr)';  // 4x4 grid
-    if (props.size === 3) return 'repeat(6, 1fr)';  // 6x6 grid
+    if (props.size === 16) return 'repeat(4, 1fr)';  // 4x4 grid
+    if (props.size === 36) return 'repeat(6, 1fr)'; // 6x6 grid
     return 'repeat(4, 1fr)';
 });
 
 const boardGridTemplateRows = computed(() => {
-    //if (props.size === 12) return 'repeat(3, 1fr)';  // 3x4 grid
-    if (props.size === 2) return 'repeat(4, 1fr)';  // 4x4 grid
-    if (props.size === 3) return 'repeat(6, 1fr)';  // 6x6 grid
+    if (props.size === 16) return 'repeat(4, 1fr)';  // 4x4 grid
+    if (props.size === 36) return 'repeat(6, 1fr)';   // 6x6 grid
     return 'repeat(4, 1fr)';
 });
 

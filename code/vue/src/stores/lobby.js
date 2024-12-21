@@ -6,6 +6,7 @@ import { useErrorStore } from "@/stores/error";
 import { useAuthStore } from "@/stores/auth";
 import { useMemorygameStore } from "@/stores/memorygame";
 import dayjs  from 'dayjs';
+import { useTransactionsStore } from "./transactions";
 
 export const useLobbyStore = defineStore("lobby", () => {
   const storeAuth = useAuthStore();
@@ -16,6 +17,7 @@ export const useLobbyStore = defineStore("lobby", () => {
   const storeMemorygame = useMemorygameStore();
   const games = ref([]);
   const gameId = ref(null);
+  const errorStore = useErrorStore();
 
   const totalGames = computed(() => games.value.length);
 
@@ -49,6 +51,10 @@ export const useLobbyStore = defineStore("lobby", () => {
   // add a game to the lobby
   const addGame = (gridSize) => {
     storeError.resetMessages();
+    if(storeAuth.user.brain_coins_balance < 5){
+      errorStore.setErrorMessages('Not enough Brain Coins', 'Not enough Brain Coins', 403, 'Not enough Brain Coins')
+      return;
+    }
     socket.emit("addGame", gridSize, (response) => {
       if (webSocketServerResponseHasError(response)) {
         return;
@@ -79,7 +85,6 @@ export const useLobbyStore = defineStore("lobby", () => {
       if (webSocketServerResponseHasError(response)) {
         return;
       }
-      console.log("AAAAAAAAAAAAAAAAAAAA",storeAuth.user)
       
       storeMemorygame.startMultiplayer(getGridSize(response.board_id), 'M');
       //const game = storeMemorygame.gameData;
@@ -87,7 +92,6 @@ export const useLobbyStore = defineStore("lobby", () => {
       const game = response; // Supondo que a resposta contém as informações do jogo
       const boardId = game.board_id; // Ou use game.gridSize para calcular o board_id
       const start_At = dayjs().format('YYYY-MM-DD HH:mm:ss');
-      //console.log("RESPONSEEEEEEE:", response)
       const APIresponse = await axios.post("games", {
         player1_id: response.player1.id,
         player2_id: response.player2.id,
@@ -98,9 +102,38 @@ export const useLobbyStore = defineStore("lobby", () => {
         began_at: start_At,
         //id: response.id
       });
-      //console.log(APIresponse);
-      //console.log("Este é o game!!!!!")
-      //console.log(game);
+
+
+      const transactionsStore = useTransactionsStore();
+
+      const payload = {
+        transaction_datetime: new Date().toISOString(),
+        user_id: game.player1.id, 
+        game_id: game.id,
+        type: 'I',
+        brain_coins: 5,
+      };
+      console.log('Payload' , payload)
+      await axios.patch(`/users/${response.player1.id}/reduce-coin`, { value: 5 });
+      const response1 = await transactionsStore.createTransaction(payload);
+
+      await storeAuth.updateUser();
+
+      const payload2 = {
+        transaction_datetime: new Date().toISOString(),
+        user_id: game.player2.id, 
+        game_id: game.id,
+        type: 'I',
+        brain_coins: 5,
+      };
+      console.log('Payload' , payload2)
+      await axios.patch(`/users/${response.player2.id}/reduce-coin`, { value: 5 });
+      const response2 = await transactionsStore.createTransaction(payload2);
+
+      await storeAuth.updateUser();
+
+
+
       const newGameOnDB = APIresponse.data;
       gameId.value = newGameOnDB.id;
       newGameOnDB.player1SocketId = response.player1SocketId;
@@ -111,20 +144,13 @@ export const useLobbyStore = defineStore("lobby", () => {
       // After adding game to the DB emit a message to the server to start the game
       
       socket.emit("startGame", newGameOnDB,  storeMemorygame.board, (startedGame) => {
-        console.log("Game has started", startedGame);
-        console.log("board foi enviado para as websockets aqui")
-        console.log(storeMemorygame.board);
       });
 
-      //console.log(game.board)
-      //router.push({ name: 'gamemultiplayer', query: { size: getGridSize(boardId), board: game.board }});
     
     });
   };
 
   socket.on("gameStarted", (game) => {
-    console.log(game)
-    console.log("Aqui estamos")
     storeMemorygame.board = game.board;
     router.push({ name: 'gamemultiplayer', query: { size: getGridSize(game.board_id), id: game.id} });
   });

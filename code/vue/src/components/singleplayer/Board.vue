@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="grid"
+        <div class="grid max-h-full"
             :style="{ gridTemplateColumns: boardGridTemplateColumns, gridTemplateRows: boardGridTemplateRows }"
             style="max-width:fit-content;">
             <Cell v-for="(card, idx) in memoryGameStore.board" :key="card.id" :card="card" :index="idx"

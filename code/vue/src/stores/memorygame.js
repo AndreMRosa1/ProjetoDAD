@@ -25,6 +25,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   const gameType = ref('');
   const gameData = ref([]);
   const errorStore = useErrorStore()
+  const transactionsStore = useTransactionsStore();
 
   const initializeBoard = () => {
     const images = Object.values(import.meta.glob('@/assets/images/*.png', { eager: true }))
@@ -58,6 +59,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     }
     if (size != 12) {
       await axios.patch('/users/me/reduce-coin', { value: 1 });
+
       await authStore.updateUser();
     }
     gameStatus.value = 'I';
@@ -76,13 +78,8 @@ export const useMemorygameStore = defineStore('memorygame', () => {
         board_id: getBoardId(gameSize.value),
         began_at: gameStartTime.value,
       });
-      console.log("ISTO É A RESPOSTA DA API")
-      console.log(response.data);
       gameId.value = response.data.id;
-
       gameData.value = response.data;
-      //console.log("GAME DATAAAAAAAAAA") //ate aqui tem dados
-      //console.log(gameData.value)
       handlePurchase();
     } catch (error) {
       console.error('Error saving game:', error.response?.data || error.message);
@@ -264,9 +261,7 @@ const handlePurchase = async () => {
       type: 'I',
       brain_coins: 1,
     };
-  
-    const transactionsStore = useTransactionsStore();
-  
+
     // Call the transactions store's createTransaction method
     const response = await transactionsStore.createTransaction(payload);
   } catch (error) {
