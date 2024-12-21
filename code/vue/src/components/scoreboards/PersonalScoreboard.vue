@@ -75,7 +75,7 @@
         <span class="flex-1 text-center">{{ record.total_time }}</span>
         <span class="flex-1 text-center">{{ record.total_turns_winner }}</span>
         <span class="flex-1 text-center">
-          {{ new Date(record.began_at).toLocaleDateString() }}
+          {{ new Date(record.began_at).toLocaleDateString('pt-PT') }}
         </span>
       </div>
     </div>

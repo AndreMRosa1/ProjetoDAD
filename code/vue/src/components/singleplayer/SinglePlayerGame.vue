@@ -17,7 +17,8 @@
 
         <RouterLink to="/new-memory-game" class="nav-link">
           <button v-if="authStore.user"
-            class="whitespace-nowrap px-8 py-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none">
+            class="whitespace-nowrap px-8 py-3 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+            @click.prevent="showExitModal = true">
             Go Back
           </button>
         </RouterLink>
@@ -26,6 +27,21 @@
       <!-- Board Container -->
       <div class="flex-grow">
         <Board ref="boardComponent" :size="size" @game-started="gameStarted = true" @game-ended="gameStarted = false" />
+      </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div v-if="showExitModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div class="bg-white p-8 rounded-lg shadow-lg">
+        <h3 class="text-lg mb-4">Are you sure you want to leave the game?</h3>
+        <div class="flex gap-4">
+          <button class="px-6 py-3 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none"
+            @click="cancelExit">Cancel</button>
+          <RouterLink to="/new-memory-game"
+            class="whitespace-nowrap px-6 py-3 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none">
+            Confirm
+          </RouterLink>
+        </div>
       </div>
     </div>
   </div>
@@ -40,6 +56,7 @@ import { useMemorygameStore } from '../../stores/memorygame';
 const authStore = useAuthStore();
 const gameStarted = ref(false);
 const boardComponent = ref(null);
+const showExitModal = ref(false); // Controls visibility of the modal
 
 const size = ref(Number(new URLSearchParams(window.location.search).get('size')));
 
@@ -49,4 +66,9 @@ onMounted(() => {
   document.body.style.overflow = 'hidden';
   memorygame.start(size.value);
 });
+
+// Cancel exit and close the modal
+const cancelExit = () => {
+  showExitModal.value = false;
+};
 </script>
