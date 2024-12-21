@@ -54,8 +54,8 @@ const goHome = () => {
 };
 
 const startGame = async (size) => {
-    if (authStore.user.brain_coins_balance < 1) {
-        errorStore.setErrorMessages('Not enough Brain Coins')
+    if (size != 12 && authStore.user.brain_coins_balance < 1) {
+        errorStore.setErrorMessages('Not enough Brain Coins', 'You need 1 Brain Coin to play this game.', 404, 'Not enough Brain Coins');
         router.push('/new-memory-game');
         return
     }

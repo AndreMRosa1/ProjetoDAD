@@ -26,6 +26,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('user/upload-photo', [UserController::class, 'uploadPhoto']);
     Route::post('users/{id}/change-photo', [UserController::class, 'changePhoto']);
 
+    Route::post('/games', [GameController::class, 'store']);
+    Route::patch('/games/{id}', [GameController::class, 'update']);
+
     Route::get('/user/{user_id}', [UserController::class, 'show']);
 
     Route::get('/users/me', function (Request $request) {

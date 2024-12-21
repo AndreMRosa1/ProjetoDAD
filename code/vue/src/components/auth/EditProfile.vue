@@ -57,7 +57,7 @@
         </div>
 
         <!-- Delete Account Modal -->
-        <div v-if="showDeleteModal"
+        <div v-if="showDeleteModal && userRole != 'A'"
             class="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
             <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm">
                 <h2 class="text-lg font-bold mb-4 text-center">Confirm Account Deletion</h2>
@@ -69,7 +69,7 @@
                     {{ errorStore.fieldMessage('password') }}
                 </span>
                 <div class="flex justify-end mt-4 space-x-2">
-                    <button v-if="!authStore.user.type == 'A'" @click="deleteAccount"
+                    <button @click="deleteAccount"
                         class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                         Confirm
                     </button>
@@ -125,9 +125,9 @@ export default {
 
         const deleteAccount = async () => {
             try {
+                authStore.logout();
                 await axios.post(`/user/me/delete`, { password: password.value })
                 alert('Account deleted successfully');
-                authStore.logout();
                 router.push('/')
             } catch (error) {
                 errorStore.setErrorMessages(`Error deleting account. \n ${error}`);

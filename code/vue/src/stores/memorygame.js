@@ -43,19 +43,22 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   };
 
   const start = async (size) => {
+    console.log(size)
     if (size == 90) {
       gameSize.value = 12;
       initializeBoard();
       startTimer();
       return;
     }
-    if(authStore.user.brain_coins_balance < 1) {
+    if(size !=12 && authStore.user.brain_coins_balance < 1) {
       errorStore.setErrorMessages('Not enough Brain Coins')
       router.push('/new-memory-game')
       return
     }
-    await axios.patch('/users/me/reduce-coin');
-    await authStore.updateUser();
+    if (size != 12) {
+      await axios.patch('/users/me/reduce-coin');
+      await authStore.updateUser();
+    }
     gameStatus.value = 'I';
     gameSize.value = size
     initializeBoard();

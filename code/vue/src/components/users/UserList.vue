@@ -76,7 +76,7 @@
                 class="mr-1 bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
                 Block
               </button>
-              <button @click="deleteUser(user.id)"
+              <button v-if="!user.deleted_at" @click="deleteUser(user.id)"
                 class="mr-1 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
                 Delete
               </button>
@@ -144,6 +144,7 @@ const fetchUsers = async () => {
   try {
     const response = await axios.get('/users');
     users.value = response.data;
+    console.log(users)
   } catch (error) {
     console.error(error);
   }
