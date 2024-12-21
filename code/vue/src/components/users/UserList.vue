@@ -45,6 +45,7 @@
           <td>{{ user.email }}</td>
           <td>{{ user.type }}</td>
           <td class="border px-4 py-2">
+            <button @click="blockUser(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded">Block</button>
             <button @click="deleteUser(user.id)" class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
         </td>
         </tr>
@@ -62,13 +63,12 @@
 
 <script setup>
 import axios from 'axios';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed,inject } from 'vue';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/user';
 import { useErrorStore } from '@/stores/error';
 
-const storeUser = useUserStore()
 const storeError = useErrorStore()
+const socket = inject('socket');
 
 const router = useRouter();
 const users = ref([]);
@@ -100,7 +100,20 @@ const deleteUser = async (userId) => {
         e.response.data.message, e.response.data.errors, e.response.status, 'Delete User Error!'
       )
     }
-  }
+  };
+
+  const blockUser = async (userId) => {
+    try {
+      const response = await axios.patch(`users/${userId}/block`);
+      console.log(response);
+      fetchUsers();
+    } catch (error) {
+      console.error(error);
+    }
+  
+};
+
+
 const applyFilters = () => {
   currentPage.value = 1;
 };

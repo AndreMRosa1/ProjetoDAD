@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-
+use App\Http\Requests\UpdateBlockedUserRequest;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-
     // Show all users
     public function index()
     {
@@ -190,5 +191,10 @@ private function findUserOrFail($id)
     return User::findOrFail($id);
 }
 
+public function update_blocked(UpdateBlockedUserRequest $request, User $user)
+{
+    $user->blocked = $request->validated()['blocked'];
+    $user->save();
+    return new UserResource($user);
 }
-
+}
