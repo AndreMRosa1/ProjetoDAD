@@ -12,6 +12,7 @@ use App\Models\User;
 // Autenticação
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
+Route::get('/scoreboards/global', [GameController::class, 'globalScoreboard']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -63,7 +64,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/games/multiplayer/lobbies/join/{id}', [GameController::class, 'joinLobby']);
 
     // Quadros de Líderes
-    Route::get('/scoreboards/global', [GameController::class, 'globalScoreboard']);
     Route::get('/scoreboards/personal', [GameController::class, 'personalScoreboard']);
 
     // Estatísticas
