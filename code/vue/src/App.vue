@@ -172,6 +172,11 @@ const handleMessageFromInputDialog = (message) => {
               active-class="text-blue-600 font-semibold" v-if="authStore.user && authStore.user.type === 'A'">
               Users
             </RouterLink>
+            <RouterLink to="/transactions/history"
+              class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              active-class="text-blue-600 font-semibold" v-if="authStore.user && authStore.user.type === 'A'">
+              Transaction History
+            </RouterLink>
           </div>
           <div v-if="authStore.user && authStore.user.type === 'P'" class="flex items-center text-sm">
             <img class="h-12 mr-3" src="../src/assets/icon.png" />
@@ -196,7 +201,7 @@ const handleMessageFromInputDialog = (message) => {
                   <a @click="handleChangePassword" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     Change Password
                   </a>
-                  <RouterLink to="/transactions/history"><a
+                  <RouterLink v-if="authStore.user.type != 'A'" to="/transactions/history"><a
                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Transaction History
                     </a></RouterLink>

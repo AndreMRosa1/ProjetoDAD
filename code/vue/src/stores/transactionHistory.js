@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { useErrorStore } from '@/stores/error';
 
 export const useTransactionHistoryStore = defineStore('transactionHistory', {
   state: () => ({
@@ -9,6 +10,7 @@ export const useTransactionHistoryStore = defineStore('transactionHistory', {
     currentPage: 1,
     itemsPerPage: 10,
     inputPage: 1,
+    totalPages: 1, // Add totalPages for pagination
   }),
 
   actions: {
@@ -16,42 +18,49 @@ export const useTransactionHistoryStore = defineStore('transactionHistory', {
       this.isLoading = true;
       this.error = null;
 
+      const errorStore = useErrorStore();
+
       try {
-        const response = await axios.get('/transactions');
-        this.transactions = response.data.map((transaction) => {
-            let description = "";
-            if (transaction.type === "P") {
-              description = "Purchase of brain coins";
-            } else if (transaction.type === "H") {
-              description = `Used for hint in game #${transaction.transaction_details?.game_id || "N/A"}`;
-            } else if (transaction.type === "G") {
-              description = `Used in game #${transaction.transaction_details?.game_id || "N/A"} (${transaction.transaction_details?.game_type || "unknown"})`;
-            }
-            return { ...transaction, description };
-          });
+        const response = await axios.get('/transactions', {
+          params: { page: this.currentPage, per_page: this.itemsPerPage },
+        });
+
+        this.transactions = response.data.data.map((transaction) => {
+          let description = "";
+          if (transaction.type === "P") {
+            description = "Purchases";
+          } else if (transaction.type === "I") {
+            description = `Internal spendings/earnings related to a game`;
+          } else if (transaction.type === "B") {
+            description = `Bonus`;
+          }
+          return { ...transaction, description };
+        });
+
+        // Calculate total pages based on the response data
+        this.totalPages = Math.ceil(response.data.total / this.itemsPerPage);
       } catch (error) {
-        console.error('Error fetching transactions:', error);
-        this.error = 'Failed to load transaction history.';
+        errorStore.setErrorMessages('Error fetching transactions', 'Error fetching transactions', 404, 'Error fetching transactions')
       } finally {
         this.isLoading = false;
       }
     },
     
-
     changePage(page) {
-        if (page >= 1 && page <= this.totalPages) {
-          this.currentPage = page;
-          this.inputPage = page;
-        }
-      },
-  
-      validatePageInput() {
-        if (this.inputPage < 1 || this.inputPage > this.totalPages) {
-          this.inputPage = this.currentPage;
-        } else {
-          this.changePage(this.inputPage);
-        }
-      },
+      if (page >= 1 && page <= this.totalPages) {
+        this.currentPage = page;
+        this.inputPage = page;
+        this.fetchTransactions(); // Fetch new data when the page changes
+      }
+    },
+
+    validatePageInput() {
+      if (this.inputPage < 1 || this.inputPage > this.totalPages) {
+        this.inputPage = this.currentPage;
+      } else {
+        this.changePage(this.inputPage);
+      }
+    },
 
     formatDate(isoString) {
       if (!isoString) return 'N/A';
