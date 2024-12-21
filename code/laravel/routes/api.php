@@ -67,7 +67,7 @@ Route::middleware('auth:sanctum')->group(function () {
 //Route::get('/users/{id}', [UserController::class, 'show']); //rota de taes
 
 // Rotas de Administrador
-Route::middleware(['auth:sanctum', 'is.admin'])->group(function () {
+Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
     Route::get('/admin/transactions', [TransactionController::class, 'index']);
     Route::resource('users', UserController::class)->except(['create', 'edit']);
     Route::get('/admin/games', [GameController::class, 'index']);

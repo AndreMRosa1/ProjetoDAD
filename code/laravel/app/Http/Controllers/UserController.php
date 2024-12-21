@@ -27,11 +27,14 @@ class UserController extends Controller
     // Store a new user
     public function store(Request $request)
     {
+        $request->dump();
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'nickname' => 'sometimes|string|max:20|unique:users,nickname',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:3',
-            'type' => 'required|string|in:A,P',
+            'type' => 'sometimes|string|in:A,P',
         ]);
 
         $validated['password'] = bcrypt($validated['password']);
