@@ -6,6 +6,9 @@ export const useTransactionHistoryStore = defineStore('transactionHistory', {
     transactions: [],
     isLoading: false,
     error: null,
+    currentPage: 1,
+    itemsPerPage: 10,
+    inputPage: 1,
   }),
 
   actions: {
@@ -15,8 +18,17 @@ export const useTransactionHistoryStore = defineStore('transactionHistory', {
 
       try {
         const response = await axios.get('/transactions');
-        
-        this.transactions = response.data;
+        this.transactions = response.data.map((transaction) => {
+            let description = "";
+            if (transaction.type === "P") {
+              description = "Purchase of brain coins";
+            } else if (transaction.type === "H") {
+              description = `Used for hint in game #${transaction.transaction_details?.game_id || "N/A"}`;
+            } else if (transaction.type === "G") {
+              description = `Used in game #${transaction.transaction_details?.game_id || "N/A"} (${transaction.transaction_details?.game_type || "unknown"})`;
+            }
+            return { ...transaction, description };
+          });
       } catch (error) {
         console.error('Error fetching transactions:', error);
         this.error = 'Failed to load transaction history.';
@@ -24,6 +36,22 @@ export const useTransactionHistoryStore = defineStore('transactionHistory', {
         this.isLoading = false;
       }
     },
+    
+
+    changePage(page) {
+        if (page >= 1 && page <= this.totalPages) {
+          this.currentPage = page;
+          this.inputPage = page;
+        }
+      },
+  
+      validatePageInput() {
+        if (this.inputPage < 1 || this.inputPage > this.totalPages) {
+          this.inputPage = this.currentPage;
+        } else {
+          this.changePage(this.inputPage);
+        }
+      },
 
     formatDate(isoString) {
       if (!isoString) return 'N/A';

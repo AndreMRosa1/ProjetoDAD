@@ -183,4 +183,35 @@ public function history(Request $request)
 
     return response()->json($games);
 }
+
+public function useHint(Request $request)
+{
+    $userId = auth()->id();
+
+    if (!$userId) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'game_id' => 'required|exists:games,id',
+        'coins_used' => 'required|integer|min:1',
+        'hint_type' => 'required|string|max:255',
+    ]);
+
+    // Registrar transação para uso de dicas
+    Transaction::create([
+        'user_id' => $userId,
+        'transaction_datetime' => now(),
+        'game_id' => $validated['game_id'],
+        'type' => 'H', // H = Hint
+        'brain_coins' => $validated['coins_used'],
+        'transaction_details' => [
+            'hint_type' => $validated['hint_type'],
+            'game_id' => $validated['game_id'],
+        ],
+    ]);
+
+    return response()->json(['message' => 'Hint used successfully']);
+}
+
 }
