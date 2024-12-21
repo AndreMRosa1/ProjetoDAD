@@ -13,6 +13,7 @@ class Transaction extends Model
 
     protected $fillable = [
         'user_id',
+        'transaction_datetime',
         'game_id',
         'type',
         'euros',

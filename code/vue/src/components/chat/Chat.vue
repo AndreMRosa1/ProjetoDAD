@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject } from 'vue'
+import { ref, inject, computed } from 'vue'
 import {
     Card,
     CardContent,
@@ -12,6 +12,15 @@ import { Label } from '@/components/ui/label'
 
 import { useChatStore } from '@/stores/chat'
 import { useAuthStore } from '@/stores/auth'
+
+
+// Add messageLimit prop with a default value of 10
+const props = defineProps({
+    messageLimit: {
+        type: Number,
+        default: 10
+    }
+})
 
 const storeChat = useChatStore()
 const storeAuth = useAuthStore()
@@ -49,6 +58,11 @@ const sendPrivateMessageToUser = (user) => {
 const handleMessageFromInputDialog = (message) => {
     storeChat.sendPrivateMessageToUser(userDestination, message)
 }
+
+// Create a computed property to reverse messages
+const reversedMessages = computed(() => {
+    return [...storeChat.messages].reverse().slice(0, props.messageLimit)
+})
 </script>
 
 <template>
@@ -56,8 +70,8 @@ const handleMessageFromInputDialog = (message) => {
         <CardHeader class="pb-6">
             <CardTitle>Chat</CardTitle>
             <CardDescription>
-                Only the latest 10 messages.<br>
-                <em>Click on the user name to send him a private message.</em>
+                Only the latest {{ messageLimit }} messages.<br>
+                <em>Click on the user name to send them a private message.</em>
             </CardDescription>
             <Label for="inputMessage" class="pt-4">
                 Press enter to send message:
@@ -67,7 +81,7 @@ const handleMessageFromInputDialog = (message) => {
         <CardContent class="p-4">
             <div class="divide-y divide-solid divide-gray-200">
                 <div v-if="storeChat.totalMessages > 0">
-                    <div v-for="messageObj in storeChat.messages" :key="messageObj" class="flex">
+                    <div v-for="messageObj in reversedMessages" :key="messageObj.id" class="flex">
                         <div class="flex flex-col grow pb-6">
                             <div class="text-xs text-gray-500">
                                 <span :class="{

@@ -1,7 +1,8 @@
 <template>
     <div>
         <div class="grid"
-            :style="{ gridTemplateColumns: boardGridTemplateColumns, gridTemplateRows: boardGridTemplateRows }">
+            :style="{ gridTemplateColumns: boardGridTemplateColumns, gridTemplateRows: boardGridTemplateRows }"
+            style="max-width:fit-content;">
             <Cell v-for="(card, idx) in memoryGameStore.board" :key="card.id" :card="card" :index="idx"
                 @play="playCard" />
         </div>
@@ -19,7 +20,7 @@
 <script setup>
 import { computed } from 'vue';
 import Cell from './Cell.vue';
-import { useMemorygameStore } from '../../stores/memorygame.js';
+import { useMemorygameStore } from '@/stores/memorygame';
 
 const props = defineProps({
     size: {

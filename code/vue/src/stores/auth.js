@@ -65,8 +65,8 @@ export const useAuthStore = defineStore('auth', () => {
   const register = async (userData) => {
     storeError.resetMessages();
     try {
-      await axios.post('auth/register', userData);
-      return true;
+      const response = await axios.post('auth/register', userData);
+      return { success: true, response };
     } catch (e) {
       storeError.setErrorMessages(
         e.response.data.message,
@@ -91,6 +91,22 @@ export const useAuthStore = defineStore('auth', () => {
         [],
         e.response.status,
         'Logout Error!'
+      );
+      return false;
+    }
+  };
+
+  const changePassword = async (passwords) => {
+    storeError.resetMessages();
+    try {
+      await axios.post('user/change-password', passwords);
+      return true;
+    } catch (e) {
+      storeError.setErrorMessages(
+        e.response.data.message,
+        e.response.data.errors,
+        e.response.status,
+        'Password Change Error!'
       );
       return false;
     }
@@ -171,5 +187,6 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     restoreToken,
     getFirstLastName,
+    changePassword,
   };
 });

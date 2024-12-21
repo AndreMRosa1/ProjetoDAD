@@ -13,19 +13,56 @@ class TransactionController extends Controller
 {
     // Listar histórico do usuário autenticado
     public function index()
-    {
-        $user = Auth::user();
-        
-        if ($user->type === 'A') {
-            // Administradores podem ver todas as transações
-            $transactions = Transaction::with('user', 'game')->get();
-        } else {
-            // Usuários comuns veem apenas suas próprias transações
-            $transactions = $user->transactions()->with('game')->get();
-        }
+{
+    $user = Auth::user();
 
-        return response()->json($transactions);
+    // Determine the pagination parameters
+    $perPage = 10; // Define how many items per page
+
+    if ($user->type === 'A') {
+        // Administrators can see all transactions, with pagination
+        $transactions = Transaction::with(['user', 'game'])  // Optionally eager load the relationships
+            ->orderBy('transaction_datetime', 'desc')
+            ->paginate($perPage); // Paginate the results
+    } else {
+        // Regular users see only their own transactions, with pagination
+        $transactions = $user->transactions()
+            ->with('game')  // Optionally eager load the 'game' relationship
+            ->orderBy('transaction_datetime', 'desc')
+            ->paginate($perPage); // Paginate the results
     }
+
+    if ($transactions->isEmpty()) {
+        Log::info('No transactions found for user ID ' . $user->id);
+    }
+
+    return response()->json($transactions);
+}
+
+    // Store a new transactions
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'transaction_datetime' => 'required|date',
+            'user_id' => 'required|integer|exists:users,id',
+            'game_id' => 'sometimes|nullable|integer|exists:games,id',
+            'type' => 'required|in:B,P,I',
+            'euros' => 'sometimes|nullable|numeric|min:0|max:999999.99',
+            'brain_coins' => 'nullable|integer|min:0',
+            'payment_type' => 'sometimes|nullable|in:MBWAY,PAYPAL,IBAN,MB,VISA',
+            'payment_reference' => 'sometimes|nullable|string|max:255',
+        ]);
+
+        $transaction = Transaction::create($validated);
+
+        return response()->json($transaction, 201);
+    }
+
+    public function totalTransactions()
+    {
+        $totalTransactions = Transaction::count();
+        return response()->json([$totalTransactions]);
+    } 
 
     // Comprar brain coins
     public function purchase(Request $request, PaymentGatewayService $paymentService)
@@ -85,5 +122,5 @@ class TransactionController extends Controller
         return response()->json($transaction);
     }
 
-    
+
 }
