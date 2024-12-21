@@ -124,11 +124,6 @@ const router = createRouter({
         meta: { requiresAuth: true, allowedTypes: ['A'] }
       },
     { 
-      path: '/users',
-        name: 'users',
-        component: UserList 
-      },
-    { 
       path: '/transactions/list',
         name: 'transactions-list',
         component: TransactionList 
