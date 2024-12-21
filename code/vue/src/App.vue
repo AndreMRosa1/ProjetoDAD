@@ -162,6 +162,11 @@ const handleMessageFromInputDialog = (message) => {
                 </div>
               </div>
             </div>
+            <RouterLink to="/scoreboards/global"
+              class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              active-class="text-blue-600 font-semibold" v-if="!authStore.user">
+              Global Scoreboard
+            </RouterLink>
             <RouterLink to="/statistics"
               class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
               active-class="text-blue-600 font-semibold" v-if="authStore.user">

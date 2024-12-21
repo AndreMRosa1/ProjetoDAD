@@ -67,7 +67,7 @@
             <td class="p-2">{{ user.name }}</td>
             <td class="p-2">{{ user.email }}</td>
             <td class="p-2">{{ user.type }}</td>
-            <td class="p-2 text-center">
+            <td v-if="user.id != authStore.user.id" class="p-2 text-center">
               <button v-if="user.blocked" @click="unblockUser(user.id)"
                 class="mr-1 bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
                 Unblock
@@ -123,10 +123,12 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '@/stores/auth';
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
+const authStore = useAuthStore();
 const router = useRouter();
 const users = ref([]);
 const currentPage = ref(1);

@@ -19,8 +19,7 @@ const startGame = (size) => {
   <div class="start-new-game flex justify-center items-center h-[calc(100vh-5rem-50px)]">
     <div class="button-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 w-full h-full">
       <!-- Global Scoreboard on the left -->
-      <div v-if="authStore.user"
-        class="relative w-fit h-fit bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
+      <div class="relative w-fit h-fit bg-white rounded-lg shadow-lg flex flex-col hover:cursor-pointer">
         <GlobalScoreboard></GlobalScoreboard>
       </div>
 
