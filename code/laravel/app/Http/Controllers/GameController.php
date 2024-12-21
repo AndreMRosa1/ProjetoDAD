@@ -10,11 +10,25 @@ use Illuminate\Support\Facades\Log;
 
 class GameController extends Controller
 {
-    public function index()
+    /*public function index()
     {
         return response()->json(Game::with('creator', 'winner', 'board')->get());
+    }*/
+
+    public function index(Request $request)
+{
+    // Optional filtering for multiplayer or single player games
+    $type = $request->input('type'); // 'S' or 'M'
+
+    $query = Game::with('creator', 'winner', 'board');
+
+    if ($type) {
+        $query->where('type', $type);
     }
 
+    return response()->json($query->get());
+}
+    /*
     public function store(Request $request)
     {
 
@@ -38,7 +52,51 @@ class GameController extends Controller
 
         $game = Game::create($validated);
         return response()->json($game, 201);
+    }*/
+/*
+    public function index(Request $request)
+{
+    // Optional filtering for multiplayer or single player games
+    $type = $request->input('type'); // 'S' or 'M'
+
+    $query = Game::with('creator', 'winner', 'board');
+
+    if ($type) {
+        $query->where('type', $type);
     }
+
+    return response()->json($query->get());
+}
+    */
+
+public function store(Request $request)
+{
+    $userId = auth()->id();
+
+    if (!$userId) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'created_user_id' => 'required|exists:users,id',
+        'type' => 'required|in:S,M', // Accept both single and multiplayer
+        'status' => 'required|string|max:255',
+        'board_id' => 'required|exists:boards,id',
+        'total_time' => 'numeric|min:0',
+        'total_turns_winner' => 'integer|min:0',
+        'winner_user_id' => 'nullable|integer|min:0',
+        'began_at' => 'required|date',
+        'ended_at' => 'nullable|date|after_or_equal:began_at',
+    ]);
+
+    // For multiplayer games, you might want to add additional logic
+    if ($validated['type'] === 'M') {
+        $validated['status'] = $validated['status'] ?? 'PL';
+    }
+
+    $game = Game::create($validated);
+    return response()->json($game, 201);
+}
 
     public function show($id)
     {
@@ -191,8 +249,8 @@ public function history(Request $request)
 
 
 
-
-/* //TAES!!!
+/*
+ //TAES!!!
     public function personalScoreboard()
 {
     $user = auth()->user();
@@ -261,8 +319,8 @@ public function globalScoreboard()
 
     return response()->json($topPlayers);
 }
-*/
-/*
+
+
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!O QUE ESTA EM COMENTARIO É PARA TAES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 public function storeGame(Request $request)
 {

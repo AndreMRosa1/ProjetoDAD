@@ -1,32 +1,13 @@
 import { ref, computed, inject } from 'vue'
 import { defineStore } from 'pinia'
 import { useErrorStore } from '@/stores/error'
-import { useAuthStore } from '@/stores/auth'
 
 export const useChatStore = defineStore('chat', () => {
-    const storeAuth = useAuthStore()
     const storeError = useErrorStore()
 
     const socket = inject('socket')
 
-    const messages = ref([
-        {
-            user: { id: 1, name: 'John Doe' },
-            message: 'Welcome to the chat!'
-        },
-        {
-            user: { id: 2, name: 'Jane Doe' },
-            message: 'Welcome!'
-        },
-        {
-            user: { id: 13, name: 'Paulo Gonçalves' },
-            message: 'A message that will occupy a lot of space in the chat! At least three lines of text!'
-        },
-        {
-            user: null,
-            message: 'An anonymous user can also say something!'
-        },        
-    ])
+    const messages = ref([])
 
     const totalMessages = computed(() => messages.value.length)
 

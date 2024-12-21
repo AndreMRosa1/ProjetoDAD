@@ -8,10 +8,10 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\BoardController;
 
-/*
+
 //ROTA PARA TAES!!!!
-Route::get('/scoreboards/globals', [GameController::class, 'globalScoreboard']);
-*/
+//Route::get('/scoreboards/globals', [GameController::class, 'globalScoreboard']);
+
 
 // Autenticação
 Route::post('/auth/register', [AuthController::class, 'register']);
@@ -32,8 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/games', [GameController::class, 'indexSinglePlayer']);
     Route::patch('/games/{game_id}', [GameController::class, 'update']);
     Route::post('/games', [GameController::class, 'store']);
-    //Route::get('/games/multiplayer', [GameController::class, 'indexMultiplayer']);
-    //Route::post('/games/multiplayer', [GameController::class, 'storeMultiplayer']);
+    Route::get('/games/multiplayer', [GameController::class, 'indexMultiplayer']);
+    Route::post('/games/multiplayer', [GameController::class, 'storeMultiplayer']);
 
     /*
     //ROTAS APENAS PARA TAES!!!!!!!!!!!!!!
@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/users/me/reduce-coins', [UserController::class, 'reduceCoins']);
     Route::patch('/users/me/add-coins', [UserController::class, 'addCoins']);
     // Scoreboards TAES
-    Route::get('/scoreboards/personal', [UserController::class, 'personalScoreboard']);
+    //Route::get('/scoreboards/personal', [GameController::class, 'personalScoreboard']); ESTA TEM DE ESTAR COMENTADA
     // Rota para verificar recordes pessoais
     Route::get('/games/{gameId}/check-personal-record', [GameController::class, 'checkIfPersonalRecord']);
     // Rota para listar todos os recordes pessoais
@@ -75,7 +75,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Quadros de Líderes
     Route::get('/scoreboards/global', [GameController::class, 'globalScoreboard']);
-    Route::get('/scoreboards/personal', [GameController::class, 'personalScoreboard']);
+    Route::get('/scoreboards/personal', [GameController::class, 'personalScoreboard']); //ESTA TEM QUE FICAR DESCOMENTADA!!!!!!!!!
 
     // Estatísticas
     Route::get('/statistics/general', [GameController::class, 'generalStatistics']);

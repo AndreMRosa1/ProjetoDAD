@@ -20,7 +20,6 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   const gameId = ref(null);
   const gameSize = ref(0);
   const gameType = ref('');
-  const gameData = ref([]);
 
   const initializeBoard = () => {
     const images = Object.values(import.meta.glob('@/assets/images/*.png', { eager: true }))
@@ -45,8 +44,6 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     gameSize.value = size
     gameType.value = type
     initializeBoard();
-    //console.log("O board no memorygame store foi inicializado agora:")
-    //console.log(board.value)
     startTimer();
     const startedAt = dayjs().format('YYYY-MM-DD HH:mm:ss');
     gameStartTime.value = startedAt;
@@ -59,28 +56,12 @@ export const useMemorygameStore = defineStore('memorygame', () => {
         board_id: getBoardId(gameSize.value),
         began_at: gameStartTime.value,
       });
-      console.log("ISTO É A RESPOSTA DA API")
-      console.log(response.data);
-      gameId.value = response.data.id;
 
-      gameData.value = response.data;
-      //console.log("GAME DATAAAAAAAAAA") //ate aqui tem dados
-      //console.log(gameData.value)
+      gameId.value = response.data.id;
     } catch (error) {
       console.error('Error saving game:', error.response?.data || error.message);
     }
   };
-
-  const startMultiplayer = async (size, type) => {
-    gameStatus.value = 'I';
-    gameSize.value = size
-    gameType.value = type
-    initializeBoard();
-    //console.log("O board no memorygame store foi inicializado agora:")
-    //console.log(board.value)
-    startTimer();
-  };
-
 
   const play = (index) => {
     if (status.value || flippedCards.value.length >= 2 || board.value[index].state === 'flipped') {
@@ -185,7 +166,6 @@ export const useMemorygameStore = defineStore('memorygame', () => {
 
   
   onUnmounted(() => timerInterval && clearInterval(timerInterval));
-  //console.log("Isto é o gameData!")
-  //console.log (gameData)
-  return { status, board, start, startMultiplayer, play, turnCounter, pairCounter, timer, useHint, gameData }; //aqui tinha gameId
+
+  return { status, board, start, play, turnCounter, pairCounter, timer, useHint };
 })

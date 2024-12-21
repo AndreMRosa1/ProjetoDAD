@@ -1,20 +1,34 @@
 <template>
-    <div class="cursor-pointer overflow-hidden rounded-lg" @click="play" style="aspect-ratio: 2 / 3;" :disabled="disabled">
-      <img v-if="card.state !== 'hidden'" :src="card.face" :alt="card.state" class="w-full h-full object-contain">
-      <img v-else src="../../assets/images/semFace.png" alt="Card back" class="w-full h-full object-contain">
-    </div>
-  </template>
+  <div class="cursor-pointer m-0.5" 
+       @click="gamesStore.play(props.card, props.index, memoryGameStore.board, id)" 
+       style="aspect-ratio: 2 / 3;">
+    <img v-if="card.state === 'paired' || card.state === 'flipped'" 
+         :src="typeof card.face === 'string' ? card.face : card.face.default" 
+         :alt="card.state">
+    <img v-else src="../../assets/images/semFace.png" alt="Card back">
+  </div>
+</template>
+
   
   <script setup>
-  import { defineProps, defineEmits } from 'vue';
+  import { useMemorygameStore } from '@/stores/memorygame';
+  import { ref,defineProps, defineEmits } from 'vue';
+  import { useGamesStore } from '@/stores/games';
+  import { useLobbyStore } from '@/stores/lobby';
   
-  const props = defineProps(['card', 'index', 'disabled']);
+  const memoryGameStore = useMemorygameStore();
+  const props = defineProps(['card', 'index']);
   const emit = defineEmits(['play']);
   
-  const play = () => {
-    if (!props.disabled) {
-      emit('play', props.index);
-    }
-  };
+  const gamesStore = useGamesStore();
+  const lobbyStore = useLobbyStore();
+
+  const id = ref([Number(new URLSearchParams(window.location.search).get('id'))]);
+  
+  /*const play = () => {
+    console.log('Carta clicada:', props.index);
+    emit('play', props.index);
+    console.log("emiti alguma coisa")
+  };*/
   </script>
   

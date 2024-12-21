@@ -1,125 +1,171 @@
 exports.createGameEngine = () => {
-    const initGame = (gameFromDB) => {
-        gameFromDB.gameStatus = null
-        // null -> game has not started yet
-        // 0 -> game has started and running
-        // 1 -> player 1 is the winner
-        // 2 -> player 2 is the winner
-        // 3 -> draw
-        gameFromDB.currentPlayer = 1
-        gameFromDB.board = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-        return gameFromDB
-    }
-    // ------------------------------------------------------
-    // Actions / Methods
-    // ------------------------------------------------------
-    // Check if there is a line (either horizontal, vertical or diagonal) with the same player
-    const hasFullLine = (game, playerNumber) =>
-    ((game.board[0] === playerNumber) && (game.board[1] === playerNumber) &&
-    (game.board[2] === playerNumber)) ||
-    ((game.board[3] === playerNumber) && (game.board[4] === playerNumber) &&
-    (game.board[5] === playerNumber)) ||
-    ((game.board[6] === playerNumber) && (game.board[7] === playerNumber) &&
-    (game.board[8] === playerNumber)) ||
-    ((game.board[0] === playerNumber) && (game.board[3] === playerNumber) &&
-    (game.board[6] === playerNumber)) ||
-    ((game.board[1] === playerNumber) && (game.board[4] === playerNumber) &&
-    (game.board[7] === playerNumber)) ||
-    ((game.board[2] === playerNumber) && (game.board[5] === playerNumber) &&
-    (game.board[8] === playerNumber)) ||
-    ((game.board[0] === playerNumber) && (game.board[4] === playerNumber) &&
-    (game.board[8] === playerNumber)) ||
-    ((game.board[2] === playerNumber) && (game.board[4] === playerNumber) &&
-    (game.board[6] === playerNumber))
-   // Check if the board is complete and change the gameStatus accordingly
+    const initGame = (gameFromDB, board) => {
+      //console.log("boardrecebido!")
+      //console.log(board)
+      //board = board.value.sort(() => Math.random() - 0.5);
+      gameFromDB.board = board; //esta a funcionar ate aqui
+      //console.log("gameFromDB.board!!")
+      //console.log(gameFromDB.board);
+      //gameFromDB.total_turns_winner = 0;
+      gameFromDB.gameStatus = 0; // pending -> game has not started yet
+      gameFromDB.currentPlayer = 1; // Player 1 starts
+      //gameFromDB.board = shuffleBoard(gameFromDB.board); // Shuffle the tiles on the board
+      gameFromDB.discoveredPairs = []; // List of discovered pairs
+      gameFromDB.scores = { 1: 0, 2: 0 }; // Players' scores
+      gameFromDB.total_time = { 1: 0, 2: 0 }; // Tempo total para cada jogador
+      gameFromDB.currentTurnStartTime = null; // Armazena o momento em que o jogador atual começou a jogar
+      gameFromDB.total_turns_winner = { 1: 0, 2: 0 }; // Players' scores
+      gameFromDB.selectedTiles = []; // Temporarily store selected tiles
+
+      //console.log(gameFromDB)
+      return gameFromDB;
+    };
+  
+    // Check if the selected tiles form a pair
+    function isPair(game, tile1, tile2) {
+      // Compara as propriedades `face` das duas cartas
+      const card1 = game.board.find((card) => card.id === tile1);
+      const card2 = game.board.find((card) => card.id === tile2);
+    
+      if (!card1 || !card2) {
+        console.error(`Erro: Não foi possível encontrar as cartas com IDs ${tile1} e ${tile2}.`);
+        return false;
+      }
+    
+      /*console.log(`Verificando par: 
+        Carta 1 - ID: ${tile1}, Face: ${card1.face}
+        Carta 2 - ID: ${tile2}, Face: ${card2.face}`);*/
+      
+      return card1.face === card2.face;
+    }    
+  
+
+    const gameEnded = (game) => {
+      if(game.status === 'E') {
+        return true;
+      }
+      return false;
+    };
+
+    // Check if the game is over (all pairs found)
+    const isGameOver = (game) => {
+      return game.discoveredPairs.length * 2 === game.board.length;
+    };
+  
+    // Change the game status when the game ends
     const changeGameStatus = (game) => {
-        if (hasFullLine(game, 1)) {
-            game.gameStatus = 1
-        } else if (hasFullLine(game, 2)) {
-            game.gameStatus = 2
-        } else if (isBoardComplete(game)) {
-            game.gameStatus = 3
+      if (isGameOver(game)) {
+        game.status = 'E';
+        game.winner = determineWinner(game);
+        game.gameStatus = determineWinner(game);
+      } else {
+        game.status = 'PL';
+      }
+    };
+
+    const determineWinner = (game) => {
+      if (game.scores[1] > game.scores[2]) {
+        return 1; // Player 1 venceu
+      } else if (game.scores[2] > game.scores[1]) {
+        return 2; // Player 2 venceu
+      } else {
+        return null; // Empate
+      }
+    };
+    
+    
+  
+    // Handle a player making a move
+    const playTurn = (game, card, playerSocketId) => {
+      if (game.status !== 'PL') {
+        return { errorCode: 11, errorMessage: 'Game is not in playing state!' };
+      }
+    
+      if (playerSocketId !== game[`player${game.currentPlayer}SocketId`]) {
+        return { errorCode: 12, errorMessage: 'It is not your turn!' };
+      }
+    
+      if (game.discoveredPairs.flat().includes(card.id)) {
+        return { errorCode: 13, errorMessage: 'Tile already discovered!' };
+      }
+    
+      // Calcula o tempo gasto pelo jogador atual
+      const now = Date.now();
+      if (game.currentTurnStartTime) {
+        const timeSpent = Math.floor((now - game.currentTurnStartTime) / 1000); // Tempo em segundos
+        game.total_time[game.currentPlayer] += timeSpent;
+      }
+    
+      // Atualiza o início do turno
+      game.currentTurnStartTime = now;
+    
+      // Adiciona o cartão selecionado
+      game.selectedTiles.push(card.id);
+    
+      if (game.selectedTiles.length === 2) {
+        const [tile1, tile2] = game.selectedTiles;
+    
+        // Verifica se o jogador clicou na mesma carta duas vezes
+        if (tile1 === tile2) {
+          game.selectedTiles = [tile1]; // Mantém apenas a primeira carta selecionada
+          return { errorCode: 14, errorMessage: 'You cannot select the same tile twice!' };
+        }
+    
+        if (isPair(game, tile1, tile2)) {
+          game.board.find(card => card.id === tile1).state = "paired";
+          game.board.find(card => card.id === tile2).state = "paired";
+    
+          game.discoveredPairs.push([tile1, tile2]);
+          game.scores[game.currentPlayer]++;
+          game.total_turns_winner[game.currentPlayer]++;
+          game.selectedTiles = [];
         } else {
-            game.gameStatus = 0
+          game.selectedTiles = [];
+          game.total_turns_winner[game.currentPlayer]++;
+          game.currentPlayer = game.currentPlayer === 1 ? 2 : 1;
+          game.currentTurnStartTime = null; // Pausa o tempo até o próximo turno
         }
-    }
-   
-    // Check if the board is complete (no further plays are possible)
-    const isBoardComplete = (game) => game.board.findIndex(piece => piece === 0) < 0
-    // returns whether the game as ended or not
-    const gameEnded = (game) => game.gameStatus > 0
-    // Plays a specific piece of the game (defined by its index)
-    // Returns true if the game play is valid or an object with an error code and message otherwise
-    const play = (game, index, playerSocketId) => {
-        if ((playerSocketId != game.player1SocketId) && (playerSocketId != game.player2SocketId)){
-            return {
-                errorCode: 10,
-                errorMessage: 'You are not playing this game!'
-            }
+      }
+    
+      if (isGameOver(game)) {
+        console.log("ENTREI NO GAMEOVER");
+    
+        // Calcula o tempo final do último jogador antes de encerrar o jogo
+        if (game.currentTurnStartTime) {
+          const timeSpent = Math.floor((Date.now() - game.currentTurnStartTime) / 1000); // Tempo em segundos
+          game.total_time[game.currentPlayer] += timeSpent;
+          game.currentTurnStartTime = null; // Finaliza o cálculo de tempo
         }
-        if (gameEnded(game)) {
-            return {
-                errorCode: 11,
-                errorMessage: 'Game has already ended!'
-            }
-        }
-        if (((game.currentPlayer == 1) && (playerSocketId != game.player1SocketId)) || ((game.currentPlayer == 2) && (playerSocketId != game.player2SocketId))){
-            return {
-                errorCode: 12,
-                errorMessage: 'Invalid play: It is not your turn!'
-            }
-        }
-        if (game.board[index] !== 0) {
-            return {
-                errorCode: 13,
-                errorMessage: 'Invalid play: cell already occupied!'
-            }
-        }
-        game.board[index] = game.currentPlayer
-        game.currentPlayer = game.currentPlayer === 1 ? 2 : 1
-        changeGameStatus(game)
-        return true
-    }
-    // One of the players quits the game. The other one wins the game
+    
+        changeGameStatus(game);
+        gameEnded(game);
+      }
+      return true;
+    };
+    
+    
+  
+    // Handle a player quitting the game
     const quit = (game, playerSocketId) => {
-        if ((playerSocketId != game.player1SocketId) &&
-            (playerSocketId != game.player2SocketId)){
-            return {
-                errorCode: 10,
-                errorMessage: 'You are not playing this game!'
-            }
-        }
-        if (gameEnded(game)) {
-            return {
-                errorCode: 11,
-                errorMessage: 'Game has already ended!'
-            }
-        }
-        game.gameStatus = playerSocketId == game.player1SocketId ? 2 : 1
-        game.status = 'ended'
-        return true
-    }
-    // Check if socket can close the game (game must have ended and player must belong to game)
-    const close = (game, playerSocketId) => {
-        if ((playerSocketId != game.player1SocketId) && (playerSocketId != game.player2SocketId)){
-            return {
-                errorCode: 10,
-                errorMessage: 'You are not playing this game!'
-            }
-        }
-        if (!gameEnded(game)) {
-            return {
-                errorCode: 14,
-                errorMessage: 'Cannot close a game that has not ended!'
-            }
-        }
-        return true
-    } 
+      if ((playerSocketId !== game.player1SocketId) &&
+          (playerSocketId !== game.player2SocketId)) {
+        return { errorCode: 10, errorMessage: 'You are not playing this game!' };
+      }
+  
+      if (game.status === 'E') {
+        return { errorCode: 11, errorMessage: 'Game has already ended!' };
+      }
+  
+      game.status = playerSocketId === game.player1SocketId ? 2 : 1;
+      return true;
+    };
+  
     return {
-        initGame,
-        gameEnded,
-        play,
-        quit,
-        close
-    }
-}
+      initGame,
+      playTurn,
+      quit,
+      gameEnded,
+      isGameOver
+    };
+  };
+  

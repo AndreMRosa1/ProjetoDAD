@@ -25,8 +25,9 @@ import TransactionForm from '@/components/transactions/TransactionForm.vue';
 import GlobalScoreboard from '@/components/scoreboards/GlobalScoreboard.vue';
 import PersonalScoreboard from '@/components/scoreboards/PersonalScoreboard.vue';
 import GameHistory from '@/components/GameHistory.vue';
-import MultiPlayerGames from '@/components/multiplayer/MultiPlayerGames.vue'
+import base from '@/components/multiplayer/base.vue'
 import SinglePlayerGame from '@/components/singleplayer/SinglePlayerGame.vue'
+import MultiplayerGame from '@/components/multiplayer/MultiplayerGame.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -55,6 +56,11 @@ const router = createRouter({
       component: SinglePlayerGame,
     },
     {
+      path: '/memorygamemultiplayer',
+      name: 'gamemultiplayer',
+      component: MultiplayerGame,
+    },
+    {
       path: '/scoreboards/global',
       name: 'scoreboardglobal',
       component: GlobalScoreboard,
@@ -69,7 +75,7 @@ const router = createRouter({
       component: StartNewMemoryGame },
     { path: '/multiplayer', 
       name: 'multiplayer',
-      component: MultiPlayerGames },
+      component: base },
     { path: '/scoreboards',
       name: 'scoreboards',
       component: ScoreboardsPage },

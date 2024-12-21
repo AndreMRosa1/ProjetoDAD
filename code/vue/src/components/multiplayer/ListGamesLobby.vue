@@ -1,6 +1,7 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth'
 import { useLobbyStore } from '@/stores/lobby';
+import { RouterLink } from 'vue-router';
 
 const storeAuth = useAuthStore()
 const storeLobby = useLobbyStore()
