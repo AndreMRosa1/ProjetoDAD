@@ -89,25 +89,20 @@ exports.createGameEngine = () => {
         return { errorCode: 13, errorMessage: 'Tile already discovered!' };
       }
     
-      // Calcula o tempo gasto pelo jogador atual
       const now = Date.now();
       if (game.currentTurnStartTime) {
-        const timeSpent = Math.floor((now - game.currentTurnStartTime) / 1000); // Tempo em segundos
+        const timeSpent = Math.floor((now - game.currentTurnStartTime) / 1000);
         game.total_time[game.currentPlayer] += timeSpent;
       }
     
-      // Atualiza o início do turno
       game.currentTurnStartTime = now;
-    
-      // Adiciona o cartão selecionado
       game.selectedTiles.push(card.id);
     
       if (game.selectedTiles.length === 2) {
         const [tile1, tile2] = game.selectedTiles;
     
-        // Verifica se o jogador clicou na mesma carta duas vezes
         if (tile1 === tile2) {
-          game.selectedTiles = [tile1]; // Mantém apenas a primeira carta selecionada
+          game.selectedTiles = [tile1];
           return { errorCode: 14, errorMessage: 'You cannot select the same tile twice!' };
         }
     
@@ -123,23 +118,21 @@ exports.createGameEngine = () => {
           game.selectedTiles = [];
           game.total_turns_winner[game.currentPlayer]++;
           game.currentPlayer = game.currentPlayer === 1 ? 2 : 1;
-          game.currentTurnStartTime = null; // Pausa o tempo até o próximo turno
+          game.currentTurnStartTime = null;
         }
       }
     
       if (isGameOver(game)) {
-        console.log("ENTREI NO GAMEOVER");
-    
-        // Calcula o tempo final do último jogador antes de encerrar o jogo
         if (game.currentTurnStartTime) {
-          const timeSpent = Math.floor((Date.now() - game.currentTurnStartTime) / 1000); // Tempo em segundos
+          const timeSpent = Math.floor((Date.now() - game.currentTurnStartTime) / 1000);
           game.total_time[game.currentPlayer] += timeSpent;
-          game.currentTurnStartTime = null; // Finaliza o cálculo de tempo
+          game.currentTurnStartTime = null;
         }
     
         changeGameStatus(game);
         gameEnded(game);
       }
+    
       return true;
     };
     

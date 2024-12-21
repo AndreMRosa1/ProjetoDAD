@@ -97,6 +97,41 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     startTimer();
   };
 
+  const playMultiplayer = (index) => {
+    if (status.value || flippedCards.value.length >= 2 || board.value[index].state === 'flipped') {
+      return;
+    }
+  
+    board.value[index].state = 'flipped';
+    flippedCards.value.push(board.value[index]);
+  
+    if (flippedCards.value.length === 2) {
+      turnCounter.value++;
+      if (flippedCards.value[0].face === flippedCards.value[1].face) {
+        matchedCards.value.push(...flippedCards.value);
+        pairCounter.value++;
+  
+        setTimeout(() => {
+          flippedCards.value.forEach(card => {
+            
+            card.state = 'paired'; 
+          });
+          flippedCards.value = []; 
+  
+          if (matchedCards.value.length === board.value.length) {
+            status.value = true;
+            endGame();
+          }
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          flippedCards.value.forEach(card => card.state = 'hidden');
+          flippedCards.value = [];
+        }, 1000);  // Flip the cards back after 1 second if no match
+      }
+    }
+  };
+
 
   const play = (index) => {
     if (status.value || flippedCards.value.length >= 2 || board.value[index].state === 'flipped') {
@@ -114,6 +149,7 @@ export const useMemorygameStore = defineStore('memorygame', () => {
   
         setTimeout(() => {
           flippedCards.value.forEach(card => {
+            
             card.state = 'invisible'; 
           });
           flippedCards.value = []; 
@@ -239,7 +275,6 @@ const handlePurchase = async () => {
 };
 
   onUnmounted(() => timerInterval && clearInterval(timerInterval));
-  return { status, board, start, startMultiplayer, play, turnCounter, pairCounter, timer, useHint, gameData, handlePurchase, gameSize }; //aqui tinha gameId
+  return { status, board, start, startMultiplayer, play, turnCounter, pairCounter, timer, useHint, gameData, handlePurchase, gameSize, playMultiplayer }; //aqui tinha gameId
 
-  //return { status, board, start, play, turnCounter, pairCounter, timer, useHint, gameSize, handlePurchase };
 })

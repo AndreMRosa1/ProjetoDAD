@@ -72,7 +72,7 @@ export const useGamesStore = defineStore("games", () => {
         if (webSocketServerResponseHasError(response)) {
           return;
         }
-        storememoryGame.play(idx);
+        storememoryGame.playMultiplayer(idx);
         updateGame(response);
       }
     );
@@ -155,10 +155,12 @@ export const useGamesStore = defineStore("games", () => {
 
   socket.on('gameUpdated', (updatedGame) => {
     // Atualizar o estado do jogo no cliente
+    console.log("gameUpdated", updatedGame);
     storememoryGame.board = updatedGame.board;
     storememoryGame.scores = updatedGame.scores;
     storememoryGame.currentPlayer = updatedGame.currentPlayer;
     storememoryGame.discoveredPairs = updatedGame.discoveredPairs;
+
   });
 
   socket.on("gameChanged", (game) => {
