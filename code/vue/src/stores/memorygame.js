@@ -64,8 +64,6 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     gameSize.value = size
     gameType.value = type
     initializeBoard();
-    //console.log("O board no memorygame store foi inicializado agora:")
-    //console.log(board.value)
     startTimer();
     const startedAt = dayjs().format('YYYY-MM-DD HH:mm:ss');
     gameStartTime.value = startedAt;
@@ -96,8 +94,6 @@ export const useMemorygameStore = defineStore('memorygame', () => {
     gameSize.value = size
     gameType.value = type
     initializeBoard();
-    //console.log("O board no memorygame store foi inicializado agora:")
-    //console.log(board.value)
     startTimer();
   };
 
@@ -243,8 +239,6 @@ const handlePurchase = async () => {
 };
 
   onUnmounted(() => timerInterval && clearInterval(timerInterval));
-  //console.log("Isto é o gameData!")
-  //console.log (gameData)
   return { status, board, start, startMultiplayer, play, turnCounter, pairCounter, timer, useHint, gameData, handlePurchase, gameSize }; //aqui tinha gameId
 
   //return { status, board, start, play, turnCounter, pairCounter, timer, useHint, gameSize, handlePurchase };

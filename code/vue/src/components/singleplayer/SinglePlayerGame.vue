@@ -64,7 +64,7 @@ const memorygame = useMemorygameStore();
 
 onMounted(() => {
   document.body.style.overflow = 'hidden';
-  memorygame.start(size.value);
+  memorygame.start(size.value, 'S');
 });
 
 // Cancel exit and close the modal
