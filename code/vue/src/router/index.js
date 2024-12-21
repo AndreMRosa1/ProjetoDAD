@@ -21,7 +21,7 @@ import TransactionList from '@/components/transactions/TransactionList.vue';
 import TransactionHistory from '@/components/transactions/TransactionHistory.vue';
 import GlobalScoreboard from '@/components/scoreboards/GlobalScoreboard.vue';
 import PersonalScoreboard from '@/components/scoreboards/PersonalScoreboard.vue';
-import GameHistory from '@/components/GameHistory.vue';
+import GameHistory from '@/components/users/GameHistory.vue';
 import base from '@/components/multiplayer/base.vue'
 import SinglePlayerGame from '@/components/singleplayer/SinglePlayerGame.vue'
 import MultiplayerGame from '@/components/multiplayer/MultiplayerGame.vue'
@@ -98,12 +98,11 @@ const router = createRouter({
       component: StartNewMemoryGame,
       meta: { requiresAuth: true, allowedTypes: ['P'] }
     },
-    { path: '/multiplayer', 
+    { 
+      path: '/multiplayer', 
       name: 'multiplayer',
-      component: base },
-    { path: '/scoreboards',
-      name: 'scoreboards',
-      component: ScoreboardsPage },
+      component: base 
+    },
     { path: '/statistics',
       name: 'statistics',
       component: StatisticsPage },
@@ -121,21 +120,22 @@ const router = createRouter({
       component: PurchaseBrainCoins,
       meta: { requiresAuth: true, allowedTypes: ['P'] } 
     },
-    { path: '/users',
-        name: 'users',
-        component: UserList ,
-        meta: { requiresAuth: true, allowedTypes: ['A'] }
+    { 
+      path: '/users',
+      name: 'users',
+      component: UserList ,
+      meta: { requiresAuth: true, allowedTypes: ['A'] }
       },
     { 
       path: '/transactions/list',
-        name: 'transactions-list',
-        component: TransactionList 
-      },
+      name: 'transactions-list',
+      component: TransactionList 
+    },
     { 
       path: '/transactions/history',
-        name: 'transactions-history',
-        component: TransactionHistory 
-      },
+      name: 'transactions-history',
+      component: TransactionHistory 
+    },
       
   ],
 });

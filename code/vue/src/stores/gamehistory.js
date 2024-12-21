@@ -60,7 +60,7 @@ export const useGameHistoryStore = defineStore('gameHistory', {
           response = await axios.get(`/history?page=${page}`);
         }
     
-        const gamesData = await Promise.all(response.data.data.map(async (game) => {
+        const gamesData = await Promise.all(response.data.map(async (game) => {
           const winnerName = await this.fetchUserName(game.winner_user_id);
           const playerName = await this.fetchUserName(game.created_user_id);
           return {
