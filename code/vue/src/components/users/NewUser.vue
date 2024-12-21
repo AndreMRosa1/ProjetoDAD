@@ -1,4 +1,5 @@
 <template>
+  <!-- Main Form Section -->
   <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
     <h1 class="text-2xl font-bold mb-6 text-center">Create New User</h1>
     <form @submit.prevent="handleRegister" class="space-y-4">
@@ -120,7 +121,6 @@ const handleRegister = async () => {
   formData.append('password', password.value);
   formData.append('password_confirmation', password_confirmation.value);
 
-
   if (photo.value) {
     formData.append('photo', photo.value);
   }
@@ -129,21 +129,31 @@ const handleRegister = async () => {
 
   if (!success) {
     errorStore.setErrorMessages("Error registering user");
+    return;
   }
 
   const userId = success.response.data.user.id;
-
-  updateAdmin(userId);
+  if (userType.value == 'A') {
+    updateAdmin(userId);
+  }
 };
 
 const updateAdmin = async (userId) => {
-  console.log('Update')
-  console.log(userType)
   const success = await axios.put(`/users/${userId}/updateAdmin`, { type: userType.value });
-  console.log(success)
 
   if (!success) {
     errorStore.setErrorMessages("Error updating user to admin");
+  } else {
+    // Display a browser alert instead of a modal
+    alert('User Created: The user has been successfully created.');
+
+    // Clear the form fields after successful registration
+    name.value = '';
+    nickname.value = '';
+    email.value = '';
+    password.value = '';
+    password_confirmation.value = '';
+    photo.value = null;
   }
-}
+};
 </script>

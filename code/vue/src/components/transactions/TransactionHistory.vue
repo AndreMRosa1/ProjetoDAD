@@ -8,6 +8,7 @@ const authStore = useAuthStore();
 
 onMounted(() => {
   transactionHistoryStore.fetchTransactions();
+  console.log(transactionHistoryStore.totalPages)
 });
 </script>
 
@@ -69,8 +70,8 @@ onMounted(() => {
 
         <button
           class="whitespace-nowrap px-6 py-2 bg-gray-200 text-black rounded-md hover:bg-gray-300 focus:outline-none"
-          :class="{ 'bg-gray-300': transactionHistoryStore.currentPage === transactionHistoryStore.totalPages }"
-          :disabled="transactionHistoryStore.currentPage === transactionHistoryStore.totalPages"
+          :class="{ 'bg-gray-300': transactionHistoryStore.currentPage === transactionHistoryStore.totalPages || transactionHistoryStore.totalPages <= 1 }"
+          :disabled="transactionHistoryStore.currentPage === transactionHistoryStore.totalPages || transactionHistoryStore.totalPages <= 1"
           @click="transactionHistoryStore.changePage(transactionHistoryStore.currentPage + 1)">
           Next
         </button>
