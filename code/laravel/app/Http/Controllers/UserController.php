@@ -186,15 +186,17 @@ public function getUserGames()
     return response()->json($games);
 }
 
+public function blockUser(Request $request, $id)
+{
+    $user = $this->findUserOrFail($id);
+    $user->blocked = 1;
+    $user->save();
+    return response()->json($user);
+}
+
 private function findUserOrFail($id)
 {
     return User::findOrFail($id);
 }
 
-public function update_blocked(UpdateBlockedUserRequest $request, User $user)
-{
-    $user->blocked = $request->validated()['blocked'];
-    $user->save();
-    return new UserResource($user);
-}
 }

@@ -73,22 +73,9 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
     Route::get('/admin/transactions', [TransactionController::class, 'index']);
     Route::resource('users', UserController::class)->except(['create', 'edit']);
+    Route::post('users/{id}/block', [UserController::class, 'blockUser']);
     Route::get('/admin/games', [GameController::class, 'index']);
     Route::get('/admin/statistics', [GameController::class, 'detailedStatistics']);
-});
-
-Route::middleware(['auth:sanctum', 'block.admin.from.games'])->group(function () {
-    Route::get('/games', [GameController::class, 'indexSinglePlayer']);
-    Route::patch('/games/{game_id}', [GameController::class, 'update']);
-    Route::post('/games', [GameController::class, 'store']);
-    Route::delete('/games/{gameId}', [GameController::class, 'destroy']);
-    Route::post('/multiplayergames', [GameController::class, 'createMultiplayerGame']);
-    Route::post('/multiplayergames/{gameId}/join', [GameController::class, 'joinMultiplayerGame']);
-    Route::post('/multiplayergames/{gameId}/start', [GameController::class, 'startMultiplayerGame']);
-    Route::get('/multiplayergames', [GameController::class, 'indexMultiplayerGames']);
-    Route::get('/games/multiplayer/lobbies', [GameController::class, 'listLobbies']);
-    Route::post('/games/multiplayer/lobbies', [GameController::class, 'createLobby']);
-    Route::post('/games/multiplayer/lobbies/join/{id}', [GameController::class, 'joinLobby']);
 });
 
 // Recursos básicos

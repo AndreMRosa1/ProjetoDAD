@@ -45,9 +45,10 @@
           <td>{{ user.email }}</td>
           <td>{{ user.type }}</td>
           <td class="border px-4 py-2">
-            <button @click="blockUser(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded">Block</button>
+            <button :style="{ visibility: user.blocked ? 'hidden' : 'visible' }" @click="blockUser(user.id)"
+              class="bg-blue-500 text-white px-4 py-2 rounded">Block</button>
             <button @click="deleteUser(user.id)" class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
-        </td>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -63,7 +64,7 @@
 
 <script setup>
 import axios from 'axios';
-import { ref, onMounted, computed,inject } from 'vue';
+import { ref, onMounted, computed, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { useErrorStore } from '@/stores/error';
 
@@ -84,6 +85,7 @@ const filters = ref({
 const fetchUsers = async () => {
   try {
     const response = await axios.get('/users');
+    console.log(response)
     users.value = response.data;
   } catch (error) {
     console.log(error);
@@ -91,26 +93,26 @@ const fetchUsers = async () => {
 };
 
 const deleteUser = async (userId) => {
-    storeError.resetMessages()
-    try {
-      await axios.delete(`/users/${userId}`)
-      users.value = users.value.filter(user => user.id !== userId)
-    } catch (e) {
-      storeError.setErrorMessages(
-        e.response.data.message, e.response.data.errors, e.response.status, 'Delete User Error!'
-      )
-    }
-  };
+  storeError.resetMessages()
+  try {
+    await axios.delete(`/users/${userId}`)
+    users.value = users.value.filter(user => user.id !== userId)
+  } catch (e) {
+    storeError.setErrorMessages(
+      e.response.data.message, e.response.data.errors, e.response.status, 'Delete User Error!'
+    )
+  }
+};
 
-  const blockUser = async (userId) => {
-    try {
-      const response = await axios.patch(`users/${userId}/block`);
-      console.log(response);
-      fetchUsers();
-    } catch (error) {
-      console.error(error);
-    }
-  
+const blockUser = async (userId) => {
+  try {
+    const response = await axios.post(`users/${userId}/block`);
+    console.log(response);
+    fetchUsers();
+  } catch (error) {
+    console.error(error);
+  }
+
 };
 
 
@@ -260,7 +262,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ddd;
   padding: 8px;
 }
