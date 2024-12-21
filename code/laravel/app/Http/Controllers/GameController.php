@@ -12,7 +12,7 @@ class GameController extends Controller
 {
     public function index()
     {
-        return response()->json(Game::with('creator', 'winner', 'board')->get());
+        return response()->json(Game::with('creator', 'winner', 'board')->orderby('created_at', 'desc')->paginate(10));
     }
 
     public function store(Request $request)

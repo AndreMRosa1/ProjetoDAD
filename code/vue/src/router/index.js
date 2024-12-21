@@ -72,7 +72,7 @@ const router = createRouter({
       path: '/history',
       name: 'history',
       component: GameHistory ,
-      meta: { requiresAuth: true, allowedTypes: ['P'] }
+      meta: { requiresAuth: true }
     },
     {
       path: '/memory-game',

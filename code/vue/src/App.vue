@@ -136,7 +136,7 @@ const handleMessageFromInputDialog = (message) => {
             </RouterLink>
             <RouterLink to="/history"
               class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              active-class="text-blue-600 font-semibold" v-if="authStore.user && authStore.user.type === 'P'">
+              active-class="text-blue-600 font-semibold" v-if="authStore.user">
               Game History
             </RouterLink>
             <div v-if="authStore.user && authStore.user.type === 'P'" class="relative">

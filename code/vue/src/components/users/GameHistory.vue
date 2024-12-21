@@ -8,6 +8,7 @@
     <!-- Game History Table -->
     <div class="bg-gray-50 rounded-lg p-4">
       <div class="flex justify-around bg-green-600 text-white font-semibold rounded-md p-2">
+        <span v-if="gameHistoryStore.isAdmin" class="flex-1 text-center">Player</span>
         <span class="flex-1 text-center">Type</span>
         <span class="flex-1 text-center">Board Size</span>
         <span class="flex-1 text-center">Status</span>
@@ -19,6 +20,7 @@
 
       <div v-for="(game) in gameHistoryStore.games" :key="game.id"
         class="flex justify-around border-b last:border-b-0 hover:bg-green-100 p-2">
+        <span v-if="gameHistoryStore.isAdmin" class="flex-1 text-center">{{ game.player_name || 'N/A' }}</span>
         <span class="flex-1 text-center">
           {{ game.type === 'S' ? 'Single Player' : 'Multiplayer' }}
         </span>
@@ -65,17 +67,17 @@
   </div>
 </template>
 
+
 <script>
 import { useGameHistoryStore } from '@/stores/gamehistory';
 import { onMounted } from 'vue';
-
 
 export default {
   setup() {
     const gameHistoryStore = useGameHistoryStore();
 
     onMounted(() => {
-      gameHistoryStore.fetchGameHistory();
+      gameHistoryStore.fetchGameHistory(); // Correct function call
     });
 
     return {

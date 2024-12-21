@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
 
 export const useGameHistoryStore = defineStore('gameHistory', {
   state: () => ({
@@ -45,18 +46,33 @@ export const useGameHistoryStore = defineStore('gameHistory', {
     },
 
     async fetchGameHistory(page = 1) {
+      const authStore = useAuthStore(); // Get the auth store
+      const userType = authStore.user.type;
+      this.isAdmin = userType === 'A';
+    
       try {
-        const response = await axios.get(`/history?page=${page}`);
+        let response;
+        if (this.isAdmin) {
+          // Admin: fetch all games
+          response = await axios.get(`/admin/games?page=${page}`);
+        } else {
+          // Player: fetch their own games
+          response = await axios.get(`/history?page=${page}`);
+        }
+    
         const gamesData = await Promise.all(response.data.data.map(async (game) => {
           const winnerName = await this.fetchUserName(game.winner_user_id);
+          const playerName = await this.fetchUserName(game.created_user_id);
           return {
             ...game,
             began_at: this.formatDate(game.began_at),
             ended_at: game.ended_at ? this.formatDate(game.ended_at) : 'In Progress',
             winner_name: winnerName,
+            player_name: playerName,
           };
         }));
-        this.games = gamesData;
+    
+        this.games = gamesData;  // Reset the state with the new data for the current page
         this.totalPages = response.data.last_page; // Set the total pages
       } catch (error) {
         console.error('Error fetching game history:', error);
