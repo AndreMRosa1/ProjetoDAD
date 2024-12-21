@@ -37,8 +37,8 @@
 
             <!-- Photo Input -->
             <div>
-                <label for="photo" class="block text-sm font-medium text-gray-700">Profile Photo:</label>
-                <input type="file" id="photo" @change="handleFileChange"
+                <label for="photo" class="block text-sm font-medium text-gray-700">Profile Photo/Avatar:</label>
+                <input type="file" id="photo" @change="onPhotoSelected"
                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
             </div>
 
@@ -90,6 +90,7 @@ import { useAuthStore } from '@/stores/auth';
 import axios from 'axios';
 import { useErrorStore } from '@/stores/error';
 import router from '@/router';
+import { CodeSquare } from 'lucide-vue-next';
 
 export default {
     name: 'EditProfile',
@@ -105,16 +106,27 @@ export default {
             nickname: authStore.user?.nickname || '',
             email: authStore.user?.email || '',
             photo_url: authStore.user?.photo_url || '',
-
         });
 
+        const selectedPhoto = ref(null);
 
-        const handleFileChange = async (event) => {
-            // File upload logic...
+        const onPhotoSelected = (event) => {
+            selectedPhoto.value = event.target.files[0];
         };
 
         const submitForm = async () => {
             try {
+                if (selectedPhoto.value) {
+                    const formData = new FormData();
+                    formData.append('photo', selectedPhoto.value);
+
+                    const photoResponse = await axios.post('/user/upload-photo', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+                }
+
                 await axios.put('user/edit-profile', form.value);
                 authStore.user = { ...authStore.user, ...form.value }; // Update user data locally
                 alert('Profile updated successfully!');
@@ -126,9 +138,9 @@ export default {
         const deleteAccount = async () => {
             try {
                 authStore.logout();
-                await axios.post(`/user/me/delete`, { password: password.value })
+                await axios.post(`/user/me/delete`, { password: password.value });
                 alert('Account deleted successfully');
-                router.push('/')
+                router.push('/');
             } catch (error) {
                 errorStore.setErrorMessages(`Error deleting account. \n ${error}`);
             } finally {
@@ -139,7 +151,7 @@ export default {
         return {
             form,
             submitForm,
-            handleFileChange,
+            onPhotoSelected,
             showDeleteModal,
             password,
             deleteAccount,
@@ -149,4 +161,5 @@ export default {
         };
     },
 };
+
 </script>

@@ -38,6 +38,8 @@ class UserController extends Controller
             'type' => 'sometimes|string|in:A,P',
         ]);
 
+        
+
         $validated['password'] = bcrypt($validated['password']);
         $user = User::create($validated);
 
@@ -109,7 +111,11 @@ class UserController extends Controller
 
         $user->save();
 
-        return response()->json(['message' => 'Photo uploaded successfully!', 'photo_url' => Storage::url($path)]);
+        return response()->json([
+            'message' => 'Photo uploaded successfully!', 
+            'photo_url' => Storage::url($path), 
+            'userAvatar' => $user->photo_filename
+        ]);
     }
 
     public function changePassword(Request $request)
