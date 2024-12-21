@@ -13,31 +13,31 @@ class TransactionController extends Controller
 {
     // Listar histórico do usuário autenticado
     public function index()
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    // Determine the pagination parameters
-    $perPage = 10; // Define how many items per page
+        // Determine the pagination parameters
+        $perPage = 10; // Define how many items per page
 
-    if ($user->type === 'A') {
-        // Administrators can see all transactions, with pagination
-        $transactions = Transaction::with(['user', 'game'])  // Optionally eager load the relationships
-            ->orderBy('transaction_datetime', 'desc')
-            ->paginate($perPage); // Paginate the results
-    } else {
-        // Regular users see only their own transactions, with pagination
-        $transactions = $user->transactions()
-            ->with('game')  // Optionally eager load the 'game' relationship
-            ->orderBy('transaction_datetime', 'desc')
-            ->paginate($perPage); // Paginate the results
+        if ($user->type === 'A') {
+            // Administrators can see all transactions, with pagination
+            $transactions = Transaction::with(['user', 'game'])  // Optionally eager load the relationships
+                ->orderBy('transaction_datetime', 'desc')
+                ->paginate($perPage); // Paginate the results
+        } else {
+            // Regular users see only their own transactions, with pagination
+            $transactions = $user->transactions()
+                ->with('game')  // Optionally eager load the 'game' relationship
+                ->orderBy('transaction_datetime', 'desc')
+                ->paginate($perPage); // Paginate the results
+        }
+
+        if ($transactions->isEmpty()) {
+            Log::info('No transactions found for user ID ' . $user->id);
+        }
+
+        return response()->json($transactions);
     }
-
-    if ($transactions->isEmpty()) {
-        Log::info('No transactions found for user ID ' . $user->id);
-    }
-
-    return response()->json($transactions);
-}
 
     // Store a new transactions
     public function store(Request $request)
