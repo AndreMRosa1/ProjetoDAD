@@ -32,12 +32,7 @@ import NewUser from '@/components/users/NewUser.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/home',
-      name: 'home',
-      component: HomeComponent,
-    },{ 
+  routes: [{ 
       path: '/login', 
       name: 'login', 
       component: Login 
@@ -55,12 +50,14 @@ const router = createRouter({
     { 
       path: '/change-password', 
       name: 'changepassword', 
-      component: ChangePassword
+      component: ChangePassword,
+      meta: { requiresAuth: true }
     },
     { 
       path: '/edit-profile', 
       name: 'editprofile', 
-      component: EditProfile
+      component: EditProfile,
+      meta: { requiresAuth: true }
     },
     { 
       path: '/users/create', 
@@ -83,7 +80,6 @@ const router = createRouter({
       path: '/scoreboards/global',
       name: 'scoreboardglobal',
       component: GlobalScoreboard,
-
     },
     {
       path: '/scoreboards/personal',
@@ -101,10 +97,6 @@ const router = createRouter({
       name: 'multiplayer',
       component: MultiPlayerGames,
       meta: { requiresAuth: true, allowedTypes: ['P'] } 
-    },
-    { path: '/scoreboards',
-      name: 'scoreboards',
-      component: ScoreboardsPage 
     },
     { 
       path: '/statistics',
