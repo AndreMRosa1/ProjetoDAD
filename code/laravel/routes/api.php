@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\BoardController;
+use App\Models\User;
 
 // Autenticação
 Route::post('/auth/register', [AuthController::class, 'register']);
@@ -30,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/me', function (Request $request) {
         return $request->user();
     });
+
+    Route::patch('users/{user_id}/blocked', [UserController::class, 'update_blocked']);
 
     Route::get('/users', [UserController::class, 'index']);
     Route::post('/users', [UserController::class, 'store']);
