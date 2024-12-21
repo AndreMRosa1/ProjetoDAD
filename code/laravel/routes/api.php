@@ -18,6 +18,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/auth/refreshtoken', [AuthController::class, 'refreshToken']);
 
+    Route::get('/users/all', [UserController::class, 'index']);
+    Route::post('/users', [UserController::class, 'store']);
+
     Route::post('/user/me/delete', [UserController::class, 'deleteAccount']);
 
     Route::post('/user/change-password', [UserController::class, 'changePassword'])->middleware('auth:sanctum');
@@ -27,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('user/upload-photo', [UserController::class, 'uploadPhoto']);
     Route::post('users/{id}/change-photo', [UserController::class, 'changePhoto']);
 
+    Route::get('/games/all', [GameController::class, 'index']);
     Route::post('/games', [GameController::class, 'store']);
     Route::patch('/games/{id}', [GameController::class, 'update']);
 
@@ -37,9 +41,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::patch('users/{user_id}/blocked', [UserController::class, 'update_blocked']);
-
-    Route::get('/users', [UserController::class, 'index']);
-    Route::post('/users', [UserController::class, 'store']);
 
     Route::get('/history', [GameController::class, 'history']);
 
